@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, S3–S6, S8, S9 in (phase 2); `pnpm test` 111 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, S3–S6, S8, S9 in (phase 2); `pnpm test` 113 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -98,7 +98,7 @@ group, centre-out pop cascade within 600 ms, rows scroll linearly at 40 px/s in 
 to cover canvas + travel — repeat count and cascade timing use an estimated label width, ~0.58 em/char).
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
-A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) -> S8 (done) -> C beat transitions ->
+A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) -> S8 (done) -> C beat transitions (done) ->
 S13, S14 -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
@@ -149,6 +149,26 @@ byte-identical") — review this reading:
   70 ms stagger, sides interleaved from the top. Fixture s8-wire-fan (targets in layout:column groups).
   Not modelled yet: S8's travelling dots (1.5 px/frame) — open question: a wire `dots { count, speed, radius }`
   field (recommended) vs follower nodes positioned along a path.
+
+## Beat transitions (C)
+- `Beat.transition { type cut | crossfade | curtain | smear, ms, ease, direction, color }` on the incoming beat; the
+  timeline is unchanged (beats never overlap). Inside [start, start + ms) the runtime composites the previous beat
+  (evaluated at the real t; finished tracks hold) and this one; outside it draws one beat exactly as before, so every
+  single-beat fixture is byte-identical. Validation: no transition on the first beat; ms <= the beat's duration.
+- Defaults (`transitionParams` in @engine/graph): crossfade 100 ms linear (timing table's cross-dissolve); curtain
+  600 ms emphasis, direction right, colour tokens.accent; smear 160 ms, direction left; cut 0.
+- crossfade: incoming rendered offscreen, drawn at alpha p. curtain: a canvas-sized colour panel crosses (-1 -> +1
+  frame along `direction`), covering the frame at the eased midpoint; outgoing before, incoming after.
+- smear: background + glows crossfade once (repeated 8-bit blending of smooth gradients bands them); the content of
+  each beat slides (outgoing 0 -> 0.3 W along `direction`, emphasis; incoming from 0.3 W behind -> 0, settle) as 8
+  taps spread along its own instantaneous velocity x 1/60 s, rendered on transparent layers and summed additively
+  at weight/8 (premultiplied mean, outgoing weight 1-p, incoming p) — the blur is the motion itself.
+- Offscreen buffers: OffscreenCanvas (or a DOM canvas), fully overwritten before each use, so frames stay pure.
+- Macro rule: a beat with a transition delays its enter tracks by `enterDelay(transition)` — curtain ms/2, smear ms,
+  crossfade / cut 0 — so nothing lands under the transition.
+- Fixture transitions: five beats chained by crossfade, curtain, smear, cut.
+- render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
+  cwd inside it aborted a run).
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

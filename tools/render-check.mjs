@@ -34,6 +34,12 @@ function findChrome() {
 }
 
 mkdirSync("out", { recursive: true });
+// empty a frame directory; if it can't be removed (Windows: a shell's cwd is inside it), delete its files instead
+function clearDir(dir) {
+  try { rmSync(dir, { recursive: true, force: true }); }
+  catch { for (const f of readdirSync(dir)) rmSync(path.join(dir, f), { force: true }); }
+  mkdirSync(dir, { recursive: true });
+}
 execSync("npx esbuild tools/browser-entry.ts --bundle --format=iife --global-name=Engine --platform=browser --target=es2020 --outfile=out/engine.browser.js --external:fs --external:path --external:module --external:crypto --external:url --external:worker_threads --log-level=warning", { stdio: "inherit" });
 const bundle = readFileSync("out/engine.browser.js", "utf8");
 const b64 = (p) => readFileSync(p).toString("base64");
@@ -56,7 +62,7 @@ for (const file of fixtures) {
     const frames = Math.ceil((last.start + last.duration) * fps);
     const width = Math.round(aspect === "16:9" ? height * 16 / 9 : height * 9 / 16);
     const dir = path.join("out", "render-check", name, aspect.replace(":", "x"));
-    rmSync(dir, { recursive: true, force: true }); mkdirSync(dir, { recursive: true });
+    clearDir(dir);
 
     const page = await browser.newPage({ viewport: { width, height } });
     const errors = [];

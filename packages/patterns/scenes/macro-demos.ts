@@ -1,5 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
+import { enterDelay } from "@engine/graph";
 import { ambientGlow, applyEdits, cardRise, group, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
@@ -182,4 +183,21 @@ export function buildS8Demo() {
   ]);
   const fan = wireFan({ id: "b1-fan", hub: "b1-fan-hub", left: leftIds, right: rightIds, at: 0.3, glow: { radius: 8, intensity: 0.5 } });
   return demo("Your app, connected", 2.0, [...fan.nodes, scene], []);
+}
+
+// Beat transitions (C): five beats chained by crossfade, curtain, smear and cut; each beat's title enters after the
+// macro-rule delay so nothing lands under the transition.
+export function buildTransitionsDemo() {
+  const specs: [string, string, object | undefined][] = [
+    ["One", "#0B0D12", undefined], ["Crossfade", "#10213A", { type: "crossfade" }], ["Curtain", "#2A1338", { type: "curtain" }],
+    ["Smear", "#0F2E24", { type: "smear" }], ["Cut", "#3A1E0E", { type: "cut" }],
+  ];
+  const beats = specs.map(([title, bg, transition], i) => {
+    const id = `b${i + 1}`, at = Math.round((0.05 + enterDelay(transition as never)) * 1000) / 1000;
+    return { id, type: "feature", start: i * 1.2, duration: 1.2, script: title, background: bg, ...(transition ? { transition } : {}),
+      glows: [{ x: 0.5, y: 1.05, rx: 0.7, ry: 0.8, color: "#3D5AFE", intensity: 0.3 }],
+      nodes: [{ id: `${id}-title`, type: "text", text: title, style: { size: 140, weight: 700 },
+        tracks: [{ mode: "tween", prop: "opacity", at, ms: 200, from: 0, to: 1, ease: "settle" }, { mode: "tween", prop: "y", at, ms: 400, from: 40, to: 0, ease: "settle" }] }] };
+  });
+  return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats };
 }

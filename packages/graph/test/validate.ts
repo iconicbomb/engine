@@ -23,3 +23,17 @@ const okWire = wire([{ id: "b1-a", type: "rect", w: 10, h: 10 }, { id: "b1-b", t
 const badWire = wire([{ id: "b1-a", type: "rect", w: 10, h: 10 }, { id: "b1-g", type: "group", children: [{ id: "b1-w", type: "wire", from: { target: "b1-a" }, to: { target: "b1-nope" } }] }]);
 if (!okWire.success || badWire.success || badWire.error.issues.length !== 2) { console.error("FAIL: wire validation", okWire.success, badWire.success ? 0 : badWire.error.issues.map(i => i.message)); process.exit(1); }
 console.log("ok: wires validated — unknown end and nested wire rejected");
+// transitions: need a previous beat and must fit in their beat; defaults and the macro enter delay
+{
+  const { transitionParams, enterDelay } = require("../src/schedule");
+  const beat = (id: string, start: number, transition?: object) => ({ id, type: "hook", start, duration: 1, nodes: [], ...(transition ? { transition } : {}) });
+  const tg = (beats: object[]) => Graph.safeParse({ version: 1, canvas: {}, tokens: {}, beats });
+  const okT = tg([beat("b1", 0), beat("b2", 1, { type: "curtain" })]);
+  const badT = tg([beat("b1", 0, { type: "smear" }), beat("b2", 1, { type: "crossfade", ms: 1500 })]);
+  const c = transitionParams({ type: "curtain" }), sm = transitionParams({ type: "smear" }), cf = transitionParams({ type: "crossfade" });
+  if (!okT.success || badT.success || badT.error.issues.length !== 2 || c.ms !== 600 || c.direction !== "right" || sm.ms !== 160 || sm.direction !== "left"
+    || cf.ms !== 100 || cf.ease !== "linear" || enterDelay({ type: "curtain" }) !== 0.3 || enterDelay({ type: "smear", ms: 200 }) !== 0.2 || enterDelay(undefined) !== 0) {
+    console.error("FAIL: transitions", okT.success, badT.success ? 0 : badT.error.issues.map((i: any) => i.message)); process.exit(1);
+  }
+  console.log("ok: transitions validated (first beat / too long rejected); defaults curtain 600 right, smear 160 left, crossfade 100 linear; enter delays ms/2, ms");
+}

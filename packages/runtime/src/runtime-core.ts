@@ -284,6 +284,12 @@ export function wirePath(a: Pt, b: Pt, curve: "s" | "line" | "arc", bend: number
   return `M ${a.x} ${a.y} C ${a.x + dx * bend} ${a.y} ${b.x - dx * bend} ${b.y} ${b.x} ${b.y}`;
 }
 
+// ---------- beat transitions ----------
+// unit vector of a direction (y-down)
+export function dirVec(d: "left" | "right" | "up" | "down"): { x: number; y: number } {
+  return d === "left" ? { x: -1, y: 0 } : d === "right" ? { x: 1, y: 0 } : d === "up" ? { x: 0, y: -1 } : { x: 0, y: 1 };
+}
+
 // ---------- camera (pure) ----------
 type FrameTrackT = Extract<import("@engine/graph").CameraTrack, { mode: "frame" }>;
 const FILL = { wide: 0.5, medium: 0.7, close: 0.9 } as const;

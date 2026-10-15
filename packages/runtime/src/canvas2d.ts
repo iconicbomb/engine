@@ -1,8 +1,8 @@
 // @engine/runtime — Canvas 2D implementation of `Runtime`. renderFrame(graph, t) is a pure function of its inputs:
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
-import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, pathLength, pathBounds, anchorPoint, wirePath, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
+import { glyphTime, glyphHideTime, typewriterEnd, formatCount, transitionParams } from "@engine/graph";
+import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, dirVec, pathLength, pathBounds, anchorPoint, wirePath, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
@@ -36,6 +36,7 @@ const worldBox = (m: M, b: Box): Box => {
   return { left: Math.min(...pts.map((p) => p[0])), right: Math.max(...pts.map((p) => p[0])), top: Math.min(...pts.map((p) => p[1])), bottom: Math.max(...pts.map((p) => p[1])) };
 };
 type Slot = { x: number; y: number };
+type Layer = "all" | "background" | "content";
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
 
 type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number };
@@ -48,10 +49,10 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
 
   // Everything a frame needs, as a pure function of (graph, t). boxesAt(t) runs the measure pass for beat-local t
   // (memoised per frame: camera frames with follow false measure at their own `at`).
-  function frameEnv(graph: Graph, tSec: number, ctx: CanvasRenderingContext2D | null, k: number): { env: Env; beat: Beat } {
+  function frameEnv(graph: Graph, tSec: number, ctx: CanvasRenderingContext2D | null, k: number, forBeat?: Beat): { env: Env; beat: Beat } {
     const aspect = graph.canvas.aspect as Aspect;
     const { w, h } = canvasSize(aspect, graph.canvas.refHeight);
-    const beat = pickBeat(graph.beats, tSec);
+    const beat = forBeat ?? pickBeat(graph.beats, tSec);
     const tl = tSec - beat.start;                      // beat-local time
     const byId = new Map<string, Node>();
     const index = (n: Node) => { byId.set(n.id, n); ((n as { children?: Node[] }).children ?? []).forEach(index); };
@@ -64,21 +65,99 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     return { env, beat };
   }
 
+  // One frame. Inside a beat's transition window [start, start + ms) the outgoing and incoming beats are composited;
+  // everywhere else exactly one beat is drawn.
   function renderFrame(graph: Graph, tSec: number, target: RenderTarget) {
+    const beat = pickBeat(graph.beats, tSec);
+    const prev = previousBeat(graph.beats, beat);
+    const tp = beat.transition ? transitionParams(beat.transition) : null;
+    if (!tp || !prev || tp.ms <= 0 || tSec < beat.start || tSec >= beat.start + tp.ms / 1000) return drawBeat(graph, beat, tSec, target);
+    drawTransition(graph, prev, beat, tSec, target, tp);
+  }
+
+  // offscreen buffers for compositing transitions (fully overwritten before each use)
+  const buffers: (HTMLCanvasElement | OffscreenCanvas)[] = [];
+  function buffer(i: number, w: number, h: number): CanvasRenderingContext2D {
+    let c = buffers[i];
+    if (!c || c.width !== w || c.height !== h) {
+      c = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(w, h) : Object.assign(document.createElement("canvas"), { width: w, height: h });
+      buffers[i] = c;
+    }
+    return c.getContext("2d") as unknown as CanvasRenderingContext2D;
+  }
+
+  function drawTransition(graph: Graph, out: Beat, inc: Beat, tSec: number, target: RenderTarget, tp: ReturnType<typeof transitionParams>) {
+    const { ctx, width, height } = target;
+    const { w, h } = canvasSize(graph.canvas.aspect as Aspect, graph.canvas.refHeight);
+    const k = height / h;
+    const p = Math.min(1, Math.max(0, (tSec - inc.start) / (tp.ms / 1000)));
+    const into = (b: Beat, c: CanvasRenderingContext2D, off?: { x: number; y: number }, layer: Layer = "all") => drawBeat(graph, b, tSec, { ctx: c, width, height }, off, layer);
+    if (tp.type === "cut") return drawBeat(graph, inc, tSec, target);
+    if (tp.type === "crossfade") {
+      into(out, ctx);
+      const b = buffer(0, width, height);
+      into(inc, b);
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = EASES[tp.ease](p); ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
+      ctx.drawImage(b.canvas as CanvasImageSource, 0, 0);
+      ctx.globalAlpha = 1;
+      return;
+    }
+    const dv = dirVec(tp.direction);
+    if (tp.type === "curtain") {
+      const e = EASES[tp.ease](p);
+      into(e < 0.5 ? out : inc, ctx);                 // the panel covers the whole frame at the midpoint
+      const along = -1 + 2 * e;                        // panel offset in frame units: -1 (off, behind) -> +1 (off, ahead)
+      ctx.setTransform(k, 0, 0, k, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
+      ctx.fillStyle = color(tp.color, graph.tokens);
+      ctx.fillRect(dv.x * along * w, dv.y * along * h, w, h);
+      return;
+    }
+    // smear. Background + glows (static) are crossfaded once — repeated 8-bit blending of smooth gradients bands them.
+    // The content of each beat slides (outgoing 0 -> 0.3 W along `direction` with emphasis, incoming from 0.3 W behind
+    // -> 0 with settle; left: -0.3 W and +0.3 W -> 0) as 8 taps spread along its own instantaneous velocity x 1/60 s,
+    // rendered on transparent layers and summed additively at weight / 8 (a premultiplied mean) before going on top.
+    const span = (dv.x !== 0 ? w : h) * 0.3, dt = 1e-4, d = tp.ms / 1000;
+    const outPos = (q: number) => span * EASES.emphasis(Math.min(1, Math.max(0, q)));
+    const incPos = (q: number) => -span * (1 - EASES.settle(Math.min(1, Math.max(0, q))));
+    const vel = (f: (q: number) => number) => (f(p + dt / d) - f(p)) / dt;      // px / s
+    const reset = (c: CanvasRenderingContext2D) => { c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = "source-over"; c.filter = "none"; };
+    into(out, ctx, undefined, "background");
+    const b = buffer(0, width, height), acc = buffer(1, width, height);
+    if (p > 0) { into(inc, b, undefined, "background"); reset(ctx); ctx.globalAlpha = p; ctx.drawImage(b.canvas as CanvasImageSource, 0, 0); }
+    reset(acc); acc.clearRect(0, 0, width, height);
+    for (const [beat, pos, weight] of [[out, outPos, 1 - p], [inc, incPos, p]] as const) {
+      if (weight <= 0) continue;
+      const x0 = pos(p), spread = vel(pos) / 60;
+      for (let t = 0; t < 8; t++) {
+        const s = x0 + spread * (t / 7 - 0.5);
+        into(beat, b, { x: dv.x * s, y: dv.y * s }, "content");
+        reset(acc); acc.globalCompositeOperation = "lighter"; acc.globalAlpha = weight / 8;
+        acc.drawImage(b.canvas as CanvasImageSource, 0, 0);
+      }
+    }
+    reset(ctx);
+    ctx.drawImage(acc.canvas as CanvasImageSource, 0, 0);
+  }
+
+  // one beat, full frame: background, glows, then (offset for smears, camera) wires, nodes, cursors
+  // layer: "all" (default), "background" (fill + glows only), "content" (transparent, nodes only)
+  function drawBeat(graph: Graph, forBeat: Beat, tSec: number, target: RenderTarget, offset?: { x: number; y: number }, layer: Layer = "all") {
     const { ctx } = target;
     const aspect = graph.canvas.aspect as Aspect;
     const { w, h } = canvasSize(aspect, graph.canvas.refHeight);
     const k = target.height / h;                       // graph units -> device px
-    const { env, beat } = frameEnv(graph, tSec, ctx, k);
+    const { env, beat } = frameEnv(graph, tSec, ctx, k, forBeat);
     const tl = env.tl, tokens = graph.tokens;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
-    ctx.fillStyle = color(beat.background, tokens);
-    ctx.fillRect(0, 0, target.width, target.height);
+    if (layer === "content") ctx.clearRect(0, 0, target.width, target.height);
+    else { ctx.fillStyle = color(beat.background, tokens); ctx.fillRect(0, 0, target.width, target.height); }
     ctx.setTransform(k, 0, 0, k, 0, 0);
 
-    drawGlows(beat, ctx, tokens, tl, w, h);
+    if (layer !== "content") drawGlows(beat, ctx, tokens, tl, w, h);
+    if (layer === "background") return;
+    if (offset) ctx.translate(offset.x, offset.y);
     // camera over nodes and cursors (glows stay put); skipped entirely when it is the identity
     if (hasCamera(beat)) {
       const cam = cameraAt(beat, env);
@@ -757,6 +836,10 @@ function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: n
   ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
   ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
   ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
+}
+function previousBeat(beats: Beat[], beat: Beat): Beat | null {
+  const before = beats.filter((b) => b.start < beat.start);
+  return before.length ? before.reduce((x, y) => (y.start > x.start ? y : x)) : null;
 }
 function pickBeat(beats: Beat[], t: number): Beat {
   const hit = beats.find(b => t >= b.start && t < b.start + b.duration);

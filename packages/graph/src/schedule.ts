@@ -47,3 +47,18 @@ export function formatCount(track: Extract<Track, { mode: "count" }>, value: num
   const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, track.separator);
   return `${track.prefix}${value < 0 ? "-" : ""}${grouped}${frac ? "." + frac : ""}${track.suffix}`;
 }
+
+// Beat transition parameters with their defaults (shared by the runtime and the pattern macros).
+export function transitionParams(tr: import("./schema").Transition) {
+  const ms = tr.ms ?? (tr.type === "curtain" ? 600 : tr.type === "smear" ? 160 : tr.type === "crossfade" ? 100 : 0);
+  const direction = tr.direction ?? (tr.type === "curtain" ? "right" : "left");
+  const ease = tr.ease ?? (tr.type === "crossfade" ? "linear" : "emphasis");
+  return { type: tr.type, ms, direction, ease, color: tr.color ?? "tokens.accent" };
+}
+// Macro rule: a beat with a transition delays its enter tracks so nothing lands under the transition — curtain by
+// ms/2 (the panel's midpoint), smear by ms; cut and crossfade by 0. Seconds.
+export function enterDelay(tr: import("./schema").Transition | undefined): number {
+  if (!tr) return 0;
+  const p = transitionParams(tr);
+  return p.type === "curtain" ? p.ms / 2000 : p.type === "smear" ? p.ms / 1000 : 0;
+}

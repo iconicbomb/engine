@@ -294,6 +294,22 @@ export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNod
 export type Node = z.infer<typeof Node>;
 
 // ---------- beats + document ----------
+// Transition into this beat from the previous one, composited over [start, start + ms). The beat timeline is unchanged
+// (beats still may not overlap): the outgoing beat is evaluated at the real t, its finished tracks holding.
+// cut: ms 0. crossfade: linear alpha (default 100 ms, the timing table's cross-dissolve). curtain: a canvas-sized
+// `color` panel (default tokens.accent) crosses in `direction` (default right) over ms (default 600) with emphasis,
+// covering the frame at the midpoint — outgoing before it, incoming after. smear: outgoing slides 0 -> -0.3 W in
+// `direction` (default left) with emphasis while incoming slides +0.3 W -> 0 with settle and fades in linearly; each is
+// drawn as 8 taps spread along its own instantaneous velocity x 1/60 s (default 160 ms).
+export const Transition = z.object({
+  type: z.enum(["cut", "curtain", "smear", "crossfade"]),
+  ms: z.number().min(0).optional(),
+  ease: z.enum(["linear", "settle", "emphasis"]).optional(),
+  direction: z.enum(["left", "right", "up", "down"]).optional(),
+  color: Color.optional(),
+});
+export type Transition = z.infer<typeof Transition>;
+
 export const Beat = z.object({
   id: z.string().regex(/^b[0-9]+$/),
   type: z.enum(["hook", "pain", "reveal", "feature", "proof", "summary", "cta"]),
@@ -311,6 +327,7 @@ export const Beat = z.object({
   // camera over the nodes and cursors (not the background or glows): zoom about the frame centre, x/y = pan in px
   camera: z.object({ zoom: z.number().positive().default(1), x: z.number().default(0), y: z.number().default(0), tracks: z.array(CameraTrack).default([]) }).default({}),
   nodes: z.array(Node),
+  transition: Transition.optional(),
 });
 
 export type Beat = z.infer<typeof Beat>;
@@ -346,6 +363,12 @@ export const Graph = z.object({
     if (sorted[i].start < sorted[i - 1].start + sorted[i - 1].duration)
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${sorted[i].id} overlaps ${sorted[i - 1].id}` });
   }
+  // a transition needs a previous beat and must fit inside its beat
+  sorted.forEach((b, i) => {
+    if (!b.transition) return;
+    if (i === 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${b.id}: transition on the first beat has nothing to come from` });
+    if ((b.transition.ms ?? 0) / 1000 > b.duration) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${b.id}: transition longer than the beat` });
+  });
   const ids = new Set<string>();
   const walk = (n: any, beat: string) => {
     if (ids.has(n.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate node id ${n.id}` });
