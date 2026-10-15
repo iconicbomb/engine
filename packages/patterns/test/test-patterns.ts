@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, echoTrail, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -98,6 +98,11 @@ assert(ech.map((c: any) => c.tracks[1].to).join() === "0.15,0.25,0.4,0.6" && ech
   "T10: opacities 60/40/25/15 %, copies spaced 0.4 em (80 px) along y over 400 ms");
 assert(t10.tracks[0].to === 0.6 && t10.tracks[1].to === -100 && ech[0].tracks[2].at === 1.2,
   "T10: word shrinks to 0.6 and recedes opposite the trail; trail fades at fadeAt");
+
+// T11: tracking contracts from +0.6 em to the style's tracking over 500 ms ease-out, label fading in
+const t11: any = trackingContraction({ id: "b1-l", text: "LABEL", style: { size: 100, tracking: 0.02 }, at: 0.3 }).nodes[0];
+assert(t11.tracks[0].prop === "tracking" && t11.tracks[0].from === 0.6 && t11.tracks[0].to === 0.02 && t11.tracks[0].ms === 500 && t11.tracks[0].ease === "settle"
+  && t11.tracks[1].prop === "opacity", "T11: tracking +0.6 em -> style tracking over 500 ms ease-out, with a fade-in");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

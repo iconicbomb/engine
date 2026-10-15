@@ -124,7 +124,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   // ---------- properties ----------
   // Several tracks may animate one property: the latest started one wins; before any has started, the earliest
   // one's `from` holds (so a node can sit at one value and later pulse from another).
-  function resolve(key: keyof NumericProps, base: number, tl: number, cands: { tr: TweenTrack; start: number }[]): number {
+  function resolve(key: string, base: number, tl: number, cands: { tr: TweenTrack; start: number }[]): number {
     const own = cands.filter((c) => c.tr.prop === key);
     if (!own.length) return base;
     const started = own.filter((c) => c.start <= tl);
@@ -184,7 +184,11 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const states: GlyphState[] = tw ? typewriterGlyphs(tw, chars, tl, fps) : chars.map(() => ({ visible: true, scrambled: null, freshness: 0 }));
 
     // tracking (letter-spacing) in em
-    const tracking = style.tracking * size;
+    // a node-level `tracking` tween (em) replaces style.tracking while it runs (T11 tracking contraction)
+    const trackingCands = (node.tracks as Track[])
+      .filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop === "tracking")
+      .map((tr) => ({ tr, start: tr.at }));
+    const tracking = (trackingCands.length ? resolve("tracking", style.tracking, tl, trackingCands) : style.tracking) * size;
     const advance = (g: ShapedGlyph) => g.xAdvance + tracking;
     const widthUpTo = (n: number) => glyphs.reduce((acc, g) => acc + (g.cluster < n ? advance(g) : 0), 0);
     const fullWidth = widthUpTo(chars.length);
