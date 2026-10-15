@@ -100,6 +100,8 @@ export const MoveToTrack = TrackBase.extend({
   offset: z.object({ x: z.number().default(0), y: z.number().default(0) }).default({}),
   ms: z.number().min(0).default(500),
   ease: z.enum(["linear", "settle", "emphasis"]).default("emphasis"),
+  // bow the path perpendicular to the travel by arc * distance at its midpoint (0 = straight; the planner uses 0.15)
+  arc: z.number().default(0),
 });
 // press: the cursor dips to 0.96 and back over ms
 export const PressTrack = TrackBase.extend({
@@ -335,7 +337,8 @@ export type Transition = z.infer<typeof Transition>;
 
 export const Beat = z.object({
   id: z.string().regex(/^b[0-9]+$/),
-  type: z.enum(["hook", "pain", "reveal", "feature", "proof", "summary", "cta"]),
+  // the spec's seven beats plus "tag" (the closing tagline the planner's grammar ends on)
+  type: z.enum(["hook", "pain", "reveal", "feature", "proof", "summary", "cta", "tag"]),
   start: z.number().min(0),
   duration: z.number().positive(),
   script: z.string().default(""),
@@ -393,14 +396,23 @@ export const Graph = z.object({
     if (i === 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${b.id}: transition on the first beat has nothing to come from` });
     if ((b.transition.ms ?? 0) / 1000 > b.duration) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${b.id}: transition longer than the beat` });
   });
-  const ids = new Set<string>();
-  const walk = (n: any, beat: string) => {
-    if (ids.has(n.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate node id ${n.id}` });
-    ids.add(n.id);
-    if (!n.id.startsWith(beat + "-")) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `node ${n.id} must be prefixed with its beat id ${beat}-` });
-    (n.children ?? []).forEach((c: any) => walk(c, beat));
-  };
-  g.beats.forEach((b) => b.nodes.forEach((n) => walk(n, b.id)));
+  // ids are unique and prefixed with their beat's id — except an object hand-off: a node may reappear, same id, in the
+  // immediately following beat (its prefix stays the beat that introduced it)
+  const owner = new Map<string, number>();
+  sorted.forEach((b, bi) => {
+    const local = new Set<string>();
+    const walk = (n: any) => {
+      if (local.has(n.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate node id ${n.id}` });
+      local.add(n.id);
+      const prev = owner.get(n.id);
+      if (prev !== undefined && prev !== bi - 1) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate node id ${n.id} (a hand-off may only continue into the next beat)` });
+      const handoff = prev === bi - 1;
+      if (!handoff && !n.id.startsWith(b.id + "-")) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `node ${n.id} must be prefixed with its beat id ${b.id}-` });
+      owner.set(n.id, bi);
+      (n.children ?? []).forEach(walk);
+    };
+    b.nodes.forEach(walk);
+  });
   // follows / moveTo targets / onHover cursors must resolve inside the same beat; cursors are top-level
   g.beats.forEach((b) => {
     const local = new Set<string>();

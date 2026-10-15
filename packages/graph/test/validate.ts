@@ -45,3 +45,13 @@ console.log("ok: wires validated — unknown end and nested wire rejected");
   if (!a.success || !b.success || bad.success || (a.data.beats[0].nodes[0] as any).fit !== "cover") { console.error("FAIL: image nodes"); process.exit(1); }
   console.log("ok: image nodes — named asset (fit cover default), null slot with placeholder, empty src rejected");
 }
+// object hand-off: a node may reappear (same id) in the immediately following beat only; "tag" is a beat type
+{
+  const two = (second: string, third?: string) => Graph.safeParse({ version: 1, canvas: {}, tokens: {}, beats: [
+    { id: "b1", type: "feature", start: 0, duration: 1, nodes: [{ id: "b1-ui", type: "rect", w: 10, h: 10 }] },
+    { id: "b2", type: "feature", start: 1, duration: 1, nodes: [{ id: second, type: "rect", w: 10, h: 10 }] },
+    { id: "b3", type: "tag", start: 2, duration: 1, nodes: third ? [{ id: third, type: "rect", w: 10, h: 10 }] : [] }] });
+  const handoff = two("b1-ui"), chained = two("b1-ui", "b1-ui"), skipped = two("b2-x", "b1-ui"), stray = two("b9-x");
+  if (!handoff.success || !chained.success || skipped.success || stray.success) { console.error("FAIL: hand-off ids", handoff.success, chained.success, skipped.success, stray.success); process.exit(1); }
+  console.log("ok: hand-off ids continue into the next beat (and onward beat by beat); skipping a beat or a foreign prefix is rejected; tag beats parse");
+}

@@ -905,7 +905,45 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     return hasCamera(beat) ? cameraAt(beat, env) : { zoom: 1, cx: env.w / 2, cy: env.h / 2 };
   }
 
-  return { renderFrame, measure, camera };
+  // ---------- visibility (pure; mirrors renderFrame's beat selection) ----------
+  // a drawable is visible when its cumulative opacity > 0.02, its scale isn't 0, its clip isn't empty, and (text) a
+  // glyph or the caret shows, (path / wire) its trim span is non-empty
+  function visible(graph: Graph, tSec: number): string[] {
+    const beat = pickBeat(graph.beats, tSec);
+    const prev = previousBeat(graph.beats, beat);
+    const tp = beat.transition ? transitionParams(beat.transition) : null;
+    let drawn: Beat[] = [beat];
+    if (tp && prev && tp.ms > 0 && tSec >= beat.start && tSec < beat.start + tp.ms / 1000) {
+      const p = Math.min(1, Math.max(0, (tSec - beat.start) / (tp.ms / 1000)));
+      drawn = tp.type === "cut" ? [beat] : tp.type === "curtain" ? [EASES[tp.ease](p) < 0.5 ? prev : beat] : [prev, beat];
+    }
+    const out: string[] = [];
+    for (const b of drawn) {
+      const { env } = frameEnv(graph, tSec, null, 1, b);
+      const walk = (nodes: Node[], alpha: number) => {
+        for (const n of nodes) {
+          const props = n.type === "cursor" ? numericProps(n, env.tl) : hoverProps(n, numericProps(n, env.tl), env);
+          const a = alpha * clamp01(props.opacity);
+          if (a <= 0.02 || props.scale === 0) continue;
+          const clip = clipRect(n, env.tl);
+          if (clip && (clip.w <= 0 || clip.h <= 0)) continue;
+          let shows = false;
+          if (n.type === "text") {
+            const L = layoutText(n as TextNode, env);
+            shows = L.states.some((st, i) => st.visible && glyphProps(n as TextNode, env.tl, i, L.tw ? glyphTime(L.tw, L.chars, i) : 0).opacity > 0.02)
+              || (!!L.tw && L.tw.caret.style !== "none" && env.tl < typewriterEnd(L.tw, L.chars) + L.tw.caret.holdAfterMs / 1000);
+          } else if (n.type === "path" || n.type === "wire") { const tr = trimOf(n as PathNode | WireNode, env.tl); shows = tr.end - tr.start > 1e-3; }
+          else if (n.type === "rect" || n.type === "image" || n.type === "cursor") shows = true;
+          if (shows) out.push(n.id);
+          walk(((n as { children?: Node[] }).children) ?? [], a);
+        }
+      };
+      walk(b.nodes, 1);
+    }
+    return out;
+  }
+
+  return { renderFrame, measure, camera, visible };
 }
 
 // ---------- cursor glyphs: px at size 1, hotspot at the origin ----------

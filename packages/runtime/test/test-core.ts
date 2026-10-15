@@ -72,6 +72,11 @@ void (async () => {
   const pts: Record<string, { x: number; y: number }> = { "b1-a": { x: 100, y: 0 }, "b1-b": { x: 300, y: 50 } };
   const pos = (t: number) => cursorPosition(moves, t, { x: 0, y: 0 }, (m) => pts[m.target]);
   assert(pos(0.3).x === 0 && pos(0.9).x === 100 && pos(1.9).x === 300 && pos(1.9).y === 50 && pos(1.65).x > 100 && pos(1.65).x < 300, "moveTo: holds, travels, arrives at at + ms, chains from the last target");
+  const arcMove = [Track.parse({ mode: "moveTo", target: "b1-a", at: 0, ms: 1000, ease: "linear", arc: 0.15 })] as any;
+  const ap = (t: number) => cursorPosition(arcMove, t, { x: 0, y: 0 }, (m) => pts[m.target]);
+  assert(Math.abs(ap(0.5).x - 50) < 1e-9 && Math.abs(ap(0.5).y - 15) < 1e-9 && ap(1).x === 100 && Math.abs(ap(1).y) < 1e-9 && Math.abs(ap(0.25).y - 11.25) < 1e-9
+    && (Track.parse({ mode: "moveTo", target: "b1-a", at: 0 }) as any).arc === 0,
+    "moveTo arc: bows perpendicular by arc x distance at the midpoint (4p(1-p) profile), lands exactly; default 0 (straight)");
 }
 // camera math (pure): fill-fraction zoom, clamp, hard cut, log-space zoom, transitions start from the replayed state
 {
@@ -195,4 +200,20 @@ void (async () => {
   const ax = sh.axes!("Inter");
   const w = (wght: number) => sh.shape("H", "Inter", 100, { wght })[0].d;
   assert(Object.keys(ax).join() === "wght" && ax.wght.min === 100 && ax.wght.max === 900 && w(300) !== w(800), "axes: Inter has wght 100-900 (real axis changes outlines); no slnt -> synthesized");
+})();
+// visible(): what renderFrame would show; the planner's coverage gate — the golden graph never has more than 250 ms
+// without a visible node, at either aspect
+void (async () => {
+  const { createShaper } = await import("../src/shaper");
+  const { createRuntime } = await import("../src/canvas2d");
+  const sh = await createShaper({ wasm: new Uint8Array(readFileSync("packages/runtime/wasm/hb.wasm")), fonts: { Inter: new Uint8Array(readFileSync("packages/runtime/fonts/Inter-Variable.ttf")) } });
+  const rt = createRuntime({ shaper: sh });
+  const g = parseGraph({ version: 1, canvas: { aspect: "16:9" }, tokens: {}, beats: [
+    { id: "b1", type: "hook", start: 0, duration: 1, nodes: [{ id: "b1-a", type: "rect", w: 10, h: 10, tracks: [{ mode: "tween", prop: "opacity", at: 0.5, ms: 0, from: 0, to: 1 }] },
+      { id: "b1-t", type: "text", text: "Hi", style: { size: 40 }, tracks: [{ mode: "typewriter", prop: "glyph.opacity", at: 0.2, cps: 10, caret: { style: "none" } }] }] },
+    { id: "b2", type: "cta", start: 1, duration: 1, transition: { type: "crossfade", ms: 400 }, nodes: [{ id: "b2-a", type: "rect", w: 10, h: 10, opacity: 0.01 }, { id: "b2-g", type: "group", children: [{ id: "b2-c", type: "rect", w: 1, h: 1 }] }] },
+  ] });
+  const v = (t: number) => rt.visible(g, t).join();
+  assert(v(0.1) === "" && v(0.25) === "b1-t" && v(0.6) === "b1-a,b1-t" && v(1.1) === "b1-a,b1-t,b2-c" && v(1.5) === "b2-c",
+    "visible: faded / untyped / near-transparent nodes don't count, groups aren't drawables, a crossfade shows both beats");
 })();

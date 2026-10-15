@@ -154,7 +154,13 @@ export function cursorPosition(tracks: Track[], t: number, start: { x: number; y
     const target = point(m);
     if (!target) continue;
     const p = trackProgress(m, t) ?? 0;
-    cur = { x: lerp(cur.x, target.x, p), y: lerp(cur.y, target.y, p) };
+    const next = { x: lerp(cur.x, target.x, p), y: lerp(cur.y, target.y, p) };
+    if (m.arc) {
+      // bow perpendicular to the travel: arc * distance at the midpoint, 0 at both ends
+      const dx = target.x - cur.x, dy = target.y - cur.y, len = Math.hypot(dx, dy) || 1, bow = m.arc * len * 4 * p * (1 - p);
+      next.x += (-dy / len) * bow; next.y += (dx / len) * bow;
+    }
+    cur = next;
   }
   return cur;
 }
@@ -356,6 +362,8 @@ export interface Runtime {
   renderFrame(graph: Graph, tSec: number, target: RenderTarget): void;
   // pure layout pass: every node's box in world space (graph units, before the camera), full laid-out extents
   measure(graph: Graph, tSec: number): Map<string, Box>;
+  // ids of the drawable nodes visible at tSec (what renderFrame would show: transitions included); for coverage checks
+  visible(graph: Graph, tSec: number): string[];
   // the camera at tSec (identity = { zoom: 1, cx: W/2, cy: H/2 })
   camera(graph: Graph, tSec: number): CameraState;
 }
