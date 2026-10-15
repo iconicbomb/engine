@@ -12,7 +12,8 @@
     "compare:local": "python tools/compare_frames.py fixtures/refs/R3.mp4 out/r3-local.mp4 --dur 3.2 --out out/compare_strip_local.png",
     "gen:r3": "tsx tools/gen-fixtures.ts r3-hook",
     "gen:fixtures": "tsx tools/gen-fixtures.ts",
-    "test:render": "node tools/render-check.mjs"
+    "test:render": "node tools/render-check.mjs",
+    "render:showcase": "node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-16x9.mp4 --aspect 16:9 --no-frames && node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-9x16.mp4 --aspect 9:16 --no-frames"
   },
   "devDependencies": {
     "@fontsource-variable/inter": "5.1.0",

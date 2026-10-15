@@ -383,7 +383,8 @@ export const Graph = z.object({
   // beats must not overlap and ids must be unique across the document
   const sorted = [...g.beats].sort((a, b) => a.start - b.start);
   for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i].start < sorted[i - 1].start + sorted[i - 1].duration)
+    // 1 µs tolerance: timings are authored to the µs and float sums (5.8 + 2.4 = 8.200000000000001) overshoot
+    if (sorted[i].start < sorted[i - 1].start + sorted[i - 1].duration - 1e-6)
       ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${sorted[i].id} overlaps ${sorted[i - 1].id}` });
   }
   // a transition needs a previous beat and must fit inside its beat

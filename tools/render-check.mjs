@@ -13,7 +13,8 @@ const argv = process.argv.slice(2);
 const flag = (k) => argv.includes(k);
 const arg = (k) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : undefined; };
 const files = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--chrome");
-const fixtures = files.length ? files : readdirSync("fixtures").filter((f) => f.endsWith(".graph.json")).sort().map((f) => `fixtures/${f}`);
+// default: every fixture except the showcase (long; render it with tools/render-local.mjs --aspect ... --no-frames)
+const fixtures = files.length ? files : readdirSync("fixtures").filter((f) => f.endsWith(".graph.json") && f !== "showcase.graph.json").sort().map((f) => `fixtures/${f}`);
 const ASPECTS = ["16:9", "9:16"];
 const height = 1080;
 

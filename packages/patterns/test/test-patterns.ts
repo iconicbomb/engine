@@ -3,6 +3,7 @@ import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
 import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, glyphAnchorMorph, scrollSections, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
+import { buildShowcase } from "../scenes/showcase";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
 
@@ -239,4 +240,19 @@ for (const [name, build] of Object.entries(SCENES)) {
   let fixture;
   try { fixture = parseGraph(JSON.parse(readFileSync(file, "utf8"))); } catch (e) { assert(false, `${name}: fixture fails validation — ${(e as Error).message.slice(0, 200)}`); continue; }
   assert(isDeepStrictEqual(parseGraph(build()), fixture), `${name}: fixture validates and == parse(build()) — regenerate with pnpm gen:fixtures`);
+}
+
+// showcase: every scene concatenated (renumbered ids, tokens resolved, crossfades between scenes) == the committed file
+{
+  const file = "fixtures/showcase.graph.json";
+  if (!existsSync(file)) assert(false, "showcase: fixtures/showcase.graph.json missing — run pnpm gen:fixtures");
+  else {
+    const built: any = buildShowcase(), committed = parseGraph(JSON.parse(readFileSync(file, "utf8")));
+    const json = JSON.stringify(built);
+    const sceneCount = Object.keys(SCENES).length, xfades = built.beats.filter((b: any) => b.transition?.type === "crossfade").length;
+    const last = built.beats.at(-1);
+    assert(isDeepStrictEqual(parseGraph(built), committed) && !/"tokens\./.test(json) && xfades >= sceneCount - 1
+      && built.beats.every((b: any, i: number) => b.id === `b${i + 1}`),
+      `showcase: ${built.beats.length} beats from ${sceneCount} scenes, ${(last.start + last.duration).toFixed(1)} s, no token refs, crossfades between scenes; matches the committed file`);
+  }
 }
