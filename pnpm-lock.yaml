@@ -66,9 +66,6 @@ importers:
       '@engine/graph':
         specifier: workspace:*
         version: link:../graph
-      '@engine/runtime':
-        specifier: workspace:*
-        version: link:../runtime
       zod:
         specifier: 3.23.8
         version: 3.23.8

@@ -30,14 +30,20 @@ Render `fixtures/r3-hook.graph.json` so that
 - `pnpm typecheck` — strict TypeScript across the workspace
 - `pnpm render` — Remotion render of the fixture to `apps/render/out/r3.mp4`
 - `pnpm compare` — acceptance check against the reference clip
-- `pnpm gen:r3` — regenerate `fixtures/r3-hook.graph.json` from the macro calls in `packages/patterns/scenes/r3-hook.ts`
+- `pnpm gen:fixtures` — regenerate every `fixtures/<name>.graph.json` from its scene in `packages/patterns/scenes/`
+  (`pnpm gen:r3` = just the R3 hook)
+- `pnpm test:render` — Chromium render of every fixture at 16:9 and 9:16: fails on page errors, a static clip, or
+  a frame-hash mismatch against `fixtures/<name>.frames.sha256` (R3 only). Finds Chrome via CHROME_PATH, Playwright's
+  download, or a system install. `--update-baseline` rewrites the hashes: only after looking at the frames in
+  `out/render-check/`. Not part of `pnpm test` because it needs a browser — run it before finishing any runtime change.
 
 ## Status (2026-10-15)
 Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter variable TTF vendored in
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 in progress: T1, T3, T5, T12 done (see below); `pnpm test` 23 ok, `pnpm typecheck` clean.
+Phase 1 in progress: T1–T4, T5, T6, T12, T13, S15 done (see below); `pnpm test` 41 ok, `pnpm typecheck` clean,
+`pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
 params in the R3 scene, then `pnpm gen:r3`.
@@ -52,11 +58,22 @@ Two render paths exist and must stay in agreement:
 `nodes` are placed by the caller; `tracks` are appended to existing nodes by id (T12's `handoff` drives the exit
 of the text it replaces); `patches` set node fields where the schema models a pattern as layout, not motion
 (T3 sets `fit`). `applyEdits` (src/assemble.ts) applies them and throws on unknown ids.
-DONE: T1 (scramble typewriter; `ms` is derived from the runtime's glyph schedule), T3 (fit-to-width),
-T5 (brackets), T12 (reveal). The R3 fixture is now generated from these four calls and renders byte-identical
-to the old hand-written JSON (all 96 frame PNG hashes match via `render:local`); test-patterns.ts fails if the
-committed fixture drifts from the macro output. The beat's two glows are still literal data until S15 exists.
-NEXT: T2, T4, T6, T13, S1, S2 per the spec's build order.
+`glows` carries beat-level glows (S15). Patterns depend only on `@engine/graph`; the typewriter schedule
+(`glyphTime`, `typewriterEnd`, `glyphHideTime`) lives there in schedule.ts and the runtime imports it.
+DONE: T1 (scramble typewriter; `ms` derived from the glyph schedule), T3 (fit-to-width), T5 (brackets),
+T12 (reveal), S15 (ambient glows with fade-in), T2 (tail typewriter; "last N chars" = tint decaying over N/cps),
+T4 (word append), T6 (colour sweep / keyword hold), T13 (logo-anchored typewriter, emits a lockup group).
+The R3 fixture is generated from five calls (T1, T3, T5, T12, S15) and is byte-identical to the old hand-written
+JSON; each other macro has a demo fixture (`fixtures/{s15,t2,t4,t6,t13}-*.graph.json`). test-patterns.ts fails if
+any committed fixture drifts from its scene builder.
+Runtime/schema additions made for these devices (all optional or defaulting to the old behaviour):
+typewriter `tail.strength` (T2; was a hard-coded 0.35), `unit: "word"` (T4), `out` un-type (T13);
+tween `relativeTo: "reveal"` (T4 per-word pop); `sweep` track mode (T6); rect `follows` a text edge (T13 mark);
+nodes at scale 0 are skipped (followers divide by it).
+Not modelled yet: eased recentre on append (R4 — runtime recentres instantly); T13's mark split/widen and R7's
+wordmark wipe; S15's god-rays, sparkles and bokeh; a lockup-level fit (text + mark) — T13 scales 0.8 at 9:16 instead;
+nodes have no static x/y, so T13's centring offset is a 0 ms tween.
+NEXT: S1, S2, then T10, T11 per the spec's build order.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 

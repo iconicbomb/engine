@@ -1,5 +1,5 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, glyphTime, typewriterEnd, cubicBezier } from "../src/runtime-core";
-import { parseGraph } from "@engine/graph";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier } from "../src/runtime-core";
+import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 // endpoints + monotonic
@@ -38,3 +38,11 @@ const exit = (g.beats[0].nodes[0] as any).tracks[0];
 assert(trackProgress(exit, exit.at + exit.ms / 1000)! === 1 && trackProgress(exit, exit.at + exit.ms / 2000)! > 0.5, "exit tween: 50%+ at half, 100% at end");
 const agent: any = g.beats[0].nodes[1];
 assert(trackProgress(agent.tracks[2], 2.4, 3) === null && trackProgress(agent.tracks[2], 2.5, 3)! > 0, "staggerMs: 4th glyph starts 90ms later");
+// un-type (T13): glyphs disappear from the right, evenly over out.ms
+const unt = TypewriterTrack.parse({ mode: "typewriter", prop: "glyph.opacity", at: 0, cps: 100, out: { at: 1, ms: 300 } });
+const five = [..."Lumen"];
+const vis = (t: number) => typewriterGlyphs(unt, five, t, 30).map(s => s.visible ? 1 : 0).join("");
+assert(vis(0.99) === "11111" && vis(1.07) === "11110" && vis(1.25) === "10000" && vis(1.31) === "00000", `untype: ${vis(0.99)} -> ${vis(1.07)} -> ${vis(1.25)} -> ${vis(1.31)}`);
+// sweep tracks ease like tweens and hold at the end
+const sw = SweepTrack.parse({ mode: "sweep", prop: "glyph.color", at: 1, ms: 400, from: -2, to: 10 });
+assert(trackProgress(sw, 0.9) === null && trackProgress(sw, 1.4) === 1 && trackProgress(sw, 1.2)! > 0.5, "sweep: null before, settle-eased, 1 at the end");

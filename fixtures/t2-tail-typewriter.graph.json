@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Pick any of 17,000 models",
+      "nodes": [
+        {
+          "id": "b1-title",
+          "type": "text",
+          "text": "Pick any of 17,000 models",
+          "style": {
+            "size": 120,
+            "weight": 600
+          },
+          "tracks": [
+            {
+              "mode": "typewriter",
+              "prop": "glyph.opacity",
+              "at": 0.2,
+              "ms": 833,
+              "cps": 30,
+              "tail": {
+                "len": 6,
+                "color": "tokens.accent",
+                "decayMs": 200,
+                "strength": 1
+              },
+              "caret": {
+                "style": "bar",
+                "blinkMs": 500,
+                "holdAfterMs": 1200,
+                "preScale": 1
+              }
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

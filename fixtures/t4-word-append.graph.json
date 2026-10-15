@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.2,
+      "script": "Connect every tool in one click",
+      "nodes": [
+        {
+          "id": "b1-line",
+          "type": "text",
+          "text": "Connect every tool in one click",
+          "style": {
+            "size": 110,
+            "weight": 600
+          },
+          "tracks": [
+            {
+              "mode": "typewriter",
+              "prop": "glyph.opacity",
+              "at": 0.2,
+              "ms": 1380,
+              "unit": "word",
+              "cps": 4.3478260869565215,
+              "caret": {
+                "style": "none"
+              }
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0,
+              "ms": 200,
+              "from": 0.3,
+              "to": 1,
+              "ease": "settle",
+              "relativeTo": "reveal"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0,
+              "ms": 200,
+              "from": 20,
+              "to": 0,
+              "ease": "settle",
+              "relativeTo": "reveal"
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

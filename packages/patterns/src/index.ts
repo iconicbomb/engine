@@ -4,3 +4,8 @@ export { scrambleTypewriter, type ScrambleTypewriterParams } from "./t1-scramble
 export { fitToWidth, type FitToWidthParams } from "./t3-fit-to-width";
 export { bracketFrame, type BracketFrameParams } from "./t5-bracket-frame";
 export { reveal, type RevealParams } from "./t12-reveal";
+export { ambientGlow, DEFAULT_GLOW_LAYERS, type AmbientGlowParams, type GlowLayer } from "./s15-ambient-glow";
+export { tailTypewriter, type TailTypewriterParams } from "./t2-tail-typewriter";
+export { wordAppend, type WordAppendParams } from "./t4-word-append";
+export { colourSweep, type ColourSweepParams } from "./t6-colour-sweep";
+export { logoTypewriter, type LogoTypewriterParams } from "./t13-logo-typewriter";

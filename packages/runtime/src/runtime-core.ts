@@ -1,6 +1,7 @@
 // @engine/runtime — phase 0 core: easing, springs, track evaluation, and the interfaces every
 // other module implements. This file has no DOM or canvas dependency so it runs in tests and in Node.
 import type { Graph, Track, Node, Ease } from "@engine/graph";
+import { glyphTime, glyphHideTime } from "@engine/graph";
 
 // ---------- easing (measured on the references, see spec "Timing and easing model") ----------
 // cubic-bezier solver (same semantics as CSS). Returns y for progress x in [0,1].
@@ -44,13 +45,13 @@ export function trackProgress(track: Track, t: number, index = 0): number | null
   const start = track.at + (track.mode === "tween" ? (track.staggerMs ?? 0) * index / 1000 : 0);
   if (t < start) return null;
   if (track.mode === "typewriter") return Math.min(1, (t - start) / (track.ms / 1000));
-  if (track.ease === "bounce") {
+  if (track.mode === "tween" && track.ease === "bounce") {
     const s = track.spring ?? { stiffness: 700, damping: 18, mass: 1 };
     return spring(t - start, s.stiffness, s.damping, s.mass);
   }
   const raw = track.ms === 0 ? 1 : (t - start) / (track.ms / 1000);
   const x = raw >= 1 - 1e-6 ? 1 : raw;
-  return EASES[track.ease](x);
+  return EASES[track.ease as Exclude<Ease, "bounce">](x);   // bounce returned above
 }
 
 export function lerp(a: number, b: number, p: number) { return a + (b - a) * p; }
@@ -61,24 +62,10 @@ export type GlyphState = {
   scrambled: string | null;   // substitute glyph to draw instead of the real one, or null
   freshness: number;          // 1 = just typed, decays to 0 over tail.decayMs
 };
-// Beat-local time at which glyph i (0-based) of an n-glyph run becomes visible. cps ramps linearly from
-// track.cps to track.cps * track.ramp across the run; wordPauseMs is added after every space.
-export function glyphTime(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[], i: number): number {
-  const n = Math.max(1, glyphs.length);
-  let t = track.at;
-  for (let j = 0; j < i; j++) {
-    const cps = track.cps * (1 + (track.ramp - 1) * (n > 1 ? j / (n - 1) : 0));
-    t += 1 / cps + (glyphs[j] === " " ? track.wordPauseMs / 1000 : 0);
-  }
-  return t;
-}
-export function typewriterEnd(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[]): number {
-  return glyphTime(track, glyphs, glyphs.length);
-}
 export function typewriterGlyphs(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[], t: number, fps: number): GlyphState[] {
   return glyphs.map((_, i) => {
     const shown = glyphTime(track, glyphs, i);
-    if (t < shown) return { visible: false, scrambled: null, freshness: 0 };
+    if (t < shown || t >= glyphHideTime(track, glyphs, i)) return { visible: false, scrambled: null, freshness: 0 };
     const age = t - shown;
     const scrambleFor = track.scramble.frames / fps;
     const scrambled = age < scrambleFor ? track.scramble.symbols[(i * 7 + Math.floor(age * fps)) % track.scramble.symbols.length] : null;

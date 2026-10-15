@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2,
+      "script": "Ambient glow",
+      "nodes": [
+        {
+          "id": "b1-label",
+          "type": "text",
+          "text": "Ambient glow",
+          "style": {
+            "size": 120,
+            "weight": 600
+          }
+        }
+      ],
+      "glows": [
+        {
+          "x": 0.5,
+          "y": 1.03,
+          "rx": 0.72,
+          "ry": 0.9,
+          "color": "#3D5AFE",
+          "intensity": 0.39,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 0.2,
+              "ms": 600,
+              "from": 0,
+              "to": 0.39,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "x": 0.5,
+          "y": -0.03,
+          "rx": 0.6,
+          "ry": 0.65,
+          "color": "#3D5AFE",
+          "intensity": 0.2,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 0.2,
+              "ms": 600,
+              "from": 0,
+              "to": 0.2,
+              "ease": "settle"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

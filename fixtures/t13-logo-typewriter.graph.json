@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.3,
+      "script": "Lumen",
+      "nodes": [
+        {
+          "id": "b1-logo",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-logo-wordmark",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 140,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "typewriter",
+                  "prop": "glyph.opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "cps": 12.5,
+                  "caret": {
+                    "style": "none"
+                  },
+                  "out": {
+                    "at": 1.6,
+                    "ms": 270
+                  }
+                },
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0,
+                  "ms": 0,
+                  "from": 70,
+                  "to": 70,
+                  "ease": "linear"
+                }
+              ]
+            },
+            {
+              "id": "b1-logo-mark",
+              "type": "rect",
+              "follows": {
+                "node": "b1-logo-wordmark",
+                "edge": "left",
+                "gap": 28
+              },
+              "w": 112,
+              "h": 112,
+              "radius": 31,
+              "fill": "tokens.accent",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "bounce"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

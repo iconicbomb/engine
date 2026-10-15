@@ -28,6 +28,8 @@ export const TweenTrack = TrackBase.extend({
   ease: Ease.default("settle"),
   spring: Spring.optional(),         // used only when ease === "bounce"
   staggerMs: z.number().min(0).default(0), // per-child / per-glyph offset
+  // "reveal": per-glyph, each glyph's tween starts `at` seconds after the node's typewriter reveals it (T4 word pop)
+  relativeTo: z.enum(["beat", "reveal"]).default("beat"),
 });
 
 // Typewriter: reveals glyphs in order; everything about "freshness" lives here.
@@ -36,6 +38,7 @@ export const TypewriterTrack = TrackBase.extend({
   cps: z.number().positive().default(26),          // chars/s at the start of the run
   ramp: z.number().positive().default(1),          // cps multiplier reached by the last char (R3 measured ~2.7)
   wordPauseMs: z.number().min(0).default(0),       // extra pause after each space
+  unit: z.enum(["char", "word"]).default("char"),  // "word": a whole word (with the space before it) appears at once; cps counts words (T4)
   scramble: z.object({
     frames: z.number().int().min(0).default(0),          // 0 = plain typewriter
     symbols: z.string().default("#%*@!<>&"),
@@ -44,6 +47,7 @@ export const TypewriterTrack = TrackBase.extend({
     len: z.number().int().min(0).default(0),
     color: Color.default("tokens.accent"),
     decayMs: z.number().min(0).default(300),
+    strength: z.number().min(0).max(1).default(0.35),  // how far a just-typed glyph moves toward the tail colour
   }).default({}),
   caret: z.object({
     style: z.enum(["none", "bar", "block", "glass"]).default("bar"),   // glass = translucent fill + bright edge (R3)
@@ -53,9 +57,22 @@ export const TypewriterTrack = TrackBase.extend({
     color: Color.optional(),                             // defaults to the tail colour
   }).default({}),
   bloom: z.object({ radius: z.number().min(0).default(0), intensity: z.number().min(0).default(0) }).default({}),
+  // un-type: glyphs disappear from the right, evenly over out.ms, starting at out.at (T13)
+  out: z.object({ at: z.number().min(0), ms: z.number().positive() }).optional(),
 });
 
-export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack]);
+// Colour sweep: a window of `window` glyphs tinted `color` whose centre moves from glyph position `from` to `to`
+// (glyph-index units, may lie outside the run) and stays at `to` after the track ends (T6 keyword hold).
+export const SweepTrack = TrackBase.extend({
+  mode: z.literal("sweep"),
+  from: z.number(),
+  to: z.number(),
+  window: z.number().positive().default(4),
+  color: Color.default("tokens.accent"),
+  ease: z.enum(["linear", "settle", "emphasis"]).default("settle"),
+});
+
+export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack]);
 export type Track = z.infer<typeof Track>;
 
 // ---------- layout ----------
@@ -112,6 +129,8 @@ export const RectNode = NodeBase.extend({
   radius: z.number().min(0).default(0),
   fill: Color.optional(),
   stroke: z.object({ color: Color, width: z.number().positive() }).optional(),
+  // sit beside an earlier sibling text node's edge, scaled with its fit (T13 logo mark); anchor is ignored
+  follows: z.object({ node: z.string(), edge: z.enum(["left", "right"]), gap: z.number().default(0) }).optional(),
 });
 
 // Bracket pair that tracks another node's extents (R3's [ ] and { }).
@@ -194,12 +213,16 @@ export const Graph = z.object({
     (n.children ?? []).forEach((c: any) => walk(c, beat));
   };
   g.beats.forEach((b) => b.nodes.forEach((n) => walk(n, b.id)));
-  // bracket.follows must resolve inside the same beat
+  // bracket.follows / rect.follows must resolve inside the same beat
   g.beats.forEach((b) => {
     const local = new Set<string>();
     const collect = (n: any) => { local.add(n.id); (n.children ?? []).forEach(collect); };
     b.nodes.forEach(collect);
-    const check = (n: any) => { if (n.type === "bracket" && !local.has(n.follows)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `bracket ${n.id} follows unknown node ${n.follows}` }); (n.children ?? []).forEach(check); };
+    const check = (n: any) => {
+      const target = n.type === "bracket" ? n.follows : n.type === "rect" ? n.follows?.node : undefined;
+      if (target !== undefined && !local.has(target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.type} ${n.id} follows unknown node ${target}` });
+      (n.children ?? []).forEach(check);
+    };
     b.nodes.forEach(check);
   });
 });

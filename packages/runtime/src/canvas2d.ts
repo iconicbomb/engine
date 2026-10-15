@@ -1,7 +1,8 @@
 // @engine/runtime — Canvas 2D implementation of `Runtime`. renderFrame(graph, t) is a pure function of its inputs:
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, glyphTime, typewriterEnd, spring } from "./runtime-core";
+import { glyphTime, typewriterEnd } from "@engine/graph";
+import { trackProgress, typewriterGlyphs, spring } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
@@ -13,6 +14,7 @@ type RectNode = Extract<Node, { type: "rect" }>;
 type BracketNode = Extract<Node, { type: "bracket" }>;
 type TweenTrack = Extract<Track, { mode: "tween" }>;
 type TypewriterTrack = Extract<Track, { mode: "typewriter" }>;
+type SweepTrack = Extract<Track, { mode: "sweep" }>;
 
 // What a drawn text node leaves behind for siblings (brackets) in the parent's coordinate space.
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
@@ -80,7 +82,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const cx = (topLevel ? a.x : a.x - env.w / 2) + props.x;
     const cy = (topLevel ? a.y : a.y - env.h / 2) + props.y;
     const nodeScale = props.scale * a.scale;
-    if (props.opacity <= 0) return;
+    if (props.opacity <= 0 || nodeScale === 0) return;   // invisible; followers would divide by nodeScale
 
     ctx.save();
     ctx.translate(cx, cy);
@@ -94,7 +96,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         drawNodes((node as { children: Node[] }).children, inner, false);
         break;
       }
-      case "rect": drawRect(node as RectNode, env); break;
+      case "rect": drawRect(node as RectNode, env, cx, cy, nodeScale); break;
       case "text": {
         const ext = drawText(node as TextNode, env);
         // extents are reported in the parent's space (undo this node's transform)
@@ -115,7 +117,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   function numericProps(node: Node, tl: number): NumericProps {
     const p: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: 0, y: 0 };
     for (const tr of node.tracks) {
-      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop) || tr.staggerMs > 0) continue;
+      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop) || tr.staggerMs > 0 || tr.relativeTo === "reveal") continue;
       const key = tr.prop as keyof NumericProps;
       p[key] = tweenValue(tr, tl, 0, p[key]);
     }
@@ -128,15 +130,26 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     if (prog === null) return from;
     return from + (to - from) * prog;
   }
-  // per-glyph offsets from staggered tween tracks on a text node
-  function glyphProps(node: TextNode, tl: number, index: number): NumericProps {
+  // per-glyph offsets: staggered tween tracks by glyph index; relativeTo "reveal" tracks start when the glyph is typed
+  function glyphProps(node: TextNode, tl: number, index: number, revealAt: number): NumericProps {
     const p: NumericProps = { opacity: 1, scale: 1, rotation: 0, x: 0, y: 0 };
     for (const tr of node.tracks) {
-      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop) || tr.staggerMs <= 0) continue;
+      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop)) continue;
       const key = tr.prop as keyof NumericProps;
-      p[key] = tweenValue(tr, tl, index, p[key]);
+      if (tr.relativeTo === "reveal") p[key] = tweenValue({ ...tr, at: revealAt + tr.at }, tl, index, p[key]);
+      else if (tr.staggerMs > 0) p[key] = tweenValue(tr, tl, index, p[key]);
     }
     return p;
+  }
+  // colour-sweep weight of glyph `index` (0..1): flat-topped window with one-glyph soft edges; the latest started sweep wins
+  function sweepAt(node: TextNode, tl: number): { track: SweepTrack; pos: number } | null {
+    let hit: { track: SweepTrack; pos: number } | null = null;
+    for (const tr of node.tracks) {
+      if (tr.mode !== "sweep") continue;
+      const prog = trackProgress(tr, tl);
+      if (prog !== null && (!hit || tr.at >= hit.track.at)) hit = { track: tr, pos: tr.from + (tr.to - tr.from) * prog };
+    }
+    return hit;
   }
 
   // ---------- text ----------
@@ -191,6 +204,8 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.scale(scale, scale);
     const baseColor = color(style.color, tokens);
     const tailColor = tw ? color(tw.tail.color, tokens) : baseColor;
+    const sweep = sweepAt(node, tl);
+    const sweepColor = sweep ? color(sweep.track.color, tokens) : baseColor;
 
     // pass 1: glyphs
     let pen = x0;
@@ -199,14 +214,16 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       positions.push(pen);
       const st = states[g.cluster] ?? states[states.length - 1];
       if (st?.visible) {
-        const gp = glyphProps(node, tl, g.cluster);
+        const gp = glyphProps(node, tl, g.cluster, tw ? glyphTime(tw, chars, g.cluster) : 0);
         if (gp.opacity > 0) {
           const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes) : g.d;
           ctx.save();
           ctx.translate(pen + g.xOffset + gp.x, baseline + g.yOffset + gp.y);
           if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
           ctx.globalAlpha *= clamp01(gp.opacity);
-          ctx.fillStyle = st.freshness > 0 ? mix(baseColor, tailColor, st.freshness * 0.35) : baseColor;
+          const sw = sweep ? clamp01(sweep.track.window / 2 + 0.5 - Math.abs(g.cluster + 0.5 - sweep.pos)) : 0;
+          const body = sw > 0 ? mixHex(baseColor, sweepColor, sw) : baseColor;
+          ctx.fillStyle = st.freshness > 0 ? mix(body, tailColor, st.freshness * tw!.tail.strength) : body;
           ctx.fill(path2d(d));
           ctx.restore();
         }
@@ -312,8 +329,18 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   }
 
   // ---------- rect ----------
-  function drawRect(node: RectNode, env: Env) {
+  function drawRect(node: RectNode, env: Env, cx: number, cy: number, nodeScale: number) {
     const { ctx, tokens } = env;
+    if (node.follows) {
+      // like a bracket: place in the parent's space at the followed text's edge, sized by its fit scale
+      const ext = env.extents.get(node.follows.node);
+      if (!ext) return;
+      const f = node.follows, half = node.w * ext.scale / 2 + f.gap * ext.scale;
+      ctx.scale(1 / nodeScale, 1 / nodeScale);
+      ctx.translate(-cx, -cy);
+      ctx.translate(f.edge === "left" ? ext.left - half : ext.right + half, (ext.top + ext.bottom) / 2);
+      ctx.scale(nodeScale * ext.scale, nodeScale * ext.scale);   // keep the node's own scale (e.g. a pop) about its centre
+    }
     const x = -node.w / 2, y = -node.h / 2, r = Math.min(node.radius, node.w / 2, node.h / 2);
     ctx.beginPath();
     ctx.moveTo(x + r, y); ctx.lineTo(x + node.w - r, y); ctx.arcTo(x + node.w, y, x + node.w, y + r, r);
@@ -349,6 +376,11 @@ function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");
   const n = parseInt(h.length === 3 ? h.split("").map(c => c + c).join("") : h.slice(0, 6), 16);
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function mixHex(a: string, b: string, t: number): string {
+  if (!a.startsWith("#") || !b.startsWith("#")) return t > 0.5 ? b : a;
+  const A = hexToRgb(a), B = hexToRgb(b);
+  return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
 }
 function mix(a: string, b: string, t: number): string {
   if (!a.startsWith("#") || !b.startsWith("#")) return t > 0.5 ? b : a;

@@ -1,8 +1,7 @@
 // T1 — scramble typewriter (R3). Each new char shows a random symbol for 1–2 frames, then resolves; the leading
 // edge carries a soft bloom. Measured: 26 cps, scramble hold 33–67 ms, bloom radius ~1 em (spec, pattern library).
-import { TypewriterTrack } from "@engine/graph";
-import { typewriterEnd } from "@engine/runtime";
 import { result, type MacroResult, type TextStyleIn, type TypewriterTrackIn } from "./macro";
+import { withTypingMs } from "./typing";
 
 export interface ScrambleTypewriterParams {
   id: string;
@@ -24,7 +23,7 @@ export function scrambleTypewriter(p: ScrambleTypewriterParams): MacroResult {
     mode: "typewriter",
     prop: "glyph.opacity",
     at: p.at,
-    ms: 0, // set below from the glyph schedule
+    ms: 0, // derived from the glyph schedule by withTypingMs
     cps: p.cps ?? 26,
     scramble: { frames: p.scrambleFrames ?? 1, symbols: p.symbolSet ?? "#%*@!<" },
     tail: p.tail ?? { len: 4, color: "tokens.accent", decayMs: 300 },
@@ -33,7 +32,5 @@ export function scrambleTypewriter(p: ScrambleTypewriterParams): MacroResult {
     ramp: p.ramp ?? 1,
     wordPauseMs: p.wordPauseMs ?? 0,
   };
-  // `ms` is the typing duration, derived from the same glyph schedule the runtime uses, so it can't drift from cps/ramp.
-  track.ms = Math.round(typewriterEnd(TypewriterTrack.parse({ ...track, at: 0 }), [...p.text]) * 1000);
-  return result({ nodes: [{ id: p.id, type: "text", text: p.text, style: p.style, tracks: [track] }] });
+  return result({ nodes: [{ id: p.id, type: "text", text: p.text, style: p.style, tracks: [withTypingMs(track, p.text)] }] });
 }

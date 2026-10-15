@@ -1,2 +1,2 @@
 { "name": "@engine/patterns", "version": "0.0.1", "private": true, "main": "src/index.ts", "types": "src/index.ts",
-  "dependencies": { "@engine/graph": "workspace:*", "@engine/runtime": "workspace:*", "zod": "3.23.8" } }
+  "dependencies": { "@engine/graph": "workspace:*", "zod": "3.23.8" } }

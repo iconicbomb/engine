@@ -1,6 +1,6 @@
-// R3 hook, built from four macro calls (T1, T3, T5, T12). `tools/gen-r3.ts` writes this to
+// R3 hook, built from five macro calls (T1, T3, T5, T12, S15). `pnpm gen:fixtures` writes it to
 // fixtures/r3-hook.graph.json; packages/patterns/test/test-patterns.ts checks it matches the committed fixture.
-import { applyEdits, bracketFrame, fitToWidth, group, reveal, scrambleTypewriter } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, fitToWidth, group, reveal, scrambleTypewriter } from "../src/index";
 
 export function buildR3Hook() {
   const title = scrambleTypewriter({
@@ -33,6 +33,13 @@ export function buildR3Hook() {
     [...title.nodes, ...brackets.nodes],
   );
   const nodes = applyEdits([question, ...agent.nodes], [title, fit, brackets, agent]);
+  const glow = ambientGlow({
+    bloomColor: "#0A2EDC",
+    layers: [
+      { x: 0.5, y: 1.03, rx: 0.72, ry: 0.9, intensity: 0.39, fadeIn: { at: 1.0, ms: 450 } },
+      { x: 0.5, y: -0.03, rx: 0.6, ry: 0.65, intensity: 0.2, fadeIn: { at: 1.15, ms: 400 } },
+    ],
+  });
 
   return {
     version: 1,
@@ -45,13 +52,7 @@ export function buildR3Hook() {
       script: "What does it take to build an AI Agent?",
       background: "tokens.bg",
       nodes,
-      // S15 ambient glow — not a macro yet (shape library, phase 2), so still literal data here.
-      glows: [
-        { x: 0.5, y: 1.03, rx: 0.72, ry: 0.9, color: "#0A2EDC", intensity: 0.39,
-          tracks: [{ mode: "tween", prop: "intensity", at: 1.0, ms: 450, from: 0, to: 0.39, ease: "settle" }] },
-        { x: 0.5, y: -0.03, rx: 0.6, ry: 0.65, color: "#0A2EDC", intensity: 0.2,
-          tracks: [{ mode: "tween", prop: "intensity", at: 1.15, ms: 400, from: 0, to: 0.2, ease: "settle" }] },
-      ],
+      glows: glow.glows,
     }],
   };
 }

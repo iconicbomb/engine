@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Ship faster with AI agents",
+      "nodes": [
+        {
+          "id": "b1-headline",
+          "type": "text",
+          "text": "Ship faster with AI agents",
+          "style": {
+            "size": 120,
+            "weight": 600
+          },
+          "tracks": [
+            {
+              "mode": "sweep",
+              "prop": "glyph.color",
+              "at": 0.3,
+              "ms": 450,
+              "from": -2,
+              "to": 28,
+              "window": 4,
+              "color": "tokens.accent",
+              "ease": "settle"
+            },
+            {
+              "mode": "sweep",
+              "prop": "glyph.color",
+              "at": 1.1,
+              "ms": 450,
+              "from": -3,
+              "to": 23,
+              "window": 6,
+              "color": "tokens.accent",
+              "ease": "settle"
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}
