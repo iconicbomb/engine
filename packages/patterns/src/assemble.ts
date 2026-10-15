@@ -1,16 +1,16 @@
 // Assembly: macros return loose nodes plus edits aimed at other nodes by id; these helpers place the nodes and
 // apply the edits. Still pure — no macro or helper reads anything but its arguments.
-import type { AnchorIn, GroupNodeIn, MacroResult, NodeIn, TrackIn } from "./macro";
+import type { AnchorIn, GroupNodeIn, LayoutIn, MacroResult, NodeIn, TrackIn } from "./macro";
 
-export function group(p: { id: string; anchor?: AnchorIn; x?: number; y?: number; opacity?: number; tracks?: TrackIn[] }, children: NodeIn[]): GroupNodeIn {
+export function group(p: { id: string; anchor?: AnchorIn; x?: number; y?: number; opacity?: number; layout?: LayoutIn; tracks?: TrackIn[] }, children: NodeIn[]): GroupNodeIn {
   return {
-    id: p.id, type: "group", ...(p.anchor ? { anchor: p.anchor } : {}), ...(p.x ? { x: p.x } : {}), ...(p.y ? { y: p.y } : {}),
+    id: p.id, type: "group", ...(p.anchor ? { anchor: p.anchor } : {}), ...(p.layout ? { layout: p.layout } : {}), ...(p.x ? { x: p.x } : {}), ...(p.y ? { y: p.y } : {}),
     ...(p.opacity !== undefined ? { opacity: p.opacity } : {}), tracks: p.tracks ?? [], children,
   };
 }
 
 // Key order for emitted nodes, so a regenerated fixture diffs cleanly against a hand-written one.
-const NODE_KEYS = ["id", "type", "text", "follows", "glyphs", "padding", "w", "h", "radius", "fill", "stroke", "sizeToContent", "style", "fit", "recenterEaseMs", "spring", "anchor", "x", "y", "clip", "opacity", "scale", "tracks", "children"];
+const NODE_KEYS = ["id", "type", "text", "follows", "glyphs", "padding", "w", "h", "radius", "fill", "stroke", "sizeToContent", "style", "fit", "recenterEaseMs", "spring", "anchor", "layout", "x", "y", "clip", "opacity", "scale", "tracks", "children"];
 function ordered(n: NodeIn): NodeIn {
   const src = n as Record<string, unknown>;
   const keys = [...NODE_KEYS.filter((k) => k in src), ...Object.keys(src).filter((k) => !NODE_KEYS.includes(k))];

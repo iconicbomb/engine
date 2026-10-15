@@ -221,10 +221,25 @@ export const BracketNode = NodeBase.extend({
   spring: Spring.default({}),             // how the closing glyph settles after the text grows
 });
 
+// Row / column layout: children are placed one after another from their rest boxes (text at its full run, rects at
+// their size or sizeToContent, nested groups at their union), ignoring their own anchors; their base x/y and tracks
+// still apply on top of the slot. `gap` px between children; `align` places children across a line and lines along the
+// block (start | center | end); with `wrap`, a line breaks when the next child would pass `maxWidth` (main-axis
+// length). The block is centred on the group's origin. gap / maxWidth can be overridden per aspect.
+export const Layout = z.object({
+  type: z.enum(["row", "column"]),
+  gap: z.number().min(0).default(0),
+  align: z.enum(["start", "center", "end"]).default("center"),
+  wrap: z.boolean().default(false),
+  maxWidth: z.number().positive().optional(),
+  overrides: z.record(z.enum(["16:9", "9:16"]), z.object({ gap: z.number().min(0).optional(), maxWidth: z.number().positive().optional() })).optional(),
+});
+
 export const GroupNode: z.ZodType<any> = z.lazy(() =>
   NodeBase.extend({
     type: z.literal("group"),
     children: z.array(Node),
+    layout: Layout.optional(),
   })
 );
 

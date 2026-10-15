@@ -143,11 +143,12 @@ const s9: any = pillMarquee({ id: "b1-m", at: 0.2, scrollMs: 2000, style: { size
 const pops = s9.children.flatMap((r: any) => r.children.map((c: any) => c.tracks[0]));
 const lastPopEnd = Math.max(...pops.map((t: any) => t.at + t.ms / 1000));
 const scrolls = s9.children.map((r: any) => r.tracks[0]);
-const span = (r: any) => { const xs = r.children.map((c: any) => c.x ?? 0); return Math.max(...xs) - Math.min(...xs); };
-const centre = s9.children[0].children.reduce((a: any, c: any) => (Math.abs(c.x ?? 0) < Math.abs(a.x ?? 0) ? c : a));
-assert(lastPopEnd <= 0.8 + 1e-9 && Math.abs(lastPopEnd - 0.8) < 1e-9 && centre.tracks[0].at < 0.25 && pops.every((t: any) => t.ease === "bounce" && t.from === 0)
+const estW = (r: any) => r.children.reduce((s: number, c: any) => s + [...c.children[0].text].length * 40 * 0.58 + 2 * 28 + 24, 0);
+const firstPop = Math.min(...pops.map((t: any) => t.at));   // the pills nearest the centre pop first
+assert(Math.abs(lastPopEnd - 0.8) < 1e-9 && firstPop < 0.25 && pops.every((t: any) => t.ease === "bounce" && t.from === 0)
   && scrolls.map((t: any) => Math.sign(t.to)).join() === "-1,1,-1" && scrolls.every((t: any) => t.ease === "linear" && Math.abs(t.to) === 80 && t.at === 0.8)
-  && s9.children.every((r: any) => span(r) > 1920 + 160), "S9: pop-in cascades from the centre, done in 600 ms; rows alternate, 40 px/s linear from 0.8 s; each row spans canvas + travel");
+  && s9.layout.type === "column" && s9.children.every((r: any) => r.layout.type === "row" && estW(r) > 1920 + 160),
+  "S9: pop-in cascades from the centre, done in 600 ms; rows alternate, 40 px/s linear from 0.8 s; row layouts cover canvas + travel");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

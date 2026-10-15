@@ -17,6 +17,9 @@ type TypewriterTrack = Extract<Track, { mode: "typewriter" }>;
 type SweepTrack = Extract<Track, { mode: "sweep" }>;
 type CountTrack = Extract<Track, { mode: "count" }>;
 type CursorNode = Extract<Node, { type: "cursor" }>;
+type GroupNode = { id: string; type: "group"; children: Node[]; scale: number; x: number; y: number; layout?: {
+  type: "row" | "column"; gap: number; align: "start" | "center" | "end"; wrap: boolean; maxWidth?: number;
+  overrides?: Partial<Record<Aspect, { gap?: number; maxWidth?: number }>> } };
 type MoveToTrack = Extract<Track, { mode: "moveTo" }>;
 type OnHoverTrack = Extract<Track, { mode: "onHover" }>;
 
@@ -30,6 +33,7 @@ const worldBox = (m: M, b: Box): Box => {
   const pts = [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]].map(([x, y]) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]);
   return { left: Math.min(...pts.map((p) => p[0])), right: Math.max(...pts.map((p) => p[0])), top: Math.min(...pts.map((p) => p[1])), bottom: Math.max(...pts.map((p) => p[1])) };
 };
+type Slot = { x: number; y: number };
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
 
 type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number };
@@ -106,16 +110,15 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   // typewriter runs); opacity is ignored. Cursors are measured last (their position reads the other boxes).
   function measureBoxes(beat: Beat, env: Env): Map<string, Box> {
     const out = new Map<string, Box>();
-    const walk = (nodes: Node[], parent: M, top: boolean) => {
+    const walk = (nodes: Node[], parent: M, top: boolean, slots: Map<string, Slot> | undefined) => {
       for (const n of nodes) {
         if (n.type === "cursor") continue;
-        const a = resolveAnchor(n, env.aspect, env.w, env.h);
         const props = hoverProps(n, numericProps(n, env.tl), env);
-        const cx = (top ? a.x : a.x - env.w / 2) + props.x, cy = (top ? a.y : a.y - env.h / 2) + props.y;
-        const s = props.scale * a.scale, r = props.rotation * Math.PI / 180;
+        const { cx, cy, s } = place(n, props, { ...env, slots }, top);
+        const r = props.rotation * Math.PI / 180;
         const m = mul(mul(mul(parent, [1, 0, 0, 1, cx, cy]), [Math.cos(r), Math.sin(r), -Math.sin(r), Math.cos(r), 0, 0]), [s, 0, 0, s, 0, 0]);
         const children = (n as { children?: Node[] }).children ?? [];
-        walk(children, m, false);
+        walk(children, m, false, n.type === "group" ? layoutSlots(n as GroupNode, env) : undefined);
         let box: Box | null = null;
         if (n.type === "text") box = worldBox(m, fullTextBox(layoutText(n as TextNode, env)));
         else if (n.type === "rect") {
@@ -126,7 +129,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         if (box) out.set(n.id, box);
       }
     };
-    walk(beat.nodes, I, true);
+    walk(beat.nodes, I, true, undefined);
     for (const n of beat.nodes) if (n.type === "cursor") {
       const p = cursorWorldPos(n as CursorNode, env, out), r = 16 * (n as CursorNode).size;
       out.set(n.id, { left: p.x - r, right: p.x + r, top: p.y - r, bottom: p.y + r });
@@ -164,6 +167,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   type Env = {
     ctx: CanvasRenderingContext2D; tokens: Record<string, string>; tl: number; fps: number; aspect: Aspect; w: number; h: number; k: number;
     extents: Map<string, Extents>; byId: Map<string, Node>; boxesAt: (t: number) => Map<string, Box>;
+    slots?: Map<string, Slot>;      // set while drawing / measuring the children of a laid-out group
   };
 
   function drawNodes(nodes: Node[], env: Env, topLevel: boolean) {
@@ -173,12 +177,8 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   function drawNode(node: Node, env: Env, topLevel: boolean) {
     const { ctx } = env;
     if (node.type === "cursor") return drawCursor(node as CursorNode, env);
-    const a = resolveAnchor(node, env.aspect, env.w, env.h);
     const props = hoverProps(node, numericProps(node, env.tl), env);
-    // top-level anchors are canvas positions; a child's anchor is relative to its parent's origin
-    const cx = (topLevel ? a.x : a.x - env.w / 2) + props.x;
-    const cy = (topLevel ? a.y : a.y - env.h / 2) + props.y;
-    const nodeScale = props.scale * a.scale;
+    const { cx, cy, s: nodeScale } = place(node, props, env, topLevel);
     if (props.opacity <= 0 || nodeScale === 0) return;   // invisible; followers would divide by nodeScale
 
     ctx.save();
@@ -191,14 +191,14 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
 
     switch (node.type) {
       case "group": {
-        const inner: Env = { ...env, extents: new Map() };
+        const inner: Env = { ...env, extents: new Map(), slots: layoutSlots(node as GroupNode, env) };
         const children = (node as { children: Node[] }).children;
         drawNodes(children, inner, false);
         break;
       }
       case "rect": {
         const r = node as RectNode;
-        const inner: Env = { ...env, extents: new Map() };
+        const inner: Env = { ...env, extents: new Map(), slots: undefined };
         const box = r.sizeToContent ? sizedBox(r, inner) : undefined;
         drawRect(r, env, cx, cy, nodeScale, box);
         if (r.children.length) drawNodes(r.children, inner, false);
@@ -573,16 +573,85 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   // ---------- layout pass (sizeToContent) ----------
   // A child's box in its parent's space: its anchor/x/y/scale applied to its own box. Opacity is ignored (layout).
   function measureNode(n: Node, env: Env): Box | null {
-    const a = resolveAnchor(n, env.aspect, env.w, env.h);
     const props = numericProps(n, env.tl);
-    const s = props.scale * a.scale;
+    const { cx, cy, s } = place(n, props, env, false);
     let box: Box | null = null;
     if (n.type === "text") box = textBox(layoutText(n as TextNode, env));
-    else if (n.type === "rect") box = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, env) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
-    else if (n.type === "group") box = unionBox(((n as { children: Node[] }).children).map((c) => measureNode(c, env)));
+    else if (n.type === "rect") box = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
+    else if (n.type === "group") {
+      const inner = { ...env, slots: layoutSlots(n as GroupNode, env) };
+      box = unionBox(((n as { children: Node[] }).children).map((c) => measureNode(c, inner)));
+    }
     if (!box) return null;
-    const cx = a.x - env.w / 2 + props.x, cy = a.y - env.h / 2 + props.y;
     return { left: cx + box.left * s, right: cx + box.right * s, top: cy + box.top * s, bottom: cy + box.bottom * s };
+  }
+
+  // ---------- placement + row / column layout ----------
+  // where a node's origin sits in its parent's space, and its scale: a laid-out child takes its slot (its anchor is
+  // ignored), anything else its anchor (top-level: canvas position; child: relative to the parent's origin)
+  function place(n: Node, props: NumericProps, env: Env, top: boolean): { cx: number; cy: number; s: number } {
+    const slot = env.slots?.get(n.id);
+    if (slot) return { cx: slot.x + props.x, cy: slot.y + props.y, s: props.scale };
+    const a = resolveAnchor(n, env.aspect, env.w, env.h);
+    return { cx: (top ? a.x : a.x - env.w / 2) + props.x, cy: (top ? a.y : a.y - env.h / 2) + props.y, s: props.scale * a.scale };
+  }
+  // a node's rest box in its own frame times its rest scale (tracks ignored, so a child popping in or sliding doesn't
+  // move its neighbours); null for nodes with no box (brackets, cursors)
+  function restBox(n: Node, env: Env): Box | null {
+    let b: Box | null = null;
+    if (n.type === "text") b = fullTextBox(layoutText(n as TextNode, env));
+    else if (n.type === "rect") b = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
+    else if (n.type === "group") {
+      const g = n as GroupNode, slots = layoutSlots(g, env);
+      b = unionBox(g.children.map((c: Node) => {
+        const cb = restBox(c, env);
+        if (!cb) return null;
+        const sl = slots?.get(c.id);
+        const a = resolveAnchor(c, env.aspect, env.w, env.h);
+        const ox = sl ? sl.x + c.x : a.x - env.w / 2 + c.x, oy = sl ? sl.y + c.y : a.y - env.h / 2 + c.y;
+        return { left: ox + cb.left, right: ox + cb.right, top: oy + cb.top, bottom: oy + cb.bottom };
+      }));
+    }
+    if (!b) return null;
+    return { left: b.left * n.scale, right: b.right * n.scale, top: b.top * n.scale, bottom: b.bottom * n.scale };
+  }
+  // slot (child origin, in the group's space) for every child of a laid-out group; undefined without a layout
+  function layoutSlots(g: GroupNode, env: Env): Map<string, Slot> | undefined {
+    const L = g.layout;
+    if (!L) return undefined;
+    const o = L.overrides?.[env.aspect];
+    const gap: number = o?.gap ?? L.gap, maxMain: number | undefined = o?.maxWidth ?? L.maxWidth;
+    const row = L.type === "row";
+    const items = (g.children as Node[]).flatMap((c) => { const b = restBox(c, env); return b ? [{ id: c.id, b }] : []; });
+    const mainLen = (b: Box) => (row ? b.right - b.left : b.bottom - b.top);
+    const crossLen = (b: Box) => (row ? b.bottom - b.top : b.right - b.left);
+    type Line = { items: typeof items; main: number; cross: number };
+    const lines: Line[] = [];
+    let cur: Line = { items: [], main: 0, cross: 0 };
+    for (const it of items) {
+      const len = mainLen(it.b);
+      if (L.wrap && maxMain !== undefined && cur.items.length && cur.main + gap + len > maxMain) { lines.push(cur); cur = { items: [], main: 0, cross: 0 }; }
+      cur.main += (cur.items.length ? gap : 0) + len;
+      cur.cross = Math.max(cur.cross, crossLen(it.b));
+      cur.items.push(it);
+    }
+    if (cur.items.length) lines.push(cur);
+    const blockMain = Math.max(0, ...lines.map((l) => l.main));
+    const blockCross = lines.reduce((s, l) => s + l.cross, 0) + gap * Math.max(0, lines.length - 1);
+    const slots = new Map<string, Slot>();
+    let crossAt = -blockCross / 2;
+    for (const line of lines) {
+      let mainAt = L.align === "start" ? -blockMain / 2 : L.align === "end" ? blockMain / 2 - line.main : -line.main / 2;
+      for (const { id, b } of line.items) {
+        const lead = row ? b.left : b.top, cLead = row ? b.top : b.left, cLen = crossLen(b);
+        const m = mainAt - lead;
+        const c = (L.align === "start" ? crossAt : L.align === "end" ? crossAt + line.cross - cLen : crossAt + (line.cross - cLen) / 2) - cLead;
+        slots.set(id, row ? { x: m, y: c } : { x: c, y: m });
+        mainAt += mainLen(b) + gap;
+      }
+      crossAt += line.cross + gap;
+    }
+    return slots;
   }
   // the rect's own box: children's union + padding, at least w x h (grown symmetrically about the content centre)
   function sizedBox(r: RectNode, env: Env): Box {

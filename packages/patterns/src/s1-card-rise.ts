@@ -5,7 +5,7 @@
 // childDelayMs after that point. Not modelled yet: the slight 3D perspective (perspectiveDeg) — needs the phase-6
 // plane layer.
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TrackIn } from "./macro";
+import { result, sec, type AnchorIn, type LayoutIn, type MacroResult, type NodeIn, type TrackIn } from "./macro";
 
 export interface CardSpec {
   id: string;                    // the card group's slug; the panel is <id>-panel
@@ -21,6 +21,7 @@ export interface CardRiseParams {
   cards: CardSpec[];
   at: number;
   anchor?: AnchorIn;
+  layout?: LayoutIn;             // lay the cards out as a row / column (then omit their x / y)
   fromY?: number;                // rise distance
   ms?: number;
   staggerMs?: number;            // per card
@@ -56,5 +57,5 @@ export function cardRise(p: CardRiseParams): MacroResult {
       ],
     }, [panel, ...content]);
   });
-  return result({ nodes: [group({ id: p.id, anchor: p.anchor }, cards)] });
+  return result({ nodes: [group({ id: p.id, anchor: p.anchor, layout: p.layout }, cards)] });
 }

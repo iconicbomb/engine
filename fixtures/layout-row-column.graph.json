@@ -1,0 +1,584 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Works with your stack",
+      "nodes": [
+        {
+          "id": "b1-layout",
+          "type": "group",
+          "layout": {
+            "type": "column",
+            "gap": 56
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-layout-title",
+              "type": "text",
+              "text": "Works with your stack",
+              "style": {
+                "size": 72,
+                "weight": 700
+              }
+            },
+            {
+              "id": "b1-layout-pills",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 18,
+                "wrap": true,
+                "maxWidth": 1300,
+                "overrides": {
+                  "9:16": {
+                    "maxWidth": 520,
+                    "gap": 12
+                  }
+                }
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-layout-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.3,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-1-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.37,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-2-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.44,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-3-label",
+                      "type": "text",
+                      "text": "GitHub",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.51,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-4-label",
+                      "type": "text",
+                      "text": "Linear",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.58,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-5-label",
+                      "type": "text",
+                      "text": "Figma",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.65,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-6-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-7-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-8-label",
+                      "type": "text",
+                      "text": "Zendesk",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-9",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.86,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-9-label",
+                      "type": "text",
+                      "text": "Airtable",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-pill-10",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 26,
+                    "padY": 12
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.93,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-pill-10-label",
+                      "type": "text",
+                      "text": "Jira",
+                      "style": {
+                        "size": 36,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-layout-cards",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 32,
+                "wrap": true,
+                "maxWidth": 1400,
+                "overrides": {
+                  "9:16": {
+                    "maxWidth": 560,
+                    "gap": 16
+                  }
+                }
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-layout-card-1",
+                  "type": "rect",
+                  "w": 260,
+                  "h": 150,
+                  "radius": 24,
+                  "fill": "#1A1D26",
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1.1,
+                      "ms": 600,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.1,
+                      "ms": 200,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-card-1-label",
+                      "type": "text",
+                      "text": "Plan",
+                      "style": {
+                        "size": 44,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-card-2",
+                  "type": "rect",
+                  "w": 260,
+                  "h": 150,
+                  "radius": 24,
+                  "fill": "#1A1D26",
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1.17,
+                      "ms": 600,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.17,
+                      "ms": 200,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-card-2-label",
+                      "type": "text",
+                      "text": "Build",
+                      "style": {
+                        "size": 44,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-layout-card-3",
+                  "type": "rect",
+                  "w": 260,
+                  "h": 150,
+                  "radius": 24,
+                  "fill": "#1A1D26",
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1.24,
+                      "ms": 600,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.24,
+                      "ms": 200,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-layout-card-3-label",
+                      "type": "text",
+                      "text": "Ship",
+                      "style": {
+                        "size": 44,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

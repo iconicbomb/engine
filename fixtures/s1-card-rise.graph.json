@@ -33,20 +33,23 @@
               }
             }
           },
+          "layout": {
+            "type": "column",
+            "gap": 40
+          },
           "tracks": [],
           "children": [
             {
               "id": "b1-stack-card-1",
               "type": "group",
-              "y": -190,
               "tracks": [
                 {
                   "mode": "tween",
                   "prop": "y",
                   "at": 0.2,
                   "ms": 600,
-                  "from": -110,
-                  "to": -190,
+                  "from": 80,
+                  "to": 0,
                   "ease": "settle"
                 },
                 {
@@ -289,15 +292,14 @@
             {
               "id": "b1-stack-card-3",
               "type": "group",
-              "y": 190,
               "tracks": [
                 {
                   "mode": "tween",
                   "prop": "y",
                   "at": 0.34,
                   "ms": 600,
-                  "from": 270,
-                  "to": 190,
+                  "from": 80,
+                  "to": 0,
                   "ease": "settle"
                 },
                 {

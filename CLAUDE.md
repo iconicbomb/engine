@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, S3–S6, S9 in (phase 2); `pnpm test` 87 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, S3–S6, S9 in (phase 2); `pnpm test` 94 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -93,11 +93,29 @@ S5 cursorClick + giantCursor (move 500 ms, pause 150 ms, press 80 ms; target onH
 dip across the press; fixture s5-cursor-click); S4 jumpCuts + pressTimes (camera frame tracks, cut on the cursor's
 press times; fixture s4-jump-cut: wide -> 300 ms push to a close-up on a card -> hard cut back to wide);
 S6 tickerList (clip window of `visible` slots; list steps up one slot per 330 ms step, exiting item fades;
-primitives only); S9 pillMarquee (pills sized to their labels, centre-out pop cascade within 600 ms, rows scroll
-linearly at 40 px/s in alternating directions; pill positions use an estimated label width, ~0.58 em/char, since
-there is no row/flex layout yet; rows repeat to cover canvas + travel).
-NEXT (phase 2 per the spec): S8, S13, S14, S16;
-jump-cut coverage.
+primitives only); S9 pillMarquee (pills sized to their labels in `layout: row` groups inside a `layout: column`
+group, centre-out pop cascade within 600 ms, rows scroll linearly at 40 px/s in alternating directions; rows repeat
+to cover canvas + travel — repeat count and cascade timing use an estimated label width, ~0.58 em/char).
+
+## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
+A row/column layout (done) -> velocity-preserving retargeting -> B path + wire nodes -> S8 -> C beat transitions ->
+S13, S14 -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
+aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
+Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
+fixture at both aspects, CLAUDE.md updated. Decide alone on plain schema extensions, missing measurements (timing
+table, mark // unmeasured), costly cosmetics (ship flat, log under "not modelled yet"), broken tooling. Stop only
+when R3 / an existing fixture's pixels would change for a reason other than exact-maths re-baselining, a schema
+shape could reasonably go two ways, or the spec contradicts itself.
+
+## Row / column layout (A)
+- Group `layout: { type: row | column, gap, align: start | center | end, wrap, maxWidth, overrides: { "9:16": { gap,
+  maxWidth } } }`. Children are placed one after another from their rest boxes (text: full run at its fully-typed fit
+  scale; rects: size or sizeToContent; groups: union) — tracks are ignored for placement, so a pill popping from
+  scale 0 never moves its neighbours. A laid-out child ignores its anchor; its base x/y and tracks apply on top of
+  the slot. `align` places children across a line and lines along the block; the block is centred on the group's
+  origin. With `wrap`, a line breaks when the next child would pass `maxWidth` (main-axis length, also for columns).
+- One pure `layoutSlots` feeds the draw pass, the measure pass and sizeToContent. Fixture: layout-row-column.
+- S1 uses `layout: column` for its card stack (byte-identical to the explicit y offsets it replaced).
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

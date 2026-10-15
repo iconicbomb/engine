@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, group, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -47,8 +47,9 @@ export function buildS1Demo() {
   const stack = cardRise({
     id: "b1-stack", at: 0.2,
     anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.72 } } },
+    layout: { type: "column", gap: 40 },
     cards: rows.map(([label, bar], i) => ({
-      id: `b1-stack-card-${i + 1}`, w: 760, h: 150, y: (i - 1) * 190, fill: "#1A1D26", radius: 28,
+      id: `b1-stack-card-${i + 1}`, w: 760, h: 150, fill: "#1A1D26", radius: 28,
       children: [
         { id: `b1-stack-card-${i + 1}-icon`, type: "rect", w: 72, h: 72, radius: 36, fill: "tokens.accent", x: -300 },
         { id: `b1-stack-card-${i + 1}-label`, type: "text", text: label, style: { size: 40, weight: 600, align: "left" }, x: -230, y: -22 },
@@ -100,4 +101,30 @@ export function buildS9Demo() {
     ],
   });
   return demo("Connects to everything", 2.8, marquee.nodes, [marquee]);
+}
+
+// Row / column layout fixture: a column of a title, a wrapped row of pills (wraps narrower at 9:16) and a row of
+// cards (wraps to two per line at 9:16). Pills pop in and cards rise with tracks applied after layout.
+export function buildLayoutDemo() {
+  const names = ["Slack", "Notion", "GitHub", "Linear", "Figma", "Stripe", "HubSpot", "Zendesk", "Airtable", "Jira"];
+  const pills: NodeIn[] = names.map((t, i) => ({
+    id: `b1-layout-pill-${i + 1}`, type: "rect", w: 1, h: 1, radius: 9999, fill: "#1A1D26", stroke: { color: "#2C3140", width: 2 },
+    sizeToContent: { padX: 26, padY: 12 },
+    tracks: [{ mode: "tween", prop: "scale", at: Math.round((0.3 + i * 0.07) * 1000) / 1000, ms: 300, from: 0, to: 1, ease: "bounce" }],
+    children: [{ id: `b1-layout-pill-${i + 1}-label`, type: "text", text: t, style: { size: 36, weight: 600 } }],
+  }));
+  const cards: NodeIn[] = ["Plan", "Build", "Ship"].map((t, i) => ({
+    id: `b1-layout-card-${i + 1}`, type: "rect", w: 260, h: 150, radius: 24, fill: "#1A1D26", opacity: 0,
+    tracks: [
+      { mode: "tween", prop: "y", at: Math.round((1.1 + i * 0.07) * 1000) / 1000, ms: 600, from: 60, to: 0, ease: "settle" },
+      { mode: "tween", prop: "opacity", at: Math.round((1.1 + i * 0.07) * 1000) / 1000, ms: 200, from: 0, to: 1, ease: "settle" },
+    ],
+    children: [{ id: `b1-layout-card-${i + 1}-label`, type: "text", text: t, style: { size: 44, weight: 700 } }],
+  }));
+  const root = group({ id: "b1-layout", layout: { type: "column", gap: 56 } }, [
+    { id: "b1-layout-title", type: "text", text: "Works with your stack", style: { size: 72, weight: 700 } },
+    group({ id: "b1-layout-pills", layout: { type: "row", gap: 18, wrap: true, maxWidth: 1300, overrides: { "9:16": { maxWidth: 520, gap: 12 } } } }, pills),
+    group({ id: "b1-layout-cards", layout: { type: "row", gap: 32, wrap: true, maxWidth: 1400, overrides: { "9:16": { maxWidth: 560, gap: 16 } } } }, cards),
+  ]);
+  return demo("Works with your stack", 2.4, [root], []);
 }

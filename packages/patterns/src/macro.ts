@@ -2,14 +2,15 @@
 // pattern of the spec's library (T1–T14, S1–S16) into plain scene-graph data. The runtime never sees pattern ids;
 // it only sees the nodes and tracks emitted here (spec: "Engine architecture and scene-graph format").
 import type { z } from "zod";
-import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, FrameTrack, Beat } from "@engine/graph";
+import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Layout, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, FrameTrack, Beat } from "@engine/graph";
 
 // Macros emit the graph's *input* form (defaults may be omitted), exactly what a hand-written fixture contains.
 export type TextNodeIn = z.input<typeof TextNode>;
 export type RectNodeIn = z.input<typeof RectNode>;
 export type BracketNodeIn = z.input<typeof BracketNode>;
+export type LayoutIn = z.input<typeof Layout>;
 export type GroupNodeIn = {
-  id: string; type: "group"; anchor?: AnchorIn; x?: number; y?: number; opacity?: number; scale?: number; rotation?: number;
+  id: string; type: "group"; anchor?: AnchorIn; x?: number; y?: number; opacity?: number; scale?: number; rotation?: number; layout?: LayoutIn;
   tracks?: TrackIn[]; children: NodeIn[];
 };
 export type CursorNodeIn = z.input<typeof CursorNode>;

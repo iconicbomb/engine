@@ -1,9 +1,9 @@
 // S9 — pill marquee grid (R4). Rows of pills pop in with a scale stagger, then the rows scroll in alternating
 // directions for the rest of the beat. Measured: pop-in 600 ms for all; scroll ~40 px/s (linear — marquees are
 // supposed to read as mechanical).
-// Each pill is a rect sized to its label (sizeToContent). Pill positions along a row use an estimated label width
-// (~0.58 em per char) because macros can't measure text and the runtime has no row/flex layout yet; the gap absorbs
-// the estimate's error. Rows repeat their items until they cover the canvas plus the scroll travel on both sides.
+// Each pill is a rect sized to its label (sizeToContent); each row is a `layout: row` group and the rows sit in a
+// `layout: column` group, so spacing is exact. Rows repeat their items until they cover the canvas plus the scroll
+// travel on both sides (the repeat count and the pop cascade's timing use an estimated label width, ~0.58 em/char).
 import { group } from "./assemble";
 import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn } from "./macro";
 
@@ -17,8 +17,8 @@ export interface PillMarqueeParams {
   speed?: number;                 // px/s
   popTotalMs?: number;            // every pill has popped within this
   popMs?: number;                 // each pill's pop
-  rowGap?: number;
-  gap?: number;                   // between pills
+  rowGap?: number;                // between rows (px)
+  gap?: number;                   // between pills (px)
   padX?: number; padY?: number;
   fill?: string;
   stroke?: { color: string; width: number };
@@ -28,7 +28,7 @@ export interface PillMarqueeParams {
 export function pillMarquee(p: PillMarqueeParams): MacroResult {
   const size = p.style.size, speed = p.speed ?? 40, popTotal = p.popTotalMs ?? 600, popMs = p.popMs ?? 300;
   const padX = p.padX ?? Math.round(size * 0.7), padY = p.padY ?? Math.round(size * 0.35);
-  const gap = p.gap ?? Math.round(size * 0.6), rowGap = p.rowGap ?? Math.round(size * 2.6);
+  const gap = p.gap ?? Math.round(size * 0.6), rowGap = p.rowGap ?? Math.round(size * 0.7);
   const travel = (speed * p.scrollMs) / 1000, cover = (p.coverWidth ?? 1920) + 2 * travel + 400;
   const est = (t: string) => [...t].length * size * 0.58 + 2 * padX;
   // lay each row out (repeating its items) until it spans `cover`, centred on 0
@@ -44,14 +44,14 @@ export function pillMarquee(p: PillMarqueeParams): MacroResult {
   const delay = (x: number) => (Math.min(1, Math.abs(x) / half) * (popTotal - popMs)) / 1000;
   const scrollAt = sec(p.at + popTotal / 1000);
   const rows: NodeIn[] = laid.map((pills, r) => group({
-    id: `${p.id}-row-${r + 1}`, y: Math.round((r - (laid.length - 1) / 2) * rowGap),
+    id: `${p.id}-row-${r + 1}`, layout: { type: "row", gap },
     // alternate directions: even rows scroll left, odd rows right
     tracks: [{ mode: "tween", prop: "x", at: scrollAt, ms: p.scrollMs, from: 0, to: (r % 2 ? 1 : -1) * travel, ease: "linear" }],
   }, pills.map((q, n): NodeIn => ({
     id: `${p.id}-row-${r + 1}-pill-${n + 1}`, type: "rect", w: 1, h: 1, radius: 9999, fill: p.fill ?? "tokens.surface",
-    ...(p.stroke ? { stroke: p.stroke } : {}), sizeToContent: { padX, padY }, ...(q.x ? { x: q.x } : {}),
+    ...(p.stroke ? { stroke: p.stroke } : {}), sizeToContent: { padX, padY },
     tracks: [{ mode: "tween", prop: "scale", at: sec(p.at + delay(q.x)), ms: popMs, from: 0, to: 1, ease: "bounce" }],
     children: [{ id: `${p.id}-row-${r + 1}-pill-${n + 1}-label`, type: "text", text: q.text, style: p.style }],
   }))));
-  return result({ nodes: [group({ id: p.id, anchor: p.anchor }, rows)] });
+  return result({ nodes: [group({ id: p.id, anchor: p.anchor, layout: { type: "column", gap: rowGap } }, rows)] });
 }

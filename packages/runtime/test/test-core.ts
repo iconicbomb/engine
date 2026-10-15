@@ -116,3 +116,33 @@ void (async () => {
       `camera fixture ${aspect}: card 1 fully inside the canvas through the close-up (min margin ${worst.toFixed(1)} px over ${n} frames, zoom ${zooms[0].toFixed(2)}); hard cut back to the same wide framing (zoom ${before.zoom.toFixed(2)})`);
   }
 })();
+// row / column layout (measure pass): sequential placement from rest boxes, gap, align, wrap, per-aspect overrides,
+// tracks applied after layout without moving neighbours
+void (async () => {
+  const { createShaper } = await import("../src/shaper");
+  const { createRuntime } = await import("../src/canvas2d");
+  const sh = await createShaper({ wasm: new Uint8Array(readFileSync("packages/runtime/wasm/hb.wasm")), fonts: { Inter: new Uint8Array(readFileSync("packages/runtime/fonts/Inter-Variable.ttf")) } });
+  const rt = createRuntime({ shaper: sh });
+  const rect = (n: number, w: number, h: number, extra: object = {}) => ({ id: `b1-r${n}`, type: "rect", w, h, ...extra });
+  const g = (layout: object, aspect = "16:9", r1: object = {}) => parseGraph({ version: 1, canvas: { aspect }, tokens: {}, beats: [{ id: "b1", type: "hook", start: 0, duration: 2,
+    nodes: [{ id: "b1-g", type: "group", layout, children: [rect(1, 100, 40, r1), rect(2, 200, 60), rect(3, 50, 40)] }],
+    camera: { tracks: [{ mode: "frame", target: "b1-g", size: 1 }] } }] });     // a frame track so the measure pass runs
+  const at = (gr: any, t = 0) => rt.measure(gr, t);
+  const m = at(g({ type: "row", gap: 20 }));
+  const b1 = m.get("b1-r1")!, b2 = m.get("b1-r2")!, b3 = m.get("b1-r3")!;
+  assert(b1.left === 765 && b1.right === 865 && b2.left === 885 && b2.right === 1085 && b3.left === 1105 && b1.top === 520 && b2.top === 510,
+    "layout row: 100 + 20 + 200 + 20 + 50 centred on the origin, centred across the line");
+  const s = at(g({ type: "row", gap: 20, align: "start" }));
+  assert(s.get("b1-r1")!.top === 510 && s.get("b1-r3")!.top === 510, "layout row align start: tops aligned to the line");
+  const c = at(g({ type: "column", gap: 10 }));
+  assert(c.get("b1-r1")!.top === 540 - 80 && c.get("b1-r2")!.top === 540 - 80 + 50 && c.get("b1-r2")!.left === 860 && c.get("b1-r1")!.left === 910,
+    "layout column: stacked with the gap, centred across");
+  const w = at(g({ type: "row", gap: 20, wrap: true, maxWidth: 250 }));
+  assert(w.get("b1-r1")!.top === 450 && w.get("b1-r2")!.top === 510 && w.get("b1-r3")!.top === 590 && w.get("b1-r3")!.left === 935,
+    "layout wrap: each child on its own line at maxWidth 250, lines centred, gap between lines");
+  const o = at(g({ type: "row", gap: 20, overrides: { "9:16": { gap: 0 } } }, "9:16"));
+  assert(o.get("b1-r1")!.left === 304 - 175 && o.get("b1-r2")!.left === 304 - 75, "layout overrides: 9:16 gap 0");
+  const tr = g({ type: "row", gap: 20 }, "16:9", { tracks: [{ mode: "tween", prop: "y", at: 0, ms: 1000, from: 30, to: 0, ease: "linear" }] });
+  const t0 = at(tr, 0);
+  assert(t0.get("b1-r1")!.top === 550 && t0.get("b1-r2")!.left === 885 && t0.get("b1-r2")!.top === 510, "layout: a child's track applies after layout and doesn't move its neighbours");
+})();
