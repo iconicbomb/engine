@@ -1,4 +1,4 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier } from "../src/runtime-core";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, glyphTime, typewriterEnd, cubicBezier } from "../src/runtime-core";
 import { parseGraph } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
@@ -27,12 +27,14 @@ const g = parseGraph(JSON.parse(readFileSync("fixtures/r3-hook.graph.json","utf8
 const title: any = (g.beats[0].nodes[0] as any).children[0];
 const tw = title.tracks[0];
 const glyphs = [...title.text];
-const atEnd = typewriterGlyphs(tw, glyphs, 0.33 + glyphs.length / 26 + 0.1, 30);
+const atEnd = typewriterGlyphs(tw, glyphs, typewriterEnd(tw, glyphs) + 0.1, 30);
 assert(atEnd.every(s => s.visible && !s.scrambled), `typewriter: all ${glyphs.length} glyphs visible, none scrambled, 0.1s after the last`);
-const mid = typewriterGlyphs(tw, glyphs, 0.33 + 10 / 26 + 0.02, 30);
-assert(mid.filter(s => s.visible).length === 11 && mid[10].scrambled !== null && mid[8].scrambled === null, "typewriter: 11 visible, newest scrambled (2 frames), 9th resolved");
+const mid = typewriterGlyphs(tw, glyphs, glyphTime(tw, glyphs, 10) + 0.01, 30);
+assert(mid.filter(s => s.visible).length === 11 && mid[10].scrambled !== null && mid[8].scrambled === null, "typewriter: 11 visible, newest scrambled, 9th resolved");
+const ramped = glyphTime(tw, glyphs, 28) - glyphTime(tw, glyphs, 27), first = glyphTime(tw, glyphs, 1) - glyphTime(tw, glyphs, 0);
+assert(tw.ramp > 1 ? ramped < first : ramped === first, `typewriter ramp: first gap ${(first*1000).toFixed(0)}ms, last gap ${(ramped*1000).toFixed(0)}ms`);
 assert(trackProgress(title.tracks[0], 0.2) === null, "track not started returns null");
 const exit = (g.beats[0].nodes[0] as any).tracks[0];
-assert(trackProgress(exit, 2.3)! === 1 && trackProgress(exit, 2.15)! > 0.5, "exit tween: 50%+ at half, 100% at end");
+assert(trackProgress(exit, exit.at + exit.ms / 1000)! === 1 && trackProgress(exit, exit.at + exit.ms / 2000)! > 0.5, "exit tween: 50%+ at half, 100% at end");
 const agent: any = g.beats[0].nodes[1];
 assert(trackProgress(agent.tracks[2], 2.4, 3) === null && trackProgress(agent.tracks[2], 2.5, 3)! > 0, "staggerMs: 4th glyph starts 90ms later");

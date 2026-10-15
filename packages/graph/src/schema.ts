@@ -33,7 +33,9 @@ export const TweenTrack = TrackBase.extend({
 // Typewriter: reveals glyphs in order; everything about "freshness" lives here.
 export const TypewriterTrack = TrackBase.extend({
   mode: z.literal("typewriter"),
-  cps: z.number().positive().default(26),
+  cps: z.number().positive().default(26),          // chars/s at the start of the run
+  ramp: z.number().positive().default(1),          // cps multiplier reached by the last char (R3 measured ~2.7)
+  wordPauseMs: z.number().min(0).default(0),       // extra pause after each space
   scramble: z.object({
     frames: z.number().int().min(0).default(0),          // 0 = plain typewriter
     symbols: z.string().default("#%*@!<>&"),
@@ -44,9 +46,11 @@ export const TypewriterTrack = TrackBase.extend({
     decayMs: z.number().min(0).default(300),
   }).default({}),
   caret: z.object({
-    style: z.enum(["none", "bar", "block"]).default("bar"),
+    style: z.enum(["none", "bar", "block", "glass"]).default("bar"),   // glass = translucent fill + bright edge (R3)
     blinkMs: z.number().positive().default(500),
     holdAfterMs: z.number().min(0).default(0),           // caret stays after the last glyph
+    preScale: z.number().positive().default(1),          // size multiplier at beat start, settling to 1 by `at`
+    color: Color.optional(),                             // defaults to the tail colour
   }).default({}),
   bloom: z.object({ radius: z.number().min(0).default(0), intensity: z.number().min(0).default(0) }).default({}),
 });
@@ -138,9 +142,18 @@ export const Beat = z.object({
   duration: z.number().positive(),
   script: z.string().default(""),
   background: Color.default("tokens.bg"),
+  // soft elliptical glows added over the background (S15 ambient glow): positions and radii are canvas fractions
+  glows: z.array(z.object({
+    x: z.number().default(0.5), y: z.number().default(1),
+    rx: z.number().positive().default(0.5), ry: z.number().positive().default(0.8),
+    color: Color.default("tokens.accent"), intensity: z.number().min(0).max(1).default(0.6),
+    tracks: z.array(Track).default([]),
+  })).default([]),
   camera: z.object({ zoom: z.number().positive().default(1), x: z.number().default(0), y: z.number().default(0), tracks: z.array(Track).default([]) }).default({}),
   nodes: z.array(Node),
 });
+
+export type Beat = z.infer<typeof Beat>;
 
 export const Timing = z.object({
   enterMs: z.number().default(400),

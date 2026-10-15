@@ -1,6 +1,42 @@
-{ "compilerOptions": {
-    "target": "es2020", "module": "esnext", "moduleResolution": "bundler", "jsx": "react",
-    "strict": true, "esModuleInterop": true, "skipLibCheck": true, "resolveJsonModule": true,
-    "lib": ["es2020", "dom"], "types": ["node"], "noEmit": true,
-    "paths": { "@engine/graph": ["./packages/graph/src/index.ts"], "@engine/runtime": ["./packages/runtime/src/runtime-core.ts"] } },
-  "include": ["packages/**/*.ts", "apps/**/*.ts", "apps/**/*.tsx"] }
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "jsx": "react",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
+    "noEmit": true,
+    "paths": {
+      "@engine/graph": [
+        "./packages/graph/src/index.ts"
+      ],
+      "@engine/runtime": [
+        "./packages/runtime/src/runtime-core.ts"
+      ],
+      "@engine/runtime/shaper": [
+        "./packages/runtime/src/shaper.ts"
+      ],
+      "@engine/runtime/canvas2d": [
+        "./packages/runtime/src/canvas2d.ts"
+      ],
+      "@engine/runtime/layout": [
+        "./packages/runtime/src/layout.ts"
+      ]
+    }
+  },
+  "include": [
+    "packages/**/*.ts",
+    "apps/**/*.ts",
+    "apps/**/*.tsx"
+  ]
+}

@@ -1,4 +1,28 @@
-{ "extends": "../../tsconfig.json",
-  "compilerOptions": { "jsx": "react-jsx", "module": "esnext", "moduleResolution": "bundler", "noEmit": true,
-    "paths": { "@engine/graph": ["../../packages/graph/src/index.ts"], "@engine/runtime": ["../../packages/runtime/src/runtime-core.ts"] } },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "remotion.config.ts"] }
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": {
+      "@engine/graph": [
+        "../../packages/graph/src/index.ts"
+      ],
+      "@engine/runtime": [
+        "../../packages/runtime/src/runtime-core.ts"
+      ],
+      "@engine/runtime/shaper": [
+        "../../packages/runtime/src/shaper.ts"
+      ],
+      "@engine/runtime/canvas2d": [
+        "../../packages/runtime/src/canvas2d.ts"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "remotion.config.ts"
+  ]
+}

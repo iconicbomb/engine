@@ -61,10 +61,23 @@ export type GlyphState = {
   scrambled: string | null;   // substitute glyph to draw instead of the real one, or null
   freshness: number;          // 1 = just typed, decays to 0 over tail.decayMs
 };
+// Beat-local time at which glyph i (0-based) of an n-glyph run becomes visible. cps ramps linearly from
+// track.cps to track.cps * track.ramp across the run; wordPauseMs is added after every space.
+export function glyphTime(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[], i: number): number {
+  const n = Math.max(1, glyphs.length);
+  let t = track.at;
+  for (let j = 0; j < i; j++) {
+    const cps = track.cps * (1 + (track.ramp - 1) * (n > 1 ? j / (n - 1) : 0));
+    t += 1 / cps + (glyphs[j] === " " ? track.wordPauseMs / 1000 : 0);
+  }
+  return t;
+}
+export function typewriterEnd(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[]): number {
+  return glyphTime(track, glyphs, glyphs.length);
+}
 export function typewriterGlyphs(track: Extract<Track, { mode: "typewriter" }>, glyphs: string[], t: number, fps: number): GlyphState[] {
-  const secPerGlyph = 1 / track.cps;
   return glyphs.map((_, i) => {
-    const shown = track.at + i * secPerGlyph;
+    const shown = glyphTime(track, glyphs, i);
     if (t < shown) return { visible: false, scrambled: null, freshness: 0 };
     const age = t - shown;
     const scrambleFor = track.scramble.frames / fps;
@@ -75,18 +88,20 @@ export function typewriterGlyphs(track: Extract<Track, { mode: "typewriter" }>, 
 }
 
 // ---------- interfaces the rest of phase 0 implements ----------
-export interface ShapedGlyph { glyph: string; cluster: number; xAdvance: number; xOffset: number; yOffset: number; path?: Path2D }
-export interface Shaper {
-  // harfbuzzjs behind this; `axes` are variable-font axis values ("slnt", "wght", ...)
-  shape(text: string, font: string, sizePx: number, axes: Record<string, number>): ShapedGlyph[];
+export interface ShapedGlyph {
+  glyph: string;      // the source character(s) of this glyph's cluster
+  gid: number;
+  cluster: number;    // code-point index into the source text
+  xAdvance: number;   // px
+  xOffset: number;    // px
+  yOffset: number;    // px, y-down
+  d: string;          // SVG path in px, y-down, origin at the glyph's pen position
 }
-
-export interface LayoutResult { scale: number; x: number; y: number; width: number; height: number }
-export interface LayoutSolver {
-  // fit-to-width: scale so the current *visible* glyph run fits the box; recenter if asked; smooth with fit.easeMs
-  fitText(visibleWidthPx: number, boxW: number, boxH: number, lineHeightPx: number, minScale: number, prevScale: number, dtSec: number, easeMs: number): number;
-  // anchors are canvas fractions; this resolves them for the active aspect, with overrides
-  resolveAnchor(node: Node, aspect: "16:9" | "9:16", canvasW: number, canvasH: number): { x: number; y: number; scale: number };
+export interface FontMetrics { ascender: number; descender: number; capHeight: number; xHeight: number } // em units
+export interface Shaper {
+  // harfbuzzjs behind this; `axes` are variable-font axis values ("wght", "slnt", ...)
+  shape(text: string, font: string, sizePx: number, axes: Record<string, number>): ShapedGlyph[];
+  metrics(font: string): FontMetrics;
 }
 
 export interface RenderTarget { width: number; height: number; ctx: CanvasRenderingContext2D }

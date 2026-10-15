@@ -1,2 +1,17 @@
-{ "name": "@engine/runtime", "version": "0.0.1", "private": true, "main": "src/runtime-core.ts", "types": "src/runtime-core.ts",
-  "dependencies": { "@engine/graph": "workspace:*" } }
+{
+  "name": "@engine/runtime",
+  "version": "0.0.1",
+  "private": true,
+  "main": "src/runtime-core.ts",
+  "types": "src/runtime-core.ts",
+  "dependencies": {
+    "@engine/graph": "workspace:*",
+    "harfbuzzjs": "0.4.4"
+  },
+  "exports": {
+    ".": "./src/runtime-core.ts",
+    "./shaper": "./src/shaper.ts",
+    "./canvas2d": "./src/canvas2d.ts",
+    "./layout": "./src/layout.ts"
+  }
+}

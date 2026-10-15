@@ -30,16 +30,22 @@ Render `fixtures/r3-hook.graph.json` so that
 - `pnpm render` — Remotion render of the fixture to `apps/render/out/r3.mp4`
 - `pnpm compare` — acceptance check against the reference clip
 
-## Phase 0 work remaining (in order)
-1. `packages/runtime/src/shaper.ts` — implements `Shaper` with harfbuzzjs: load a font file, shape a string
-   (with variable-font axes) into glyph runs with advances, and expose each glyph as an SVG path / Path2D.
-2. `packages/runtime/src/layout.ts` — implements `LayoutSolver`: fit-to-width scale with `easeMs` smoothing
-   (scale follows the visible glyph width, never wraps), recentre, anchor resolution for 16:9 and 9:16.
-3. `packages/runtime/src/canvas2d.ts` — implements `Runtime` on Canvas 2D: walk beats -> nodes -> tracks,
-   resolve every property at t (`trackProgress`, `typewriterGlyphs`), draw text as glyph paths, rects, and
-   bracket nodes that follow a text node's extents; bloom is a cheap stand-in for now (fresh glyphs redrawn
-   with `ctx.filter = "blur(Npx)"` and `globalCompositeOperation = "lighter"`).
-4. Replace the stub in `apps/render/src/entry.tsx` with the real runtime; `pnpm render`; `pnpm compare`; iterate.
+## Phase 0 status (2026-10-15)
+DONE in the sandbox: shaper.ts (harfbuzzjs, Inter variable TTF vendored in packages/runtime/fonts), layout.ts,
+canvas2d.ts, background glows, glass caret, typing ramp. `tools/compare_frames.py` against R3: mean SSIM 0.883,
+min 0.757 = PASS. 9:16 renders from the same graph. Frames are byte-identical across renders.
+Pending on Niloy's machine: `pnpm install` (new deps: harfbuzzjs, esbuild, playwright), `pnpm test` (17 ok),
+`pnpm render`, `pnpm compare`.
+
+Two render paths exist and must stay in agreement:
+- `pnpm render` — Remotion (apps/render). Assets are fetched from apps/render/public via staticFile.
+- `pnpm render:local` — Playwright + ffmpeg (tools/render-local.mjs); needs a Chromium: set CHROME_PATH or run
+  `npx playwright install chromium` once. This is the harness-independence proof and the faster iteration loop.
+
+## Phase 1 (next): pattern macros
+`packages/patterns`: functions that expand a pattern id + params into nodes/tracks. Start with T1 (scramble
+typewriter), T3 (fit-to-width), T5 (brackets), T12 (3D-ish reveal) so the R3 fixture can be regenerated from
+four macro calls instead of hand-written JSON; then T2, T4, T6, T13, S1, S2 per the spec's build order.
 
 ## Conventions
 TypeScript strict everywhere; no default exports except the Remotion root; tests are plain tsx scripts that

@@ -35,6 +35,7 @@ def ssim(a, b, win=8):
 
 def strip(ref, ren, idxs, scores, start, fps, out):
     if not idxs or not out.lower().endswith((".png", ".jpg", ".jpeg")): return
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     w, h = ref[0].shape[1], ref[0].shape[0]
     canvas = Image.new("L", (w * len(idxs), h * 2 + 18), 0)
     d = ImageDraw.Draw(canvas)
