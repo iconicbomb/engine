@@ -1,0 +1,10 @@
+{ "name": "engine", "private": true, "version": "0.0.1",
+  "scripts": {
+    "test": "tsx packages/graph/test/validate.ts fixtures/r3-hook.graph.json && tsx packages/runtime/test/test-core.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "pnpm --filter @app/render preview",
+    "render": "pnpm --filter @app/render render",
+    "compare": "python tools/compare_frames.py fixtures/refs/R3.mp4 apps/render/out/r3.mp4 --dur 3.2 --out out/compare_strip.png"
+  },
+  "devDependencies": { "tsx": "4.19.2", "typescript": "5.6.3", "@types/node": "22.10.2" },
+  "engines": { "node": ">=20" } }

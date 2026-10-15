@@ -1,0 +1,4 @@
+node_modules/
+out/
+apps/render/out/
+*.log

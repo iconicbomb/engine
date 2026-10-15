@@ -1,0 +1,4 @@
+{ "name": "@app/render", "version": "0.0.1", "private": true,
+  "scripts": { "preview": "remotion studio src/entry.tsx", "render": "remotion render src/entry.tsx engine out/r3.mp4" },
+  "dependencies": { "@engine/graph": "workspace:*", "@engine/runtime": "workspace:*", "react": "18.3.1", "react-dom": "18.3.1", "remotion": "4.0.236", "@remotion/cli": "4.0.236" },
+  "devDependencies": { "@types/react": "18.3.12" } }

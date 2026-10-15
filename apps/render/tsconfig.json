@@ -1,0 +1,4 @@
+{ "extends": "../../tsconfig.json",
+  "compilerOptions": { "jsx": "react-jsx", "module": "esnext", "moduleResolution": "bundler", "noEmit": true,
+    "paths": { "@engine/graph": ["../../packages/graph/src/index.ts"], "@engine/runtime": ["../../packages/runtime/src/runtime-core.ts"] } },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "remotion.config.ts"] }

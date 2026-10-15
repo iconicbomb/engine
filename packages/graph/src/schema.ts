@@ -1,0 +1,197 @@
+// @engine/graph — scene-graph schema v1 (phase 0 subset)
+// Everything the renderer, the editor and the exporters agree on lives here.
+import { z } from "zod";
+
+// ---------- primitives ----------
+export const Ease = z.enum(["linear", "settle", "emphasis", "bounce"]);
+export type Ease = z.infer<typeof Ease>;
+
+export const Spring = z.object({
+  stiffness: z.number().positive().default(700),
+  damping: z.number().positive().default(18),
+  mass: z.number().positive().default(1),
+});
+
+export const Color = z.string().regex(/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$|^tokens\.[a-zA-Z0-9_.-]+$/, "hex or tokens.<name>");
+
+// A track animates ONE property of its node. `at` is seconds relative to the beat start.
+const TrackBase = z.object({
+  prop: z.string().min(1),           // e.g. "opacity", "x", "scale", "glyph.opacity", "glyph.subst"
+  at: z.number().min(0).default(0),  // start, seconds from beat start
+  ms: z.number().min(0).default(400),
+});
+
+export const TweenTrack = TrackBase.extend({
+  mode: z.literal("tween").default("tween"),
+  from: z.union([z.number(), Color]).optional(), // omitted = current value
+  to: z.union([z.number(), Color]),
+  ease: Ease.default("settle"),
+  spring: Spring.optional(),         // used only when ease === "bounce"
+  staggerMs: z.number().min(0).default(0), // per-child / per-glyph offset
+});
+
+// Typewriter: reveals glyphs in order; everything about "freshness" lives here.
+export const TypewriterTrack = TrackBase.extend({
+  mode: z.literal("typewriter"),
+  cps: z.number().positive().default(26),
+  scramble: z.object({
+    frames: z.number().int().min(0).default(0),          // 0 = plain typewriter
+    symbols: z.string().default("#%*@!<>&"),
+  }).default({}),
+  tail: z.object({
+    len: z.number().int().min(0).default(0),
+    color: Color.default("tokens.accent"),
+    decayMs: z.number().min(0).default(300),
+  }).default({}),
+  caret: z.object({
+    style: z.enum(["none", "bar", "block"]).default("bar"),
+    blinkMs: z.number().positive().default(500),
+    holdAfterMs: z.number().min(0).default(0),           // caret stays after the last glyph
+  }).default({}),
+  bloom: z.object({ radius: z.number().min(0).default(0), intensity: z.number().min(0).default(0) }).default({}),
+});
+
+export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack]);
+export type Track = z.infer<typeof Track>;
+
+// ---------- layout ----------
+// fitBox keeps a node inside a box by scaling the node (never by wrapping); recenter keeps it centred as it grows.
+export const Fit = z.object({
+  w: z.number().positive(),
+  h: z.number().positive(),
+  minScale: z.number().positive().max(1).default(0.25),
+  recenter: z.boolean().default(true),
+  easeMs: z.number().min(0).default(120),  // how fast the scale follows content growth
+});
+
+// Anchors are fractions of the canvas, so one graph lays out on 16:9 and 9:16.
+export const Anchor = z.object({
+  x: z.number().min(0).max(1).default(0.5),
+  y: z.number().min(0).max(1).default(0.5),
+  // per-aspect overrides; key is "16:9" | "9:16"
+  overrides: z.record(z.enum(["16:9", "9:16"]), z.object({ x: z.number(), y: z.number(), scale: z.number().optional() })).optional(),
+});
+
+// ---------- nodes ----------
+const NodeBase = z.object({
+  id: z.string().regex(/^[a-z0-9][a-z0-9-]*$/, "stable slug: <beat>-<role>[-n]"),
+  anchor: Anchor.default({}),
+  opacity: z.number().min(0).max(1).default(1),
+  scale: z.number().positive().default(1),
+  rotation: z.number().default(0),
+  tracks: z.array(Track).default([]),
+});
+
+export const TextStyle = z.object({
+  font: z.string().default("tokens.font"),
+  size: z.number().positive(),            // px at the canvas's reference height
+  weight: z.number().int().min(100).max(900).default(500),
+  tracking: z.number().default(0),        // em
+  color: Color.default("tokens.text"),
+  align: z.enum(["left", "center", "right"]).default("center"),
+  // variable-font axes, animatable as "axis.slnt" etc.
+  axes: z.record(z.string(), z.number()).default({}),
+});
+
+export const TextNode = NodeBase.extend({
+  type: z.literal("text"),
+  text: z.string(),
+  style: TextStyle,
+  fit: Fit.optional(),
+  shaping: z.enum(["harfbuzz", "browser"]).default("harfbuzz"),
+});
+
+export const RectNode = NodeBase.extend({
+  type: z.literal("rect"),
+  w: z.number().positive(),
+  h: z.number().positive(),
+  radius: z.number().min(0).default(0),
+  fill: Color.optional(),
+  stroke: z.object({ color: Color, width: z.number().positive() }).optional(),
+});
+
+// Bracket pair that tracks another node's extents (R3's [ ] and { }).
+export const BracketNode = NodeBase.extend({
+  type: z.literal("bracket"),
+  follows: z.string(),                    // id of the text node it frames
+  glyphs: z.tuple([z.string(), z.string()]).default(["[", "]"]),
+  padding: z.number().default(24),
+  style: TextStyle,
+  spring: Spring.default({}),             // how the closing glyph settles after the text grows
+});
+
+export const GroupNode: z.ZodType<any> = z.lazy(() =>
+  NodeBase.extend({
+    type: z.literal("group"),
+    children: z.array(Node),
+  })
+);
+
+export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode]).or(GroupNode);
+export type Node = z.infer<typeof Node>;
+
+// ---------- beats + document ----------
+export const Beat = z.object({
+  id: z.string().regex(/^b[0-9]+$/),
+  type: z.enum(["hook", "pain", "reveal", "feature", "proof", "summary", "cta"]),
+  start: z.number().min(0),
+  duration: z.number().positive(),
+  script: z.string().default(""),
+  background: Color.default("tokens.bg"),
+  camera: z.object({ zoom: z.number().positive().default(1), x: z.number().default(0), y: z.number().default(0), tracks: z.array(Track).default([]) }).default({}),
+  nodes: z.array(Node),
+});
+
+export const Timing = z.object({
+  enterMs: z.number().default(400),
+  exitMs: z.number().default(200),
+  staggerMs: z.number().default(70),
+  glyphStaggerMs: z.number().default(30),
+  cps: z.number().default(26),
+  freshDecayMs: z.number().default(300),
+});
+
+export const Graph = z.object({
+  version: z.literal(1),
+  canvas: z.object({
+    aspect: z.enum(["16:9", "9:16"]).default("16:9"),
+    refHeight: z.number().positive().default(1080), // sizes in the graph are px at this height
+    fps: z.number().positive().default(30),
+  }),
+  tokens: z.record(z.string(), z.string()),
+  timing: Timing.default({}),
+  dials: z.object({
+    luminance: z.number().min(0).max(1), glow: z.number().min(0).max(1), dimensionality: z.number().min(0).max(1),
+    playfulness: z.number().min(0).max(1), kineticText: z.number().min(0).max(1), realism: z.number().min(0).max(1),
+    tempo: z.number().min(0).max(1), density: z.number().min(0).max(1),
+  }).partial().default({}),
+  beats: z.array(Beat).min(1),
+}).superRefine((g, ctx) => {
+  // beats must not overlap and ids must be unique across the document
+  const sorted = [...g.beats].sort((a, b) => a.start - b.start);
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].start < sorted[i - 1].start + sorted[i - 1].duration)
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `beat ${sorted[i].id} overlaps ${sorted[i - 1].id}` });
+  }
+  const ids = new Set<string>();
+  const walk = (n: any, beat: string) => {
+    if (ids.has(n.id)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `duplicate node id ${n.id}` });
+    ids.add(n.id);
+    if (!n.id.startsWith(beat + "-")) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `node ${n.id} must be prefixed with its beat id ${beat}-` });
+    (n.children ?? []).forEach((c: any) => walk(c, beat));
+  };
+  g.beats.forEach((b) => b.nodes.forEach((n) => walk(n, b.id)));
+  // bracket.follows must resolve inside the same beat
+  g.beats.forEach((b) => {
+    const local = new Set<string>();
+    const collect = (n: any) => { local.add(n.id); (n.children ?? []).forEach(collect); };
+    b.nodes.forEach(collect);
+    const check = (n: any) => { if (n.type === "bracket" && !local.has(n.follows)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `bracket ${n.id} follows unknown node ${n.follows}` }); (n.children ?? []).forEach(check); };
+    b.nodes.forEach(check);
+  });
+});
+export type Graph = z.infer<typeof Graph>;
+
+export function parseGraph(json: unknown): Graph {
+  return Graph.parse(json);
+}
