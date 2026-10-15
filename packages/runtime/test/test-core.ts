@@ -1,4 +1,4 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition, frameView, clampView, cameraState, resolveTracks, tweenValue } from "../src/runtime-core";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition, frameView, clampView, cameraState, resolveTracks, tweenValue, pathLength, pathBounds, flattenPath, wirePath, anchorPoint } from "../src/runtime-core";
 import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount, Track, OnHoverTrack, FrameTrack } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
@@ -167,4 +167,24 @@ void (async () => {
   assert([1.2, 1.25, 1.3, 1.5].every((t) => resolveTracks("x", 0, t, [A, R]) === plainR(t)), "from rest: exactly the plain track value");
   const E = tw({ at: 1.0, ms: 400, from: 1000, to: 0, ease: "settle" });               // starts exactly as A ends
   assert([1.0, 1.05, 1.2].every((t) => resolveTracks("x", 0, t, [A, E]) === tweenValue(E.tr, t, 0, 0, 1.0)), "handoff exactly at the previous end counts as rest");
+}
+// paths (pure): length and bounds by flattening, relative commands, smooth reflections; wire geometry
+{
+  const near = (a: number, b: number, tol: number) => Math.abs(a - b) <= tol;
+  assert(pathLength("M0 0 L100 0") === 100 && pathLength("M0 0 H100 V100 H0 Z") === 400 && pathLength("m10 10 h100 v100 h-100 z") === 400,
+    "pathLength: lines, H/V, relative commands, Z closes");
+  const quarter = pathLength("M100 0 C100 55.228 55.228 100 0 100");               // r = 100 quarter circle
+  assert(near(quarter, Math.PI * 50, 0.2), `pathLength: cubic quarter circle ${quarter.toFixed(2)} ~ ${(Math.PI * 50).toFixed(2)}`);
+  const sRefl = flattenPath("M0 0 C0 50 50 50 50 0 S100 -50 100 0"), tRefl = flattenPath("M0 0 Q25 50 50 0 T100 0");
+  assert(sRefl[0].some((p) => p.y < -30) && tRefl[0].some((p) => p.y < -20) && flattenPath("M0 0 L10 0 M20 0 L30 0").length === 2,
+    "flattenPath: S / T reflect the previous control point; M starts a subpath");
+  const b = pathBounds("M-10 5 L40 -20 L30 60")!;
+  assert(b.left === -10 && b.right === 40 && b.top === -20 && b.bottom === 60, "pathBounds");
+  const box = { left: 0, right: 200, top: 0, bottom: 100 };
+  const pa = anchorPoint(box, "right", { x: 0, y: 0.25 });
+  assert(pa.x === 200 && pa.y === 75, "anchorPoint: edge anchor + fractional offset");
+  assert(wirePath({ x: 0, y: 0 }, { x: 200, y: 100 }, "s", 0.5) === "M 0 0 C 100 0 100 100 200 100" && wirePath({ x: 0, y: 0 }, { x: 10, y: 0 }, "line", 0.5) === "M 0 0 L 10 0",
+    "wirePath: s cubic with horizontal tangents (bend 0.5), line");
+  const arc = flattenPath(wirePath({ x: 0, y: 0 }, { x: 200, y: 0 }, "arc", 0.25))[0];
+  assert(near(Math.max(...arc.map((p) => Math.abs(p.y))), 50, 0.5), "wirePath arc: bows perpendicular by bend * |d| (0.25 * 200 = 50)");
 }

@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2,
+      "script": "Connect anything",
+      "nodes": [
+        {
+          "id": "b1-wire-s",
+          "type": "wire",
+          "from": {
+            "target": "b1-art-src",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-art-dst",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.8,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 4,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-wire-arc",
+          "type": "wire",
+          "from": {
+            "target": "b1-art-src",
+            "anchor": "bottom"
+          },
+          "to": {
+            "target": "b1-art-dst",
+            "anchor": "bottom"
+          },
+          "curve": "arc",
+          "bend": 0.18,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.87,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 4,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-art",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.55
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-art-check",
+              "type": "path",
+              "d": "M -60 0 L -15 45 L 70 -55",
+              "stroke": "tokens.accent",
+              "x": -420,
+              "y": -160,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "strokeWidth": 18,
+              "trim": {
+                "start": 0,
+                "end": 0
+              }
+            },
+            {
+              "id": "b1-art-comet",
+              "type": "path",
+              "d": "M -260 0 C -130 -120 -20 120 120 0 S 330 -110 380 0",
+              "stroke": "#FFFFFF",
+              "x": 140,
+              "y": -160,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.3,
+                  "ms": 900,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "trim.start",
+                  "at": 0.55,
+                  "ms": 900,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "emphasis"
+                }
+              ],
+              "strokeWidth": 6,
+              "trim": {
+                "start": 0,
+                "end": 0
+              }
+            },
+            {
+              "id": "b1-art-src",
+              "type": "rect",
+              "w": 300,
+              "h": 160,
+              "radius": 24,
+              "fill": "#1A1D26",
+              "x": -330,
+              "y": 160,
+              "children": [
+                {
+                  "id": "b1-art-src-label",
+                  "type": "text",
+                  "text": "Source",
+                  "style": {
+                    "size": 44,
+                    "weight": 600
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b1-art-dst",
+              "type": "rect",
+              "w": 300,
+              "h": 160,
+              "radius": 24,
+              "fill": "#1A1D26",
+              "x": 330,
+              "y": 160,
+              "children": [
+                {
+                  "id": "b1-art-dst-label",
+                  "type": "text",
+                  "text": "Destination",
+                  "style": {
+                    "size": 44,
+                    "weight": 600
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

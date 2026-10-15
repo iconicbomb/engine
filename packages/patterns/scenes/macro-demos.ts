@@ -146,3 +146,23 @@ export function buildRetargetDemo() {
   ]);
   return demo("Retargeting keeps momentum", 2.0, [root], []);
 }
+
+// Paths + wires (B): a checkmark drawing on, a comet (trim start chasing trim end) along a curve, and two cards joined
+// by an s-wire and an arc-wire that draw on with glow — wire geometry follows the cards' measured boxes at 9:16.
+export function buildPathsWiresDemo() {
+  const card = (id: string, x: number, label: string): NodeIn => ({ id, type: "rect", w: 300, h: 160, radius: 24, fill: "#1A1D26", x, y: 160,
+    children: [{ id: `${id}-label`, type: "text", text: label, style: { size: 44, weight: 600 } }] });
+  const check: NodeIn = { id: "b1-art-check", type: "path", d: "M -60 0 L -15 45 L 70 -55", stroke: "tokens.accent", strokeWidth: 18, x: -420, y: -160,
+    trim: { start: 0, end: 0 }, tracks: [{ mode: "tween", prop: "trim.end", at: 0.2, ms: 400, from: 0, to: 1, ease: "settle" }] };
+  const comet: NodeIn = { id: "b1-art-comet", type: "path", d: "M -260 0 C -130 -120 -20 120 120 0 S 330 -110 380 0", stroke: "#FFFFFF", strokeWidth: 6, x: 140, y: -160,
+    trim: { start: 0, end: 0 }, tracks: [
+      { mode: "tween", prop: "trim.end", at: 0.3, ms: 900, from: 0, to: 1, ease: "emphasis" },
+      { mode: "tween", prop: "trim.start", at: 0.55, ms: 900, from: 0, to: 1, ease: "emphasis" }] };
+  const art = group({ id: "b1-art", anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.55 } } } },
+    [check, comet, card("b1-art-src", -330, "Source"), card("b1-art-dst", 330, "Destination")]);
+  const wire = (id: string, curve: "s" | "arc", at: number, fromA: "right" | "bottom", toA: "left" | "bottom"): NodeIn => ({
+    id, type: "wire", from: { target: "b1-art-src", anchor: fromA }, to: { target: "b1-art-dst", anchor: toA }, curve, bend: curve === "arc" ? 0.18 : 0.5,
+    stroke: "tokens.accent", strokeWidth: 4, glow: { radius: 10, intensity: 0.6 }, trim: { start: 0, end: 0 },
+    tracks: [{ mode: "tween", prop: "trim.end", at, ms: 400, from: 0, to: 1, ease: "settle" }] });
+  return demo("Connect anything", 2.0, [wire("b1-wire-s", "s", 0.8, "right", "left"), wire("b1-wire-arc", "arc", 0.87, "bottom", "bottom"), art], []);
+}

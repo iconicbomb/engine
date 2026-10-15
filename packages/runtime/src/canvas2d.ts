@@ -2,7 +2,7 @@
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
 import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
+import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, pathLength, pathBounds, anchorPoint, wirePath, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
@@ -17,6 +17,8 @@ type TypewriterTrack = Extract<Track, { mode: "typewriter" }>;
 type SweepTrack = Extract<Track, { mode: "sweep" }>;
 type CountTrack = Extract<Track, { mode: "count" }>;
 type CursorNode = Extract<Node, { type: "cursor" }>;
+type PathNode = Extract<Node, { type: "path" }>;
+type WireNode = Extract<Node, { type: "wire" }>;
 type GroupNode = { id: string; type: "group"; children: Node[]; scale: number; x: number; y: number; layout?: {
   type: "row" | "column"; gap: number; align: "start" | "center" | "end"; wrap: boolean; maxWidth?: number;
   overrides?: Partial<Record<Aspect, { gap?: number; maxWidth?: number }>> } };
@@ -82,8 +84,9 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       const cam = cameraAt(beat, env);
       ctx.translate(w / 2, h / 2); ctx.scale(cam.zoom, cam.zoom); ctx.translate(-cam.cx, -cam.cy);
     }
-    // cursors are top-level and drawn last, on top of everything
-    drawNodes(beat.nodes.filter((n) => n.type !== "cursor"), env, true);
+    // wires (top-level) first, under their targets; cursors (top-level) last, on top of everything
+    for (const n of beat.nodes) if (n.type === "wire") drawWire(n as WireNode, env);
+    drawNodes(beat.nodes.filter((n) => n.type !== "cursor" && n.type !== "wire"), env, true);
     drawNodes(beat.nodes.filter((n) => n.type === "cursor"), env, true);
   }
 
@@ -112,7 +115,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const out = new Map<string, Box>();
     const walk = (nodes: Node[], parent: M, top: boolean, slots: Map<string, Slot> | undefined) => {
       for (const n of nodes) {
-        if (n.type === "cursor") continue;
+        if (n.type === "cursor" || n.type === "wire") continue;
         const props = hoverProps(n, numericProps(n, env.tl), env);
         const { cx, cy, s } = place(n, props, { ...env, slots }, top);
         const r = props.rotation * Math.PI / 180;
@@ -126,10 +129,12 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
           box = worldBox(m, rn.sizeToContent ? sizedBox(rn, env) : { left: -rn.w / 2, right: rn.w / 2, top: -rn.h / 2, bottom: rn.h / 2 });
         } else if (n.type === "group") box = unionBox(children.map((c) => out.get(c.id) ?? null));
         else if (n.type === "bracket") box = out.get((n as BracketNode).follows) ?? null;
+        else if (n.type === "path") { const pb = pathBounds((n as PathNode).d); box = pb ? worldBox(m, pb) : null; }
         if (box) out.set(n.id, box);
       }
     };
     walk(beat.nodes, I, true, undefined);
+    for (const n of beat.nodes) if (n.type === "wire") { const g = wireGeometry(n as WireNode, out); if (g) { const pb = pathBounds(g); if (pb) out.set(n.id, pb); } }
     for (const n of beat.nodes) if (n.type === "cursor") {
       const p = cursorWorldPos(n as CursorNode, env, out), r = 16 * (n as CursorNode).size;
       out.set(n.id, { left: p.x - r, right: p.x + r, top: p.y - r, bottom: p.y + r });
@@ -216,6 +221,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         break;
       }
       case "bracket": drawBracket(node as BracketNode, env, cx, cy, nodeScale); break;
+      case "path": drawPath(node as PathNode, env); break;
     }
     ctx.restore();
   }
@@ -469,6 +475,56 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.restore();
   }
 
+  // ---------- paths + wires ----------
+  const lengthCache = new Map<string, number>();
+  const lengthOf = (d: string) => { let L = lengthCache.get(d); if (L === undefined) { L = pathLength(d); lengthCache.set(d, L); } return L; };
+  function trimOf(node: PathNode | WireNode, tl: number): { start: number; end: number } {
+    const cands = (node.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop.startsWith("trim.")).map((tr) => ({ tr, start: tr.at }));
+    return { start: clamp01(resolve("trim.start", node.trim.start, tl, cands)), end: clamp01(resolve("trim.end", node.trim.end, tl, cands)) };
+  }
+  // stroke the visible part [start, end] of a path of length L (dash pattern), round/butt/square caps
+  function strokeTrimmed(ctx: CanvasRenderingContext2D, p: Path2D, L: number, trim: { start: number; end: number }) {
+    if (trim.end - trim.start <= 1e-6) return;
+    if (trim.start > 0 || trim.end < 1) { ctx.setLineDash([(trim.end - trim.start) * L, L + 1]); ctx.lineDashOffset = -trim.start * L; }
+    ctx.stroke(p);
+    ctx.setLineDash([]); ctx.lineDashOffset = 0;
+  }
+  function drawPath(node: PathNode, env: Env) {
+    const { ctx, tokens } = env;
+    const p = path2d(node.d);
+    if (node.fill) { ctx.fillStyle = color(node.fill, tokens); ctx.fill(p); }
+    if (node.stroke) {
+      ctx.strokeStyle = color(node.stroke, tokens); ctx.lineWidth = node.strokeWidth; ctx.lineCap = node.lineCap; ctx.lineJoin = "round";
+      strokeTrimmed(ctx, p, lengthOf(node.d), trimOf(node, env.tl));
+    }
+  }
+  function wireGeometry(node: WireNode, boxes: Map<string, Box>): string | null {
+    const fb = boxes.get(node.from.target), tb = boxes.get(node.to.target);
+    if (!fb || !tb) return null;
+    return wirePath(anchorPoint(fb, node.from.anchor, node.from.offset), anchorPoint(tb, node.to.anchor, node.to.offset), node.curve, node.bend);
+  }
+  function drawWire(node: WireNode, env: Env) {
+    const { ctx } = env;
+    const props = numericProps(node, env.tl);
+    if (props.opacity <= 0) return;
+    const d = wireGeometry(node, env.boxesAt(env.tl));
+    if (!d) return;
+    const p = path2d(d), L = lengthOf(d), trim = trimOf(node, env.tl), c = color(node.stroke, env.tokens);
+    ctx.save();
+    ctx.globalAlpha *= clamp01(props.opacity);
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (node.glow && node.glow.radius > 0 && node.glow.intensity > 0) {
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter"; ctx.globalAlpha *= node.glow.intensity; ctx.filter = `blur(${node.glow.radius}px)`;
+      ctx.strokeStyle = c; ctx.lineWidth = node.strokeWidth * 3;
+      strokeTrimmed(ctx, p, L, trim);
+      ctx.restore();
+    }
+    ctx.strokeStyle = c; ctx.lineWidth = node.strokeWidth;
+    strokeTrimmed(ctx, p, L, trim);
+    ctx.restore();
+  }
+
   // ---------- clip ----------
   function clipRect(node: Node, tl: number): { x: number; y: number; w: number; h: number } | null {
     if (!node.clip) return null;
@@ -524,10 +580,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const point = (m: MoveToTrack) => {
       const b = boxes.get(m.target);
       if (!b) return null;                               // unreachable for a valid graph: every node is measured
-      const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
-      const [x, y] = m.anchor === "left" ? [b.left, my] : m.anchor === "right" ? [b.right, my]
-        : m.anchor === "top" ? [mx, b.top] : m.anchor === "bottom" ? [mx, b.bottom] : [mx, my];
-      return { x: x + m.offset.x * (b.right - b.left), y: y + m.offset.y * (b.bottom - b.top) };   // offset: box fractions
+      return anchorPoint(b, m.anchor, m.offset);         // offset: box fractions
     };
     return cursorPosition(node.tracks as Track[], env.tl, { x: a.x + props.x, y: a.y + props.y }, point);
   }
@@ -566,6 +619,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const { cx, cy, s } = place(n, props, env, false);
     let box: Box | null = null;
     if (n.type === "text") box = textBox(layoutText(n as TextNode, env));
+    else if (n.type === "path") box = pathBounds((n as PathNode).d);
     else if (n.type === "rect") box = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "group") {
       const inner = { ...env, slots: layoutSlots(n as GroupNode, env) };
@@ -589,6 +643,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   function restBox(n: Node, env: Env): Box | null {
     let b: Box | null = null;
     if (n.type === "text") b = fullTextBox(layoutText(n as TextNode, env));
+    else if (n.type === "path") b = pathBounds((n as PathNode).d);
     else if (n.type === "rect") b = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "group") {
       const g = n as GroupNode, slots = layoutSlots(g, env);

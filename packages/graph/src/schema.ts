@@ -246,6 +246,42 @@ export const GroupNode: z.ZodType<any> = z.lazy(() =>
   })
 );
 
+// Trim: the visible part of a stroke as fractions of its length; animatable as trim.start / trim.end (draw-on).
+export const Trim = z.object({ start: z.number().min(0).max(1).default(0), end: z.number().min(0).max(1).default(1) });
+
+// Path: an SVG path in local px (y-down), stroked and/or filled. A (elliptical arc) segments are drawn exactly by the
+// canvas but measured as straight chords (length / bounds / trim).
+export const PathNode = NodeBase.extend({
+  type: z.literal("path"),
+  d: z.string().min(1),
+  stroke: Color.optional(),
+  strokeWidth: z.number().positive().default(2),
+  fill: Color.optional(),
+  lineCap: z.enum(["round", "butt", "square"]).default("round"),
+  trim: Trim.default({}),
+});
+
+// Wire: a stroke between points on two nodes' boxes (world space, from the measure pass, so it survives 9:16).
+// curve s: cubic with control points from + (dx*bend, 0) and to - (dx*bend, 0); line; arc: bows perpendicular by
+// bend*|d|. Top-level only; drawn before every other node of the beat (under its targets). Its own x/y/scale are
+// ignored; opacity and trim apply.
+export const WireEnd = z.object({
+  target: z.string(),
+  anchor: z.enum(["center", "left", "right", "top", "bottom"]).default("center"),
+  offset: z.object({ x: z.number().default(0), y: z.number().default(0) }).default({}),   // fractions of the box
+});
+export const WireNode = NodeBase.extend({
+  type: z.literal("wire"),
+  from: WireEnd,
+  to: WireEnd,
+  curve: z.enum(["s", "line", "arc"]).default("s"),
+  bend: z.number().default(0.5),
+  stroke: Color.default("tokens.accent"),
+  strokeWidth: z.number().positive().default(2),
+  trim: Trim.default({}),
+  glow: z.object({ radius: z.number().min(0), intensity: z.number().min(0).max(1) }).optional(),
+});
+
 // Cursor: drawn last, on top; top-level only. x/y are its start position; moveTo / press tracks drive it.
 // avatar renders a circle placeholder until image nodes exist.
 export const CursorNode = NodeBase.extend({
@@ -254,7 +290,7 @@ export const CursorNode = NodeBase.extend({
   size: z.number().positive().default(1),            // multiplier; R5's giant cursor is ~2
 });
 
-export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode, CursorNode]).or(GroupNode);
+export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode, CursorNode, PathNode, WireNode]).or(GroupNode);
 export type Node = z.infer<typeof Node>;
 
 // ---------- beats + document ----------
@@ -328,6 +364,10 @@ export const Graph = z.object({
       const target = n.type === "bracket" ? n.follows : n.type === "rect" ? n.follows?.node : undefined;
       if (target !== undefined && !local.has(target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.type} ${n.id} follows unknown node ${target}` });
       if (n.type === "cursor" && !top) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `cursor ${n.id} must be a top-level node of its beat` });
+      if (n.type === "wire") {
+        if (!top) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `wire ${n.id} must be a top-level node of its beat` });
+        for (const end of [n.from, n.to]) if (!local.has(end.target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `wire ${n.id} connects unknown node ${end.target}` });
+      }
       for (const t of n.tracks ?? []) {
         if (t.mode === "moveTo" && !local.has(t.target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.id}: moveTo targets unknown node ${t.target}` });
         if (t.mode === "onHover" && !cursors.has(t.cursor)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.id}: onHover names unknown cursor ${t.cursor}` });

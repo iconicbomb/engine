@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, S3–S6, S9 in (phase 2); `pnpm test` 100 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, S3–S6, S9 in (phase 2); `pnpm test` 109 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -98,7 +98,7 @@ group, centre-out pop cascade within 600 ms, rows scroll linearly at 40 px/s in 
 to cover canvas + travel — repeat count and cascade timing use an estimated label width, ~0.58 em/char).
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
-A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes -> S8 -> C beat transitions ->
+A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) + wire nodes -> S8 -> C beat transitions ->
 S13, S14 -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
@@ -133,6 +133,18 @@ byte-identical") — review this reading:
 - An omitted `from` now means the current value as documented (the value handed over at t0) when earlier tracks
   exist; previously the runtime used the node's base value. No existing fixture omits `from`.
 - Fixture retarget-velocity: carry / spring / opt-out dots retargeted mid-flight.
+
+## Paths + wires (B)
+- `path`: SVG `d` in local px (y-down), stroke / strokeWidth / fill / lineCap, `trim { start, end }` animatable as
+  trim.start / trim.end (draw-on, comets). Length and bounds come from a pure flattener in runtime-core (M L H V C S Q
+  T Z, absolute + relative; cubics 24 steps, quadratics 16); trim renders with setLineDash.
+- `wire`: from / to { target, anchor, offset (box fractions) }, curve s | line | arc, bend, stroke, strokeWidth,
+  trim, glow { radius, intensity }. Geometry from the measure pass (world space), so it follows its targets at 9:16
+  and under the camera. Wires are top-level only (validated, like cursors) and drawn before every other node of the
+  beat; their own x/y/scale are ignored. The measure pass records each wire's bounds (camera can frame a wire).
+- Not modelled yet: SVG arc (A) segments are measured as straight chords (drawn exactly by the canvas, so trim /
+  length are approximate on arcs).
+- Fixture paths-wires.
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

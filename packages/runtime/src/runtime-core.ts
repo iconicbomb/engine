@@ -193,6 +193,97 @@ export function typewriterGlyphs(track: Extract<Track, { mode: "typewriter" }>, 
   });
 }
 
+// ---------- paths (pure, no DOM) ----------
+export type Pt = { x: number; y: number };
+const PATH_TOKEN = /[MmLlHhVvCcSsQqTtAaZz]|[-+]?(?:\d*\.\d+|\d+\.?)(?:[eE][-+]?\d+)?/g;
+// SVG path -> polylines (one per subpath). Cubics in 24 steps, quadratics in 16; A segments as straight chords.
+export function flattenPath(d: string): Pt[][] {
+  const toks = d.match(PATH_TOKEN) ?? [];
+  const subs: Pt[][] = [];
+  let cur: Pt[] = [], x = 0, y = 0, sx = 0, sy = 0, cmd = "", i = 0;
+  let lastC: Pt | null = null, lastQ: Pt | null = null;
+  const isCmd = (t: string) => /^[A-Za-z]$/.test(t);
+  const num = () => (i < toks.length && !isCmd(toks[i]) ? parseFloat(toks[i++]) : NaN);
+  const to = (nx: number, ny: number) => { cur.push({ x: nx, y: ny }); x = nx; y = ny; };
+  const cubic = (x1: number, y1: number, x2: number, y2: number, x3: number, y3: number) => {
+    const x0 = x, y0 = y;
+    for (let k = 1; k <= 24; k++) {
+      const t = k / 24, u = 1 - t;
+      cur.push({ x: u * u * u * x0 + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t * x3, y: u * u * u * y0 + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t * y3 });
+    }
+    x = x3; y = y3;
+  };
+  const quad = (x1: number, y1: number, x2: number, y2: number) => {
+    const x0 = x, y0 = y;
+    for (let k = 1; k <= 16; k++) { const t = k / 16, u = 1 - t; cur.push({ x: u * u * x0 + 2 * u * t * x1 + t * t * x2, y: u * u * y0 + 2 * u * t * y1 + t * t * y2 }); }
+    x = x2; y = y2;
+  };
+  while (i < toks.length) {
+    if (isCmd(toks[i])) cmd = toks[i++];
+    else if (!cmd) { i++; continue; }
+    const rel = cmd === cmd.toLowerCase(), C = cmd.toUpperCase(), ox = rel ? x : 0, oy = rel ? y : 0;
+    if (C === "Z") { to(sx, sy); lastC = lastQ = null; cmd = ""; continue; }
+    const before = i;
+    if (C === "M") {
+      const nx = num() + ox, ny = num() + oy;
+      if (Number.isNaN(nx + ny)) break;
+      if (cur.length > 1) subs.push(cur);
+      cur = [{ x: nx, y: ny }]; x = sx = nx; y = sy = ny; cmd = rel ? "l" : "L"; lastC = lastQ = null;
+    } else if (C === "L") { const nx = num() + ox, ny = num() + oy; if (Number.isNaN(nx + ny)) break; to(nx, ny); lastC = lastQ = null; }
+    else if (C === "H") { const nx = num() + ox; if (Number.isNaN(nx)) break; to(nx, y); lastC = lastQ = null; }
+    else if (C === "V") { const ny = num() + oy; if (Number.isNaN(ny)) break; to(x, ny); lastC = lastQ = null; }
+    else if (C === "C" || C === "S") {
+      let x1: number, y1: number;
+      if (C === "C") { x1 = num() + ox; y1 = num() + oy; } else { x1 = lastC ? 2 * x - lastC.x : x; y1 = lastC ? 2 * y - lastC.y : y; }
+      const x2 = num() + ox, y2 = num() + oy, x3 = num() + ox, y3 = num() + oy;
+      if (Number.isNaN(x1 + y1 + x2 + y2 + x3 + y3)) break;
+      cubic(x1, y1, x2, y2, x3, y3); lastC = { x: x2, y: y2 }; lastQ = null;
+    } else if (C === "Q" || C === "T") {
+      let x1: number, y1: number;
+      if (C === "Q") { x1 = num() + ox; y1 = num() + oy; } else { x1 = lastQ ? 2 * x - lastQ.x : x; y1 = lastQ ? 2 * y - lastQ.y : y; }
+      const x2 = num() + ox, y2 = num() + oy;
+      if (Number.isNaN(x1 + y1 + x2 + y2)) break;
+      quad(x1, y1, x2, y2); lastQ = { x: x1, y: y1 }; lastC = null;
+    } else if (C === "A") {
+      for (let k = 0; k < 5; k++) num();
+      const nx = num() + ox, ny = num() + oy;
+      if (Number.isNaN(nx + ny)) break;
+      to(nx, ny); lastC = lastQ = null;
+    } else break;
+    if (i === before) break;   // malformed: nothing consumed
+  }
+  if (cur.length > 1) subs.push(cur);
+  return subs;
+}
+export function pathLength(d: string): number {
+  let L = 0;
+  for (const sub of flattenPath(d)) for (let k = 1; k < sub.length; k++) L += Math.hypot(sub[k].x - sub[k - 1].x, sub[k].y - sub[k - 1].y);
+  return L;
+}
+export function pathBounds(d: string): Box | null {
+  const pts = flattenPath(d).flat();
+  if (!pts.length) return null;
+  return { left: Math.min(...pts.map((q) => q.x)), right: Math.max(...pts.map((q) => q.x)), top: Math.min(...pts.map((q) => q.y)), bottom: Math.max(...pts.map((q) => q.y)) };
+}
+// a point on a box: anchor (center / edge midpoints) + offset as fractions of the box
+export function anchorPoint(b: Box, anchor: "center" | "left" | "right" | "top" | "bottom", offset: { x: number; y: number }): Pt {
+  const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
+  const [x, y] = anchor === "left" ? [b.left, my] : anchor === "right" ? [b.right, my]
+    : anchor === "top" ? [mx, b.top] : anchor === "bottom" ? [mx, b.bottom] : [mx, my];
+  return { x: x + offset.x * (b.right - b.left), y: y + offset.y * (b.bottom - b.top) };
+}
+// wire geometry as an SVG path: s = horizontal-tangent cubic, line, arc = quadratic bowing perpendicular by bend*|d|
+export function wirePath(a: Pt, b: Pt, curve: "s" | "line" | "arc", bend: number): string {
+  if (curve === "line") return `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+  if (curve === "arc") {
+    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+    const cx = (a.x + b.x) / 2 + (-dy / len) * 2 * bend * len, cy = (a.y + b.y) / 2 + (dx / len) * 2 * bend * len;
+    return `M ${a.x} ${a.y} Q ${cx} ${cy} ${b.x} ${b.y}`;
+  }
+  const dx = b.x - a.x;
+  return `M ${a.x} ${a.y} C ${a.x + dx * bend} ${a.y} ${b.x - dx * bend} ${b.y} ${b.x} ${b.y}`;
+}
+
 // ---------- camera (pure) ----------
 type FrameTrackT = Extract<import("@engine/graph").CameraTrack, { mode: "frame" }>;
 const FILL = { wide: 0.5, medium: 0.7, close: 0.9 } as const;

@@ -17,3 +17,9 @@ const badCur = cur([{ id: "b1-r", type: "rect", w: 10, h: 10, tracks: [{ mode: "
   { id: "b1-g", type: "group", children: [{ id: "b1-c", type: "cursor", tracks: [{ mode: "moveTo", target: "b1-missing", at: 0 }] }] }]);
 if (!okCur.success || badCur.success || badCur.error.issues.length !== 3) { console.error("FAIL: cursor reference validation", okCur.success, badCur.success ? 0 : badCur.error.issues.map(i => i.message)); process.exit(1); }
 console.log("ok: cursor refs validated — unknown moveTo target, unknown onHover cursor, nested cursor all rejected");
+// wires: both ends must exist in the beat; wires are top-level
+const wire = (nodes: unknown[]) => Graph.safeParse({ version: 1, canvas: {}, tokens: {}, beats: [{ id: "b1", type: "hook", start: 0, duration: 1, nodes }] });
+const okWire = wire([{ id: "b1-a", type: "rect", w: 10, h: 10 }, { id: "b1-b", type: "rect", w: 10, h: 10 }, { id: "b1-w", type: "wire", from: { target: "b1-a" }, to: { target: "b1-b" } }]);
+const badWire = wire([{ id: "b1-a", type: "rect", w: 10, h: 10 }, { id: "b1-g", type: "group", children: [{ id: "b1-w", type: "wire", from: { target: "b1-a" }, to: { target: "b1-nope" } }] }]);
+if (!okWire.success || badWire.success || badWire.error.issues.length !== 2) { console.error("FAIL: wire validation", okWire.success, badWire.success ? 0 : badWire.error.issues.map(i => i.message)); process.exit(1); }
+console.log("ok: wires validated — unknown end and nested wire rejected");
