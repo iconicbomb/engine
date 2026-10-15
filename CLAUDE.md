@@ -30,23 +30,35 @@ Render `fixtures/r3-hook.graph.json` so that
 - `pnpm typecheck` — strict TypeScript across the workspace
 - `pnpm render` — Remotion render of the fixture to `apps/render/out/r3.mp4`
 - `pnpm compare` — acceptance check against the reference clip
+- `pnpm gen:r3` — regenerate `fixtures/r3-hook.graph.json` from the macro calls in `packages/patterns/scenes/r3-hook.ts`
 
-## Phase 0 status (2026-10-15)
-DONE in the sandbox: shaper.ts (harfbuzzjs, Inter variable TTF vendored in packages/runtime/fonts), layout.ts,
-canvas2d.ts, background glows, glass caret, typing ramp. `tools/compare_frames.py` against R3: mean SSIM 0.883,
-min 0.757 = PASS. 9:16 renders from the same graph. Frames are byte-identical across renders.
-Pending on Niloy's machine: `pnpm install` (new deps: harfbuzzjs, esbuild, playwright), `pnpm test` (17 ok),
-`pnpm render`, `pnpm compare`.
+## Status (2026-10-15)
+Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter variable TTF vendored in
+packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
+`pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
+byte-identical across renders.
+Phase 1 in progress: T1, T3, T5, T12 done (see below); `pnpm test` 23 ok, `pnpm typecheck` clean.
+Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
+our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
+params in the R3 scene, then `pnpm gen:r3`.
 
 Two render paths exist and must stay in agreement:
 - `pnpm render` — Remotion (apps/render). Assets are fetched from apps/render/public via staticFile.
 - `pnpm render:local` — Playwright + ffmpeg (tools/render-local.mjs); needs a Chromium: set CHROME_PATH or run
   `npx playwright install chromium` once. This is the harness-independence proof and the faster iteration loop.
 
-## Phase 1 (next): pattern macros
-`packages/patterns`: functions that expand a pattern id + params into nodes/tracks. Start with T1 (scramble
-typewriter), T3 (fit-to-width), T5 (brackets), T12 (3D-ish reveal) so the R3 fixture can be regenerated from
-four macro calls instead of hand-written JSON; then T2, T4, T6, T13, S1, S2 per the spec's build order.
+## Phase 1 (in progress): pattern macros
+`packages/patterns`: each macro is a pure function `(params) -> { nodes, tracks, patches }` (src/macro.ts).
+`nodes` are placed by the caller; `tracks` are appended to existing nodes by id (T12's `handoff` drives the exit
+of the text it replaces); `patches` set node fields where the schema models a pattern as layout, not motion
+(T3 sets `fit`). `applyEdits` (src/assemble.ts) applies them and throws on unknown ids.
+DONE: T1 (scramble typewriter; `ms` is derived from the runtime's glyph schedule), T3 (fit-to-width),
+T5 (brackets), T12 (reveal). The R3 fixture is now generated from these four calls and renders byte-identical
+to the old hand-written JSON (all 96 frame PNG hashes match via `render:local`); test-patterns.ts fails if the
+committed fixture drifts from the macro output. The beat's two glows are still literal data until S15 exists.
+NEXT: T2, T4, T6, T13, S1, S2 per the spec's build order.
+Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
+spring(700, 18, 1), which T5 follows. Fix the spec table.
 
 ## Conventions
 TypeScript strict everywhere; no default exports except the Remotion root; tests are plain tsx scripts that
