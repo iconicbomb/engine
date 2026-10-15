@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, slabNumeral, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, slabNumeral, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -256,4 +256,12 @@ export function buildS11Demo() {
     { id: "b1", type: "feature", start: 0, duration: 2.4, script: "Three", nodes: applyEdits(three.nodes, [three]), glows: [], camera: { tracks: three.camera } },
     { id: "b2", type: "feature", start: 2.4, duration: 1.4, script: "Four", background: "#10213A", transition: { type: "crossfade" }, nodes: applyEdits(four.nodes, [four]), glows: [] },
   ] };
+}
+
+// S12 demo: the strokes of "X" become "V" + "I" (the I grows in), as in R6's numerals
+export function buildS12Demo() {
+  const X = [{ x1: -150, y1: -200, x2: 150, y2: 200 }, { x1: 150, y1: -200, x2: -150, y2: 200 }];
+  const VI = [{ x1: -260, y1: -200, x2: -120, y2: 200 }, { x1: 20, y1: -200, x2: -120, y2: 200 }, { x1: 200, y1: -200, x2: 200, y2: 200 }];
+  const morph = strokeMorph({ id: "b1-glyph", from: X, to: VI, at: 0.6, anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } } });
+  return demo("Ten becomes six", 1.8, morph.nodes, [morph]);
 }

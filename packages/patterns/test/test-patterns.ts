@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -195,6 +195,13 @@ assert(slabs.length === 2 + 3 && slabs.every((sl: any) => sl.rotY === 90 && sl.t
   && slabs.map((sl: any) => sl.tracks[0].at).join() === "0.2,0.27,0.34,0.41,0.48" && s11n.tracks[0].ms === 800 && s11n.tracks[0].ease === "emphasis"
   && s11.camera[0].mode === "frame" && s11.camera[0].ms === 400 && throws(() => slabNumeral({ id: "b1-n", value: "x", size: 10, at: 0 })),
   "S11: '17' = 2 + 3 slabs turning in (400 ms, 70 ms apart), 800 ms emphasis scale-up, 400 ms fly-through frame");
+
+// S12: strokes matched by nearest midpoint, rotate the short way, lengths via symmetric trim; extras grow in / shrink out
+const s12: any = strokeMorph({ id: "b1-g", at: 0.5, from: [{ x1: -100, y1: -100, x2: 100, y2: 100 }], to: [{ x1: -100, y1: 100, x2: 100, y2: -100 }, { x1: 300, y1: 0, x2: 300, y2: 50 }] }).nodes[0];
+const [m1, g2] = s12.children;
+const rot = m1.tracks.find((t: any) => t.prop === "rotation"), ts = g2.tracks.find((t: any) => t.prop === "trim.start");
+assert(s12.children.length === 2 && rot.from === 45 && rot.to === -45 && rot.ms === 500 && ts.from === 0.5 && ts.to === 0
+  && m1.tracks.find((t: any) => t.prop === "trim.start").to === 0, "S12: matched stroke rotates the short way (45 -> -45), unmatched grows in from trim 0.5 -> 0, 500 ms");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

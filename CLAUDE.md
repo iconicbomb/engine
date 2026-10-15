@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S11, S13, S14, S16 in (phase 2); `pnpm test` 127 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 129 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -203,6 +203,10 @@ byte-identical") — review this reading:
   camera frame track (zoom 12, 400 ms) into the first digit's middle slab, paired with a transition to the next beat.
   Fixture s11-slab-numeral ("3" -> fly-through -> crossfade -> "4"). Not modelled yet: per-slab gradients, true 3D
   extrusion, the camera path between slabs; only digits.
+- S12 strokeMorph: strokes (line segments) as line paths at their midpoints, matched greedily by nearest midpoint;
+  matched strokes tween x / y / rotation (the short way, lines are undirected) and length (symmetric trim) over
+  500 ms emphasis; unmatched strokes shrink out / grow in. Fixture s12-stroke-morph (X -> V + I). Not modelled yet:
+  curved strokes and automatic stroke extraction from glyph outlines (strokes are given as segments).
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 

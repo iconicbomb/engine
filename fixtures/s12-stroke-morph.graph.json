@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 1.8,
+      "script": "Ten becomes six",
+      "nodes": [
+        {
+          "id": "b1-glyph",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-glyph-s1",
+              "type": "path",
+              "d": "M -250 0 L 250 0",
+              "stroke": "tokens.accent",
+              "x": 0,
+              "y": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.start",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": 0.076,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 1,
+                  "to": 0.924,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": -50,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": 0,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "rotation",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 53.13,
+                  "to": 109.29,
+                  "ease": "emphasis"
+                }
+              ],
+              "strokeWidth": 28,
+              "rotation": 53.13,
+              "trim": {
+                "start": 0,
+                "end": 1
+              }
+            },
+            {
+              "id": "b1-glyph-s2",
+              "type": "path",
+              "d": "M -250 0 L 250 0",
+              "stroke": "tokens.accent",
+              "x": 0,
+              "y": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.start",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": 0.076,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 1,
+                  "to": 0.924,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": -190,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0,
+                  "to": 0,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "rotation",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 126.87,
+                  "to": 70.71,
+                  "ease": "emphasis"
+                }
+              ],
+              "strokeWidth": 28,
+              "rotation": 126.87,
+              "trim": {
+                "start": 0,
+                "end": 1
+              }
+            },
+            {
+              "id": "b1-glyph-s3",
+              "type": "path",
+              "d": "M -200 0 L 200 0",
+              "stroke": "tokens.accent",
+              "x": 200,
+              "y": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.start",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0.5,
+                  "to": 0,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.6,
+                  "ms": 500,
+                  "from": 0.5,
+                  "to": 1,
+                  "ease": "emphasis"
+                }
+              ],
+              "strokeWidth": 28,
+              "rotation": 90,
+              "trim": {
+                "start": 0.5,
+                "end": 0.5
+              }
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}
