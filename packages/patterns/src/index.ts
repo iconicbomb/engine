@@ -30,3 +30,4 @@ export { strokeMorph, type StrokeMorphParams, type Stroke } from "./s12-stroke-m
 export { gradientSettle, type GradientSettleParams } from "./t7-gradient-settle";
 export { slantSettle, type SlantSettleParams } from "./t8-slant-settle";
 export { glyphAnchorMorph, type GlyphAnchorMorphParams } from "./t9-glyph-anchor-morph";
+export { scrollSections, type ScrollSectionsParams } from "./t14-scroll-sections";

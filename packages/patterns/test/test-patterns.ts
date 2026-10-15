@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, glyphAnchorMorph, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, glyphAnchorMorph, scrollSections, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -223,6 +223,14 @@ const [oldG, newG] = t9.children;
 const fades = oldG.children.map((c: any) => c.tracks.length === 1 ? c.tracks[0].at : null);
 assert(oldG.layout.type === "row" && fades[0] === 0.3 && fades[1] === null && fades[2] === null && fades[4] === 1.5 && fades[3] > 0.3 && fades[3] < 1.5
   && newG.children.every((c: any) => c.tracks[1].at === 1.8 && c.tracks[1].ms === 200), "T9: P, e, l fade L -> R over 1.5 s (i, x kept); I, X morph in at 1.8 s over 200 ms");
+
+// T14: linear scroll; each section slides in 400 ms centred on reaching the viewport centre; text snaps to grid columns
+const t14: any = scrollSections({ id: "b1-p", at: 0.4, headStyle: { size: 70 }, bodyStyle: { size: 30 },
+  sections: [{ headline: "A", body: "a" }, { headline: "B", body: "b", column: 4 }] }).nodes[0];
+const h2 = t14.children[1].children[0], cw = (1200 - 11 * 24) / 12;
+assert(t14.tracks[0].prop === "y" && t14.tracks[0].ease === "linear" && t14.tracks[0].to === -420 && h2.x === Math.round(-600 + 3 * (cw + 24))
+  && h2.tracks[0].at === 1.1 && h2.tracks[0].ms === 400 && h2.tracks[0].from === h2.x + 120 && t14.children[0].children[0].tracks.length === 3,
+  "T14: linear scroll; section 2 slides in over 400 ms centred on 1.3 s; snapped to column 4; earlier sections fade on");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

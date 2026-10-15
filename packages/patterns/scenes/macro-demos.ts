@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, glyphAnchorMorph, gradientSettle, group, mascot, slabNumeral, slantSettle, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, glyphAnchorMorph, gradientSettle, group, mascot, scrollSections, slabNumeral, slantSettle, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -284,4 +284,16 @@ export function buildT9Demo() {
   const m = glyphAnchorMorph({ id: "b1-word", from: "Pixel", to: "IX", style: { size: 220, weight: 700 }, at: 0.3,
     anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.7 } } } });
   return demo("Pixel to IX", 2.6, m.nodes, [m]);
+}
+
+// T14 demo: three web sections scroll by, each sliding in on a 12-column grid as it reaches the centre
+export function buildT14Demo() {
+  const page = scrollSections({ id: "b1-page", at: 0.4, headStyle: { size: 76, weight: 700 }, bodyStyle: { size: 32, weight: 400, color: "#9AA0B0" },
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.48 } } },
+    sections: [
+      { headline: "Ship faster", body: "From idea to production in a day." },
+      { headline: "Automate the busywork", body: "Agents handle the repetitive steps.", column: 4 },
+      { headline: "Scale with confidence", body: "Built-in monitoring and rollbacks." },
+    ] });
+  return demo("Ship faster", 2.8, page.nodes, [page]);
 }

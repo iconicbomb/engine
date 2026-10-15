@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 136 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T14, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 138 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -99,7 +99,7 @@ to cover canvas + travel — repeat count and cascade timing use an estimated la
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
 A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) -> S8 (done) -> C beat transitions (done) ->
-S13 (done), S14 (done) -> D image nodes (done) -> S16 (done) -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
+S13 (done), S14 (done) -> D image nodes (done) -> S16 (done) -> every remaining S and T row in order (done) -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
 fixture at both aspects, CLAUDE.md updated. Decide alone on plain schema extensions, missing measurements (timing
@@ -223,6 +223,10 @@ byte-identical") — review this reading:
   across 1.5 s; then the kept letters fade / grow out while the new word's letters fade / scale in (200 ms). Fixture
   t9-glyph-anchor-morph (Pixel -> ix -> IX). Not modelled yet: the kept glyphs travelling into the new word's slots
   (the morph solver) — the new word appears at its own centred position.
+- T14 scrollSections: a page group scrolls linearly (sectionMs per section); each section's headline / body slide in
+  (offsetPx -> 0) and fade in over 400 ms centred on reaching the viewport centre, then fade as they scroll on; text
+  snaps to the left edge of a column in a 12-column grid (1200 px, 24 px gutters). Fixture t14-scroll-sections.
+  Not modelled yet: multi-line body copy (text nodes are single-line; no wrapping).
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 
