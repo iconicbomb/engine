@@ -13,6 +13,8 @@
     "gen:r3": "tsx tools/gen-fixtures.ts r3-hook",
     "gen:fixtures": "tsx tools/gen-fixtures.ts",
     "test:render": "node tools/render-check.mjs",
+    "gates": "node tools/gates.mjs fixtures/promo.graph.json",
+    "render:promo": "node tools/render-local.mjs fixtures/promo.graph.json out/promo-16x9.mp4 --aspect 16:9 --no-frames && node tools/render-local.mjs fixtures/promo.graph.json out/promo-9x16.mp4 --aspect 9:16 --no-frames",
     "render:showcase": "node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-16x9.mp4 --aspect 16:9 --no-frames && node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-9x16.mp4 --aspect 9:16 --no-frames"
   },
   "devDependencies": {

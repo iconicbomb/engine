@@ -4,7 +4,7 @@
 // then drifts to a deterministic golden-angle offset with a depth (scale 0.6–1.5) whose distance from the focal depth
 // sets its blur (node `blur`, added for this device). Orbs are flat circles with a highlight (no lighting).
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn } from "./macro";
+import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, sizeOf } from "./macro";
 
 export interface CollapseToOrbsParams {
   id: string;                     // list group; rows <id>-row-<n> hold <id>-orb-<n> and <id>-label-<n>
@@ -20,7 +20,7 @@ export interface CollapseToOrbsParams {
 }
 
 export function collapseToOrbs(p: CollapseToOrbsParams): MacroResult {
-  const size = p.orbSize ?? Math.round(p.style.size * 1.3), collapse = p.collapseMs ?? 200, drift = p.driftMs ?? 900;
+  const size = p.orbSize ?? Math.round(sizeOf(p.style) * 1.3), collapse = p.collapseMs ?? 200, drift = p.driftMs ?? 900;
   const radius = p.driftRadius ?? 380, dof = p.dofBlur ?? 12, driftAt = sec(p.at + collapse / 1000);
   const rows: NodeIn[] = p.rows.map((r, i) => {
     const n = i + 1, ang = (i * 137.508 * Math.PI) / 180, frac = (i * 0.618034) % 1, depth = (i * 0.381966 + 0.2) % 1;
@@ -34,11 +34,11 @@ export function collapseToOrbs(p: CollapseToOrbsParams): MacroResult {
         { mode: "tween", prop: "scale", at: driftAt, ms: drift, from: 1, to: round(scale), ease: "settle" },
         { mode: "tween", prop: "blur", at: driftAt, ms: drift, from: 0, to: round(blur), ease: "settle" },
       ] };
-    const labelW = Math.round([...r.label].length * p.style.size * 0.62);
+    const labelW = Math.round([...r.label].length * sizeOf(p.style) * 0.62);
     const label: NodeIn = { id: `${p.id}-label-${n}`, type: "text", text: r.label, style: { ...p.style, align: "left" },
-      clip: { x: 0, y: -p.style.size, w: labelW, h: p.style.size * 2 },
+      clip: { x: 0, y: -sizeOf(p.style), w: labelW, h: sizeOf(p.style) * 2 },
       tracks: [{ mode: "tween", prop: "clip.w", at: p.at, ms: collapse, from: labelW, to: 0, ease: "settle" }] };
-    return group({ id: `${p.id}-row-${n}`, layout: { type: "row", gap: Math.round(p.style.size * 0.5), align: "center" } }, [orb, label]);
+    return group({ id: `${p.id}-row-${n}`, layout: { type: "row", gap: Math.round(sizeOf(p.style) * 0.5), align: "center" } }, [orb, label]);
   });
   return result({ nodes: [group({ id: p.id, anchor: p.anchor, layout: { type: "column", gap: Math.round(size * 0.35), align: "start" } }, rows)] });
 }

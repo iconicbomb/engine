@@ -13,6 +13,7 @@ export function buildShowcase() {
   const beats: Record<string, unknown>[] = [];
   let start = 0;
   for (const name of Object.keys(SCENES)) {
+    if (name === "promo") continue;            // the composed promo is its own deliverable (pnpm render:promo), not a catalogue entry
     const g = parseGraph(SCENES[name]()) as unknown as { tokens: Record<string, string>; beats: Record<string, unknown>[] };
     const sorted = [...g.beats].sort((a, b) => (a.start as number) - (b.start as number));
     // old beat id -> new beat id, and every node id in the scene -> its renumbered id

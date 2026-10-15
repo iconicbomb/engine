@@ -1,0 +1,5187 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#07080D",
+    "text": "#F3F4F8",
+    "accent": "#7C9BFF",
+    "surface": "#141826",
+    "muted": "#8B91A7",
+    "font": "Inter"
+  },
+  "style": {
+    "field": {
+      "mode": "auto",
+      "glow": 1,
+      "vignette": 0.2,
+      "grain": 0.03
+    }
+  },
+  "dials": {
+    "luminance": 0.15,
+    "glow": 0.7,
+    "kineticText": 0.8,
+    "playfulness": 0.4,
+    "tempo": 0.6,
+    "density": 0.4
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "hook",
+      "start": 0,
+      "duration": 3.6,
+      "script": "Still running ops by hand? Meet Lumen.",
+      "glows": [
+        {
+          "x": 0.5,
+          "y": 1.03,
+          "rx": 0.72,
+          "ry": 0.9,
+          "color": "#1B2FBF",
+          "intensity": 0.42,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 0.9,
+              "ms": 450,
+              "from": 0,
+              "to": 0.42,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "x": 0.5,
+          "y": -0.03,
+          "rx": 0.6,
+          "ry": 0.65,
+          "color": "#1B2FBF",
+          "intensity": 0.2,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 1.05,
+              "ms": 400,
+              "from": 0,
+              "to": 0.2,
+              "ease": "settle"
+            }
+          ]
+        }
+      ],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b1-q",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.47,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.45,
+                "scale": 0.72
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 2.4,
+              "ms": 350,
+              "from": 1,
+              "to": 0.45,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 2.48,
+              "ms": 260,
+              "from": 1,
+              "to": 0,
+              "ease": "settle"
+            }
+          ],
+          "children": [
+            {
+              "id": "b1-q-title",
+              "type": "text",
+              "text": "Still running ops by hand?",
+              "style": {
+                "role": "display",
+                "align": "center"
+              },
+              "fit": {
+                "w": 1500,
+                "h": 760,
+                "minScale": 0.2,
+                "recenter": true,
+                "easeMs": 100
+              },
+              "tracks": [
+                {
+                  "mode": "typewriter",
+                  "prop": "glyph.opacity",
+                  "at": 0.3,
+                  "ms": 967,
+                  "cps": 9,
+                  "scramble": {
+                    "frames": 1,
+                    "symbols": "#%*@!<"
+                  },
+                  "tail": {
+                    "len": 4,
+                    "color": "#C9D6FF",
+                    "decayMs": 220
+                  },
+                  "caret": {
+                    "style": "glass",
+                    "blinkMs": 500,
+                    "holdAfterMs": 0,
+                    "preScale": 2.4,
+                    "color": "#6E7FCC"
+                  },
+                  "bloom": {
+                    "radius": 50,
+                    "intensity": 0.9
+                  },
+                  "ramp": 7,
+                  "wordPauseMs": 0
+                }
+              ],
+              "wrap": {
+                "maxWidth": 1600,
+                "overrides": {
+                  "9:16": {
+                    "maxWidth": 600
+                  }
+                }
+              }
+            },
+            {
+              "id": "b1-q-brackets",
+              "type": "bracket",
+              "follows": "b1-q-title",
+              "glyphs": [
+                "[",
+                "]"
+              ],
+              "padding": 70,
+              "style": {
+                "size": 400,
+                "weight": 200,
+                "color": "#3F4A6E",
+                "align": "center"
+              },
+              "spring": {
+                "stiffness": 700,
+                "damping": 18,
+                "mass": 1
+              },
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.1,
+                  "ms": 150,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b1-meet",
+          "type": "text",
+          "text": "Meet Lumen.",
+          "style": {
+            "role": "display",
+            "tracking": -0.02
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5
+          },
+          "opacity": 0,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 2.75,
+              "ms": 67,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 2.75,
+              "ms": 260,
+              "from": 1.6,
+              "to": 1,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 2.75,
+              "ms": 260,
+              "from": 70,
+              "to": 0,
+              "ease": "emphasis",
+              "staggerMs": 25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b2",
+      "type": "pain",
+      "start": 3.6,
+      "duration": 3.8,
+      "script": "Tickets. Follow-ups. Reports. Every single day.",
+      "transition": {
+        "type": "smear",
+        "ms": 133,
+        "direction": "up"
+      },
+      "field": {
+        "mode": "auto",
+        "glow": 0.55,
+        "glowColor": "#5A1F2E",
+        "vignette": 0.26,
+        "grain": 0.03
+      },
+      "glows": [],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b2-line",
+          "type": "text",
+          "text": "Tickets. Follow-ups. Reports. Every single day.",
+          "style": {
+            "role": "headline"
+          },
+          "fit": {
+            "w": 1720,
+            "h": 760,
+            "minScale": 0.3,
+            "recenter": true,
+            "easeMs": 120
+          },
+          "recenterEaseMs": 76,
+          "anchor": {
+            "x": 0.5,
+            "y": 0.47,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.44,
+                "scale": 1
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "typewriter",
+              "prop": "glyph.opacity",
+              "at": 0.283,
+              "ms": 1380,
+              "unit": "word",
+              "cps": 4.3478260869565215,
+              "caret": {
+                "style": "none"
+              }
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0,
+              "ms": 200,
+              "from": 0.3,
+              "to": 1,
+              "ease": "settle",
+              "relativeTo": "reveal"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0,
+              "ms": 200,
+              "from": 20,
+              "to": 0,
+              "ease": "settle",
+              "relativeTo": "reveal"
+            },
+            {
+              "mode": "sweep",
+              "prop": "glyph.color",
+              "at": 2.033,
+              "ms": 450,
+              "from": -2.5,
+              "to": 32.5,
+              "window": 5,
+              "color": "#FF6B6B",
+              "ease": "settle"
+            }
+          ],
+          "wrap": {
+            "maxWidth": 1720,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 520
+              }
+            }
+          }
+        },
+        {
+          "id": "b2-sub",
+          "type": "text",
+          "text": "THE WORK NOBODY SIGNED UP FOR",
+          "style": {
+            "role": "label",
+            "color": "tokens.muted"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.62,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.58
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "tracking",
+              "at": 2.433,
+              "ms": 500,
+              "from": 0.6,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 2.433,
+              "ms": 250,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b3",
+      "type": "reveal",
+      "start": 7.4,
+      "duration": 3.8,
+      "script": "Meet Lumen — AI agents for ops teams.",
+      "transition": {
+        "type": "curtain",
+        "ms": 130,
+        "direction": "right",
+        "color": "tokens.accent"
+      },
+      "glows": [
+        {
+          "x": 0.5,
+          "y": 1.03,
+          "rx": 0.72,
+          "ry": 0.9,
+          "color": "#1B2FBF",
+          "intensity": 0.5,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 0.065,
+              "ms": 600,
+              "from": 0,
+              "to": 0.5,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "x": 0.5,
+          "y": -0.03,
+          "rx": 0.6,
+          "ry": 0.65,
+          "color": "#1B2FBF",
+          "intensity": 0.22,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "intensity",
+              "at": 0.165,
+              "ms": 600,
+              "from": 0,
+              "to": 0.22,
+              "ease": "settle"
+            }
+          ]
+        }
+      ],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b3-logo",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.44,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.42,
+                "scale": 0.72
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b3-logo-wordmark",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 240,
+                "weight": 800,
+                "tracking": -0.03
+              },
+              "x": 120,
+              "tracks": [
+                {
+                  "mode": "typewriter",
+                  "prop": "glyph.opacity",
+                  "at": 0.365,
+                  "ms": 420,
+                  "cps": 11.904761904761905,
+                  "caret": {
+                    "style": "none"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b3-logo-mark",
+              "type": "rect",
+              "follows": {
+                "node": "b3-logo-wordmark",
+                "edge": "left",
+                "gap": 48
+              },
+              "w": 192,
+              "h": 192,
+              "radius": 36,
+              "fill": "tokens.accent",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 0.165,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "bounce"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b3-label",
+          "type": "text",
+          "text": "AI AGENTS FOR OPS TEAMS",
+          "style": {
+            "role": "label",
+            "color": "tokens.muted"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.6,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.56
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "tracking",
+              "at": 0.765,
+              "ms": 500,
+              "from": 0.6,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.765,
+              "ms": 250,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "id": "b3-buddy",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.8,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.72,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 1.265,
+              "ms": 200,
+              "from": -320,
+              "to": 0,
+              "ease": "bounce"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 1.265,
+              "ms": 100,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            }
+          ],
+          "children": [
+            {
+              "id": "b3-buddy-body",
+              "type": "rect",
+              "w": 170,
+              "h": 170,
+              "radius": 54,
+              "fill": "tokens.accent",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 1.765,
+                  "ms": 600,
+                  "from": 0,
+                  "to": -4,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.365,
+                  "ms": 600,
+                  "from": -4,
+                  "to": 4,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.965,
+                  "ms": 600,
+                  "from": 4,
+                  "to": -4,
+                  "ease": "emphasis"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b3-buddy-eye-1",
+                  "type": "rect",
+                  "w": 29,
+                  "h": 37,
+                  "radius": 29,
+                  "fill": "#FFFFFF",
+                  "x": -34,
+                  "y": -14,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-pupil-1",
+                  "type": "rect",
+                  "w": 15,
+                  "h": 15,
+                  "radius": 15,
+                  "fill": "#14161C",
+                  "x": -31,
+                  "y": -10,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-lid-1",
+                  "type": "rect",
+                  "w": 29,
+                  "h": 4,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": -34,
+                  "y": -8,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-eye-2",
+                  "type": "rect",
+                  "w": 29,
+                  "h": 37,
+                  "radius": 29,
+                  "fill": "#FFFFFF",
+                  "x": 34,
+                  "y": -14,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-pupil-2",
+                  "type": "rect",
+                  "w": 15,
+                  "h": 15,
+                  "radius": 15,
+                  "fill": "#14161C",
+                  "x": 37,
+                  "y": -10,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-lid-2",
+                  "type": "rect",
+                  "w": 29,
+                  "h": 4,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": 34,
+                  "y": -8,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.465,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.565,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b3-buddy-mouth",
+                  "type": "path",
+                  "d": "M -20 0 Q 0 17 20 0",
+                  "stroke": "#14161C",
+                  "y": 37,
+                  "strokeWidth": 6
+                }
+              ],
+              "surface": "card"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b4",
+      "type": "feature",
+      "start": 11.2,
+      "duration": 5.2,
+      "script": "Connect every tool you already use.",
+      "glows": [],
+      "camera": {
+        "tracks": [
+          {
+            "mode": "frame",
+            "at": 0,
+            "target": "b4-fan",
+            "size": 1,
+            "ms": 0
+          },
+          {
+            "mode": "frame",
+            "at": 2.4,
+            "target": "b4-fan",
+            "size": 1.1,
+            "ms": 2400,
+            "ease": "emphasis",
+            "offset": {
+              "x": 0,
+              "y": -0.08
+            }
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "b4-fan-wire-1",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b4-fan-l-1",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-2",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b4-fan-r-1",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.06,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-3",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b4-fan-l-2",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.12,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-4",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b4-fan-r-2",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.18,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-5",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b4-fan-l-3",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.24,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-6",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b4-fan-r-3",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.3,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-7",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b4-fan-l-4",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.36,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-8",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b4-fan-r-4",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.42,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-9",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b4-fan-l-5",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.48,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-fan-wire-10",
+          "type": "wire",
+          "from": {
+            "target": "b4-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b4-fan-r-5",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 1.54,
+              "ms": 450,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 10,
+            "intensity": 0.6
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b4-head",
+          "type": "text",
+          "text": "Connect every tool you already use",
+          "style": {
+            "role": "headline"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.14,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.12
+              }
+            }
+          },
+          "opacity": 0,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.2,
+              "ms": 80,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.2,
+              "ms": 300,
+              "from": 1.25,
+              "to": 1,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.2,
+              "ms": 300,
+              "from": 40,
+              "to": 0,
+              "ease": "emphasis",
+              "staggerMs": 12
+            }
+          ],
+          "wrap": {
+            "maxWidth": 1700,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 520
+              }
+            }
+          }
+        },
+        {
+          "id": "b4-fan",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.58,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.55,
+                "scale": 0.33
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b4-fan-left",
+              "type": "group",
+              "layout": {
+                "type": "column",
+                "gap": 28,
+                "align": "end"
+              },
+              "x": -720,
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b4-fan-l-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.5,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.5,
+                      "ms": 500,
+                      "from": -60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-l-1-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-l-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.57,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.57,
+                      "ms": 500,
+                      "from": -60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-l-2-label",
+                      "type": "text",
+                      "text": "Gmail",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-l-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.64,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.64,
+                      "ms": 500,
+                      "from": -60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-l-3-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-l-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.71,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.71,
+                      "ms": 500,
+                      "from": -60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-l-4-label",
+                      "type": "text",
+                      "text": "Google Drive",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-l-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.78,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.78,
+                      "ms": 500,
+                      "from": -60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-l-5-label",
+                      "type": "text",
+                      "text": "Jira",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b4-fan-hub",
+              "type": "rect",
+              "w": 420,
+              "h": 210,
+              "radius": 40,
+              "fill": "tokens.accent",
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 0.35,
+                  "ms": 500,
+                  "from": 0.6,
+                  "to": 1,
+                  "ease": "bounce"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.35,
+                  "ms": 150,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b4-fan-hub-label",
+                  "type": "text",
+                  "text": "Lumen",
+                  "style": {
+                    "size": 66,
+                    "weight": 800,
+                    "color": "#0B0F24"
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b4-fan-right",
+              "type": "group",
+              "layout": {
+                "type": "column",
+                "gap": 28,
+                "align": "start"
+              },
+              "x": 720,
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b4-fan-r-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.5,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.5,
+                      "ms": 500,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-r-1-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-r-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.57,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.57,
+                      "ms": 500,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-r-2-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-r-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.64,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.64,
+                      "ms": 500,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-r-3-label",
+                      "type": "text",
+                      "text": "GitHub",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-r-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.71,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.71,
+                      "ms": 500,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-r-4-label",
+                      "type": "text",
+                      "text": "Linear",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b4-fan-r-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 20
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.78,
+                      "ms": 250,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.78,
+                      "ms": 500,
+                      "from": 60,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b4-fan-r-5-label",
+                      "type": "text",
+                      "text": "Zendesk",
+                      "style": {
+                        "size": 50,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b5",
+      "type": "feature",
+      "start": 16.4,
+      "duration": 6,
+      "script": "Agents that actually do the work.",
+      "glows": [],
+      "camera": {
+        "tracks": [
+          {
+            "mode": "frame",
+            "at": 0,
+            "target": "b5-triage",
+            "size": 1,
+            "ms": 0
+          },
+          {
+            "mode": "frame",
+            "at": 1.1,
+            "target": "b5-triage",
+            "size": "medium",
+            "ms": 600,
+            "ease": "emphasis"
+          },
+          {
+            "mode": "frame",
+            "at": 2.7,
+            "target": "b5-report",
+            "size": "medium",
+            "ms": 0
+          },
+          {
+            "mode": "frame",
+            "at": 4.45,
+            "target": "b5-run",
+            "size": 2.2,
+            "ms": 0
+          },
+          {
+            "mode": "frame",
+            "at": 5.35,
+            "target": "b5-triage",
+            "size": 1,
+            "ms": 500
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "b5-head",
+          "type": "text",
+          "text": "Agents that actually do the work",
+          "style": {
+            "role": "headline"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.14,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.12
+              }
+            }
+          },
+          "opacity": 0,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.2,
+              "ms": 80,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.2,
+              "ms": 300,
+              "from": 1.25,
+              "to": 1,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.2,
+              "ms": 300,
+              "from": 40,
+              "to": 0,
+              "ease": "emphasis",
+              "staggerMs": 12
+            }
+          ],
+          "wrap": {
+            "maxWidth": 1700,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 520
+              }
+            }
+          }
+        },
+        {
+          "id": "b5-triage",
+          "type": "rect",
+          "w": 640,
+          "h": 400,
+          "radius": 28,
+          "fill": "tokens.surface",
+          "anchor": {
+            "x": 0.31,
+            "y": 0.52,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.38,
+                "scale": 0.7
+              }
+            }
+          },
+          "x": 0,
+          "tracks": [
+            {
+              "mode": "onHover",
+              "cursor": "b5-avatar",
+              "prop": "fill",
+              "to": "#2A3A7A",
+              "ms": 130,
+              "ease": "settle"
+            }
+          ],
+          "children": [
+            {
+              "id": "b5-triage-title",
+              "type": "text",
+              "text": "Triage tickets",
+              "style": {
+                "size": 48,
+                "weight": 700,
+                "align": "left"
+              },
+              "x": -256,
+              "y": -112
+            },
+            {
+              "id": "b5-triage-row-1",
+              "type": "text",
+              "text": "Reads every new ticket",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": -20.799999999999997,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 1.1,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b5-triage-row-2",
+              "type": "text",
+              "text": "Tags priority and owner",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": 27.200000000000003,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 1.14,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b5-triage-row-3",
+              "type": "text",
+              "text": "Drafts the first reply",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": 75.2,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 1.18,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b5-report",
+          "type": "rect",
+          "w": 640,
+          "h": 400,
+          "radius": 28,
+          "fill": "tokens.surface",
+          "anchor": {
+            "x": 0.69,
+            "y": 0.52,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.66,
+                "scale": 0.7
+              }
+            }
+          },
+          "x": 0,
+          "tracks": [
+            {
+              "mode": "onHover",
+              "cursor": "b5-avatar",
+              "prop": "fill",
+              "to": "#2A3A7A",
+              "ms": 130,
+              "ease": "settle"
+            }
+          ],
+          "children": [
+            {
+              "id": "b5-report-title",
+              "type": "text",
+              "text": "Weekly report",
+              "style": {
+                "size": 48,
+                "weight": 700,
+                "align": "left"
+              },
+              "x": -256,
+              "y": -112
+            },
+            {
+              "id": "b5-report-row-1",
+              "type": "text",
+              "text": "Pulls numbers from 6 tools",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": -20.799999999999997,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 2.7,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b5-report-row-2",
+              "type": "text",
+              "text": "Writes the summary",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": 27.200000000000003,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 2.74,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b5-report-row-3",
+              "type": "text",
+              "text": "Posts it to #leadership",
+              "style": {
+                "size": 32,
+                "weight": 500,
+                "align": "left",
+                "color": "tokens.muted"
+              },
+              "x": -256,
+              "y": 75.2,
+              "clip": {
+                "x": 0,
+                "y": -32,
+                "w": 0,
+                "h": 64
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "clip.w",
+                  "at": 2.78,
+                  "ms": 220,
+                  "from": 0,
+                  "to": 512,
+                  "ease": "settle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b5-run",
+          "type": "rect",
+          "w": 300,
+          "h": 96,
+          "radius": 48,
+          "fill": "tokens.accent",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.82,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.86,
+                "scale": 0.9
+              }
+            }
+          },
+          "y": 0,
+          "tracks": [
+            {
+              "mode": "onHover",
+              "cursor": "b5-avatar",
+              "prop": "fill",
+              "to": "#A9BCFF",
+              "ms": 100,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 4.45,
+              "ms": 40,
+              "from": 1,
+              "to": 0.96,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 4.49,
+              "ms": 40,
+              "from": 0.96,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "children": [
+            {
+              "id": "b5-run-label",
+              "type": "text",
+              "text": "Run agent",
+              "style": {
+                "size": 34,
+                "weight": 700,
+                "color": "#0B0F24"
+              }
+            }
+          ]
+        },
+        {
+          "id": "b5-avatar",
+          "type": "cursor",
+          "style": "avatar",
+          "anchor": {
+            "x": 0.88,
+            "y": 0.9,
+            "overrides": {
+              "9:16": {
+                "x": 0.85,
+                "y": 0.88,
+                "scale": 0.7
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b5-triage",
+              "anchor": "bottom",
+              "offset": {
+                "x": 0.22,
+                "y": -0.12
+              },
+              "at": 0.6,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "moveTo",
+              "target": "b5-report",
+              "anchor": "bottom",
+              "offset": {
+                "x": 0.22,
+                "y": -0.12
+              },
+              "at": 2.2,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "moveTo",
+              "target": "b5-run",
+              "at": 3.8,
+              "ms": 500,
+              "ease": "emphasis",
+              "anchor": "right",
+              "offset": {
+                "x": -0.12,
+                "y": 0.3
+              }
+            },
+            {
+              "mode": "press",
+              "at": 4.45,
+              "ms": 80
+            }
+          ],
+          "size": 1.6
+        }
+      ]
+    },
+    {
+      "id": "b6",
+      "type": "proof",
+      "start": 22.4,
+      "duration": 4.6,
+      "script": "4,200+ hours saved every month.",
+      "glows": [],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b6-head",
+          "type": "text",
+          "text": "Numbers your CFO will ask about",
+          "style": {
+            "role": "headline"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.14,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.12
+              }
+            }
+          },
+          "opacity": 0,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.2,
+              "ms": 80,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.2,
+              "ms": 300,
+              "from": 1.25,
+              "to": 1,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.2,
+              "ms": 300,
+              "from": 40,
+              "to": 0,
+              "ease": "emphasis",
+              "staggerMs": 12
+            }
+          ],
+          "wrap": {
+            "maxWidth": 1700,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 520
+              }
+            }
+          }
+        },
+        {
+          "id": "b6-hours",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.4,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.36,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.5,
+              "ms": 400,
+              "from": -160,
+              "to": 0,
+              "ease": "bounce"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.5,
+              "ms": 100,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            }
+          ],
+          "children": [
+            {
+              "id": "b6-hours-band-5",
+              "type": "rect",
+              "w": 1,
+              "h": 1,
+              "radius": 9999,
+              "fill": "#7C9BFF0f",
+              "sizeToContent": {
+                "padX": 16,
+                "padY": 16
+              },
+              "children": [
+                {
+                  "id": "b6-hours-band-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#7C9BFF1f",
+                  "sizeToContent": {
+                    "padX": 16,
+                    "padY": 16
+                  },
+                  "children": [
+                    {
+                      "id": "b6-hours-band-3",
+                      "type": "rect",
+                      "w": 1,
+                      "h": 1,
+                      "radius": 9999,
+                      "fill": "#7C9BFF2e",
+                      "sizeToContent": {
+                        "padX": 16,
+                        "padY": 16
+                      },
+                      "children": [
+                        {
+                          "id": "b6-hours-band-2",
+                          "type": "rect",
+                          "w": 1,
+                          "h": 1,
+                          "radius": 9999,
+                          "fill": "#7C9BFF3d",
+                          "sizeToContent": {
+                            "padX": 16,
+                            "padY": 16
+                          },
+                          "children": [
+                            {
+                              "id": "b6-hours-band-1",
+                              "type": "rect",
+                              "w": 1,
+                              "h": 1,
+                              "radius": 9999,
+                              "fill": "#7C9BFF4d",
+                              "sizeToContent": {
+                                "padX": 16,
+                                "padY": 16
+                              },
+                              "children": [
+                                {
+                                  "id": "b6-hours-pill",
+                                  "type": "rect",
+                                  "w": 192,
+                                  "h": 192,
+                                  "radius": 9999,
+                                  "fill": "#7C9BFF",
+                                  "sizeToContent": {
+                                    "padX": 54,
+                                    "padY": 24
+                                  },
+                                  "children": [
+                                    {
+                                      "id": "b6-hours-value",
+                                      "type": "text",
+                                      "text": "4,200+",
+                                      "style": {
+                                        "size": 120,
+                                        "weight": 800,
+                                        "features": [
+                                          "tnum"
+                                        ]
+                                      },
+                                      "tracks": [
+                                        {
+                                          "mode": "count",
+                                          "prop": "text",
+                                          "at": 0.83,
+                                          "ms": 1100,
+                                          "from": 0,
+                                          "to": 4200,
+                                          "ease": "linear",
+                                          "decimals": 0,
+                                          "separator": ",",
+                                          "prefix": "",
+                                          "suffix": "+"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b6-hours-pulse",
+              "type": "rect",
+              "w": 192,
+              "h": 192,
+              "radius": 9999,
+              "stroke": {
+                "color": "#FFFFFF",
+                "width": 4
+              },
+              "sizeToContent": {
+                "padX": 54,
+                "padY": 24
+              },
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0,
+                  "ms": 0,
+                  "from": 0,
+                  "to": 0,
+                  "ease": "linear"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.93,
+                  "ms": 400,
+                  "from": 1,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 1.93,
+                  "ms": 400,
+                  "from": 1,
+                  "to": 1.5,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b6-hours-pulse-measure",
+                  "type": "text",
+                  "text": "4,200+",
+                  "style": {
+                    "size": 120,
+                    "weight": 800,
+                    "features": [
+                      "tnum"
+                    ]
+                  },
+                  "opacity": 0,
+                  "tracks": [
+                    {
+                      "mode": "count",
+                      "prop": "text",
+                      "at": 0.83,
+                      "ms": 1100,
+                      "from": 0,
+                      "to": 4200,
+                      "ease": "linear",
+                      "decimals": 0,
+                      "separator": ",",
+                      "prefix": "",
+                      "suffix": "+"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b6-cap",
+          "type": "text",
+          "text": "HOURS SAVED EVERY MONTH",
+          "style": {
+            "role": "label",
+            "color": "tokens.muted"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.54,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.47
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "tracking",
+              "at": 1.3,
+              "ms": 500,
+              "from": 0.6,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 1.3,
+              "ms": 250,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "id": "b6-stats",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.78,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.75,
+                "scale": 0.5
+              }
+            }
+          },
+          "layout": {
+            "type": "row",
+            "gap": 36,
+            "wrap": true,
+            "maxWidth": 1600,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 700,
+                "gap": 24
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b6-stats-card-1",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b6-stats-card-1-panel",
+                  "type": "rect",
+                  "w": 480,
+                  "h": 300,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b6-stats-card-1-n",
+                  "type": "text",
+                  "text": "38%",
+                  "style": {
+                    "size": 104,
+                    "weight": 800
+                  },
+                  "y": -36,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.45,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.45,
+                      "ms": 300,
+                      "from": -24,
+                      "to": -36,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b6-stats-card-1-l",
+                  "type": "text",
+                  "text": "faster resolution",
+                  "style": {
+                    "size": 34,
+                    "weight": 500,
+                    "color": "tokens.muted"
+                  },
+                  "y": 62,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.52,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.52,
+                      "ms": 300,
+                      "from": 74,
+                      "to": 62,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b6-stats-card-2",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.09,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.09,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b6-stats-card-2-panel",
+                  "type": "rect",
+                  "w": 480,
+                  "h": 300,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b6-stats-card-2-n",
+                  "type": "text",
+                  "text": "12",
+                  "style": {
+                    "size": 104,
+                    "weight": 800
+                  },
+                  "y": -36,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.54,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.54,
+                      "ms": 300,
+                      "from": -24,
+                      "to": -36,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b6-stats-card-2-l",
+                  "type": "text",
+                  "text": "tools connected",
+                  "style": {
+                    "size": 34,
+                    "weight": 500,
+                    "color": "tokens.muted"
+                  },
+                  "y": 62,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.61,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.61,
+                      "ms": 300,
+                      "from": 74,
+                      "to": 62,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b6-stats-card-3",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.18,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.18,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b6-stats-card-3-panel",
+                  "type": "rect",
+                  "w": 480,
+                  "h": 300,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b6-stats-card-3-n",
+                  "type": "text",
+                  "text": "24/7",
+                  "style": {
+                    "size": 104,
+                    "weight": 800
+                  },
+                  "y": -36,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.63,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.63,
+                      "ms": 300,
+                      "from": -24,
+                      "to": -36,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b6-stats-card-3-l",
+                  "type": "text",
+                  "text": "always on",
+                  "style": {
+                    "size": 34,
+                    "weight": 500,
+                    "color": "tokens.muted"
+                  },
+                  "y": 62,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.7,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 2.7,
+                      "ms": 300,
+                      "from": 74,
+                      "to": 62,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b7",
+      "type": "proof",
+      "start": 27,
+      "duration": 4.4,
+      "script": "Trusted by teams that ship.",
+      "transition": {
+        "type": "smear",
+        "ms": 133,
+        "direction": "left"
+      },
+      "glows": [],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b7-head",
+          "type": "text",
+          "text": "Trusted by teams that ship",
+          "style": {
+            "role": "headline",
+            "gradient": {
+              "from": "#7C9BFF",
+              "to": "#FF7AD9",
+              "amount": 1
+            }
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.22,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.18,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.333,
+              "ms": 270,
+              "from": 0,
+              "to": 1,
+              "ease": "settle",
+              "staggerMs": 30
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 0.333,
+              "ms": 270,
+              "from": 30,
+              "to": 0,
+              "ease": "settle",
+              "staggerMs": 30
+            },
+            {
+              "mode": "tween",
+              "prop": "gradient.amount",
+              "at": 1.353,
+              "ms": 500,
+              "from": 1,
+              "to": 0,
+              "ease": "settle"
+            }
+          ]
+        },
+        {
+          "id": "b7-logos",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.6,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.56,
+                "scale": 0.62
+              }
+            }
+          },
+          "layout": {
+            "type": "column",
+            "gap": 36
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b7-logos-row-1",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 36
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 1.233,
+                  "ms": 3600,
+                  "from": 0,
+                  "to": -216,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b7-logos-row-1-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-1-label",
+                      "type": "text",
+                      "text": "Northwind",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.873625,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-2-label",
+                      "type": "text",
+                      "text": "Acme Cloud",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.742375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-3-label",
+                      "type": "text",
+                      "text": "Orbital",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.633,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-4-label",
+                      "type": "text",
+                      "text": "Fathom",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.742375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-5-label",
+                      "type": "text",
+                      "text": "Kestrel",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.873625,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-6-label",
+                      "type": "text",
+                      "text": "Brightline",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-1-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-1-pill-7-label",
+                      "type": "text",
+                      "text": "Northwind",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b7-logos-row-2",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 36
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 1.233,
+                  "ms": 3600,
+                  "from": 0,
+                  "to": 216,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b7-logos-row-2-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-1-label",
+                      "type": "text",
+                      "text": "Halcyon",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.931125,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-2-label",
+                      "type": "text",
+                      "text": "Mesa Labs",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.794563,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-3-label",
+                      "type": "text",
+                      "text": "Tidewater",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.668625,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-4-label",
+                      "type": "text",
+                      "text": "Pioneer",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.712063,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-5-label",
+                      "type": "text",
+                      "text": "Juniper",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.816125,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-6-label",
+                      "type": "text",
+                      "text": "Ravel",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.920187,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-7-label",
+                      "type": "text",
+                      "text": "Halcyon",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-2-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-2-pill-8-label",
+                      "type": "text",
+                      "text": "Mesa Labs",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b7-logos-row-3",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 36
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 1.233,
+                  "ms": 3600,
+                  "from": 0,
+                  "to": -216,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b7-logos-row-3-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-1-label",
+                      "type": "text",
+                      "text": "Signal",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-2-label",
+                      "type": "text",
+                      "text": "Atlas",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.857375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-3-label",
+                      "type": "text",
+                      "text": "Parallel",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.737063,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-4-label",
+                      "type": "text",
+                      "text": "Lantern",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.643938,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-5-label",
+                      "type": "text",
+                      "text": "Monarch",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.748,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-6-label",
+                      "type": "text",
+                      "text": "Verge",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.846438,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-7-label",
+                      "type": "text",
+                      "text": "Signal",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-8-label",
+                      "type": "text",
+                      "text": "Atlas",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b7-logos-row-3-pill-9",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "tokens.surface",
+                  "sizeToContent": {
+                    "padX": 44,
+                    "padY": 22
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.933,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b7-logos-row-3-pill-9-label",
+                      "type": "text",
+                      "text": "Parallel",
+                      "style": {
+                        "size": 60,
+                        "weight": 700
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "b8",
+      "type": "summary",
+      "start": 31.4,
+      "duration": 3.4,
+      "script": "Three steps to your first agent.",
+      "glows": [],
+      "camera": {
+        "tracks": [
+          {
+            "mode": "frame",
+            "at": 2.7,
+            "ms": 500,
+            "target": "b8-num-d1",
+            "size": 12,
+            "ease": "emphasis",
+            "offset": {
+              "x": 0,
+              "y": 0.1
+            }
+          }
+        ]
+      },
+      "nodes": [
+        {
+          "id": "b8-num",
+          "type": "group",
+          "anchor": {
+            "x": 0.33,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.38,
+                "scale": 0.9
+              }
+            }
+          },
+          "layout": {
+            "type": "row",
+            "gap": 77
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.2,
+              "ms": 800,
+              "from": 0.35,
+              "to": 1,
+              "ease": "emphasis"
+            }
+          ],
+          "children": [
+            {
+              "id": "b8-num-d1",
+              "type": "text",
+              "text": "3",
+              "style": {
+                "size": 640,
+                "weight": 800,
+                "color": "tokens.accent",
+                "tracking": 0,
+                "extrude": {
+                  "depth": 38,
+                  "dx": 0.55,
+                  "dy": 0.55
+                }
+              },
+              "rotY": 90,
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "rotY",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 90,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.2,
+                  "ms": 120,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "linear"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "extrude.depth",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 38,
+                  "ease": "settle"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b8-steps",
+          "type": "text",
+          "text": "steps to go live",
+          "style": {
+            "role": "headline",
+            "align": "left"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.16,
+                "y": 0.72,
+                "scale": 1
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "axis.slnt",
+              "at": 0.5,
+              "ms": 270,
+              "from": -12,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.5,
+              "ms": 162,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "wrap": {
+            "maxWidth": 800,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 420
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "b9",
+      "type": "cta",
+      "start": 34.8,
+      "duration": 5,
+      "script": "Connect, describe, run. lumen.app/start",
+      "transition": {
+        "type": "crossfade",
+        "ms": 200
+      },
+      "glows": [],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b9-steps",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.36,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.34,
+                "scale": 0.62
+              }
+            }
+          },
+          "layout": {
+            "type": "row",
+            "gap": 36,
+            "wrap": true,
+            "maxWidth": 1700,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 700,
+                "gap": 24
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b9-steps-card-1",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.2,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.2,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b9-steps-card-1-panel",
+                  "type": "rect",
+                  "w": 520,
+                  "h": 330,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b9-steps-card-1-n",
+                  "type": "rect",
+                  "w": 84,
+                  "h": 84,
+                  "radius": 42,
+                  "fill": "tokens.accent",
+                  "x": -176,
+                  "y": -80,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.65,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.65,
+                      "ms": 300,
+                      "from": -68,
+                      "to": -80,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b9-steps-card-1-nn",
+                      "type": "text",
+                      "text": "1",
+                      "style": {
+                        "size": 42,
+                        "weight": 800,
+                        "color": "#0B0F24"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b9-steps-card-1-l",
+                  "type": "text",
+                  "text": "Connect your tools",
+                  "style": {
+                    "size": 44,
+                    "weight": 700,
+                    "align": "left"
+                  },
+                  "x": -218,
+                  "y": 50,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 62,
+                      "to": 50,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b9-steps-card-2",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.31,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.31,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b9-steps-card-2-panel",
+                  "type": "rect",
+                  "w": 520,
+                  "h": 330,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b9-steps-card-2-n",
+                  "type": "rect",
+                  "w": 84,
+                  "h": 84,
+                  "radius": 42,
+                  "fill": "tokens.accent",
+                  "x": -176,
+                  "y": -80,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.76,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.76,
+                      "ms": 300,
+                      "from": -68,
+                      "to": -80,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b9-steps-card-2-nn",
+                      "type": "text",
+                      "text": "2",
+                      "style": {
+                        "size": 42,
+                        "weight": 800,
+                        "color": "#0B0F24"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b9-steps-card-2-l",
+                  "type": "text",
+                  "text": "Describe the job",
+                  "style": {
+                    "size": 44,
+                    "weight": 700,
+                    "align": "left"
+                  },
+                  "x": -218,
+                  "y": 50,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.83,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.83,
+                      "ms": 300,
+                      "from": 62,
+                      "to": 50,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b9-steps-card-3",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.42,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.42,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b9-steps-card-3-panel",
+                  "type": "rect",
+                  "w": 520,
+                  "h": 330,
+                  "radius": 36,
+                  "fill": "tokens.surface"
+                },
+                {
+                  "id": "b9-steps-card-3-n",
+                  "type": "rect",
+                  "w": 84,
+                  "h": 84,
+                  "radius": 42,
+                  "fill": "tokens.accent",
+                  "x": -176,
+                  "y": -80,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.87,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.87,
+                      "ms": 300,
+                      "from": -68,
+                      "to": -80,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b9-steps-card-3-nn",
+                      "type": "text",
+                      "text": "3",
+                      "style": {
+                        "size": 42,
+                        "weight": 800,
+                        "color": "#0B0F24"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b9-steps-card-3-l",
+                  "type": "text",
+                  "text": "Let the agent run",
+                  "style": {
+                    "size": 44,
+                    "weight": 700,
+                    "align": "left"
+                  },
+                  "x": -218,
+                  "y": 50,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.94,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.94,
+                      "ms": 300,
+                      "from": 62,
+                      "to": 50,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b9-url",
+          "type": "text",
+          "text": "lumen.app/start",
+          "style": {
+            "role": "headline",
+            "color": "tokens.muted"
+          },
+          "anchor": {
+            "x": 0.5,
+            "y": 0.72,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.66,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "typewriter",
+              "prop": "glyph.opacity",
+              "at": 1.6,
+              "ms": 682,
+              "cps": 22,
+              "tail": {
+                "len": 3,
+                "color": "tokens.accent",
+                "decayMs": 136,
+                "strength": 1
+              },
+              "caret": {
+                "style": "bar",
+                "blinkMs": 500,
+                "holdAfterMs": 900,
+                "preScale": 1
+              }
+            }
+          ]
+        },
+        {
+          "id": "b9-btn",
+          "type": "rect",
+          "w": 460,
+          "h": 120,
+          "radius": 60,
+          "fill": "tokens.accent",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.87,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.8,
+                "scale": 0.8
+              }
+            }
+          },
+          "opacity": 0,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 2.4,
+              "ms": 200,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 2.4,
+              "ms": 500,
+              "from": 40,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "onHover",
+              "cursor": "b9-cursor",
+              "prop": "fill",
+              "to": "#A9BCFF",
+              "ms": 100,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 3.65,
+              "ms": 40,
+              "from": 1,
+              "to": 0.96,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 3.69,
+              "ms": 40,
+              "from": 0.96,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "children": [
+            {
+              "id": "b9-btn-label",
+              "type": "text",
+              "text": "Start free",
+              "style": {
+                "size": 44,
+                "weight": 800,
+                "color": "#0B0F24"
+              }
+            }
+          ]
+        },
+        {
+          "id": "b9-cursor",
+          "type": "cursor",
+          "style": "arrow",
+          "anchor": {
+            "x": 0.8,
+            "y": 0.95,
+            "overrides": {
+              "9:16": {
+                "x": 0.8,
+                "y": 0.95,
+                "scale": 0.7
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b9-btn",
+              "at": 3,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "press",
+              "at": 3.65,
+              "ms": 80
+            }
+          ],
+          "size": 2
+        }
+      ]
+    },
+    {
+      "id": "b10",
+      "type": "cta",
+      "start": 39.8,
+      "duration": 3,
+      "script": "Lumen.",
+      "transition": {
+        "type": "curtain",
+        "ms": 400,
+        "direction": "up",
+        "color": "#0B0F24"
+      },
+      "glows": [],
+      "camera": {
+        "tracks": []
+      },
+      "nodes": [
+        {
+          "id": "b10-mark",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.46,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.44,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.4,
+              "ms": 400,
+              "from": 1,
+              "to": 0.6,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 0.4,
+              "ms": 400,
+              "from": 0,
+              "to": -120,
+              "ease": "emphasis"
+            }
+          ],
+          "children": [
+            {
+              "id": "b10-mark-echo-4",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 300,
+                "weight": 800,
+                "tracking": -0.03
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 480,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.15,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.2,
+                  "ms": 200,
+                  "from": 0.15,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b10-mark-echo-3",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 300,
+                "weight": 800,
+                "tracking": -0.03
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 360,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.25,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.2,
+                  "ms": 200,
+                  "from": 0.25,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b10-mark-echo-2",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 300,
+                "weight": 800,
+                "tracking": -0.03
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 240,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.4,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.2,
+                  "ms": 200,
+                  "from": 0.4,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b10-mark-echo-1",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 300,
+                "weight": 800,
+                "tracking": -0.03
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 120,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.6,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 2.2,
+                  "ms": 200,
+                  "from": 0.6,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b10-mark-word",
+              "type": "text",
+              "text": "Lumen",
+              "style": {
+                "size": 300,
+                "weight": 800,
+                "tracking": -0.03
+              }
+            }
+          ]
+        },
+        {
+          "id": "b10-buddy",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.74,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.64,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 0.6,
+              "ms": 200,
+              "from": -320,
+              "to": 0,
+              "ease": "bounce"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.6,
+              "ms": 100,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            }
+          ],
+          "children": [
+            {
+              "id": "b10-buddy-body",
+              "type": "rect",
+              "w": 160,
+              "h": 160,
+              "radius": 51,
+              "fill": "tokens.accent",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 1.1,
+                  "ms": 600,
+                  "from": 0,
+                  "to": -3,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 1.7,
+                  "ms": 600,
+                  "from": -3,
+                  "to": 3,
+                  "ease": "emphasis"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.3,
+                  "ms": 600,
+                  "from": 3,
+                  "to": -3,
+                  "ease": "emphasis"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b10-buddy-eye-1",
+                  "type": "rect",
+                  "w": 27,
+                  "h": 35,
+                  "radius": 27,
+                  "fill": "#FFFFFF",
+                  "x": -32,
+                  "y": -13,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-pupil-1",
+                  "type": "rect",
+                  "w": 14,
+                  "h": 14,
+                  "radius": 14,
+                  "fill": "#14161C",
+                  "x": -29,
+                  "y": -9,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-lid-1",
+                  "type": "rect",
+                  "w": 27,
+                  "h": 4,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": -32,
+                  "y": -8,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-eye-2",
+                  "type": "rect",
+                  "w": 27,
+                  "h": 35,
+                  "radius": 27,
+                  "fill": "#FFFFFF",
+                  "x": 32,
+                  "y": -13,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-pupil-2",
+                  "type": "rect",
+                  "w": 14,
+                  "h": 14,
+                  "radius": 14,
+                  "fill": "#14161C",
+                  "x": 35,
+                  "y": -9,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-lid-2",
+                  "type": "rect",
+                  "w": 27,
+                  "h": 4,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": 32,
+                  "y": -8,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.9,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
+                },
+                {
+                  "id": "b10-buddy-mouth",
+                  "type": "path",
+                  "d": "M -19 0 Q 0 16 19 0",
+                  "stroke": "#14161C",
+                  "y": 35,
+                  "strokeWidth": 6
+                }
+              ],
+              "surface": "card"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

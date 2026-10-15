@@ -3,7 +3,7 @@
 // Built from primitives: a group (the word on top, copies drawn faintest-first beneath it) whose scale and position
 // carry the recede; each copy tweens out to its slot and opacity, then the trail fades on `fadeAt`.
 import { group } from "./assemble";
-import { result, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, type TweenTrackIn } from "./macro";
+import { result, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, type TweenTrackIn, sizeOf } from "./macro";
 
 export interface EchoTrailParams {
   id: string;                     // group; children <id>-echo-<n> (n = 1 nearest) and <id>-word
@@ -24,7 +24,7 @@ export interface EchoTrailParams {
 export function echoTrail(p: EchoTrailParams): MacroResult {
   const ms = p.ms ?? 400, axis = p.axis ?? "y";
   const ops = p.opacities ?? [0.6, 0.4, 0.25, 0.15];
-  const spacing = p.spacing ?? Math.round(p.style.size * 0.4);
+  const spacing = p.spacing ?? Math.round(sizeOf(p.style) * 0.4);
   const copies: NodeIn[] = ops.map((op, k) => ({ i: k + 1, op })).reverse().map(({ i, op }) => {
     const tracks: TweenTrackIn[] = [
       { mode: "tween", prop: axis, at: p.at, ms, from: 0, to: i * spacing, ease: "settle" },

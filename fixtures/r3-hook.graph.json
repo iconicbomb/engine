@@ -12,6 +12,11 @@
     "bracket": "#4A5A8A",
     "font": "Inter"
   },
+  "style": {
+    "field": {
+      "mode": "none"
+    }
+  },
   "timing": {
     "cps": 26,
     "enterMs": 400,

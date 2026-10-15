@@ -5,7 +5,7 @@
 // `layout: column` group, so spacing is exact. Rows repeat their items until they cover the canvas plus the scroll
 // travel on both sides (the repeat count and the pop cascade's timing use an estimated label width, ~0.58 em/char).
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn } from "./macro";
+import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, sizeOf } from "./macro";
 
 export interface PillMarqueeParams {
   id: string;                     // group; rows <id>-row-<r>, pills <id>-row-<r>-pill-<n>
@@ -26,7 +26,7 @@ export interface PillMarqueeParams {
 }
 
 export function pillMarquee(p: PillMarqueeParams): MacroResult {
-  const size = p.style.size, speed = p.speed ?? 40, popTotal = p.popTotalMs ?? 600, popMs = p.popMs ?? 300;
+  const size = sizeOf(p.style), speed = p.speed ?? 40, popTotal = p.popTotalMs ?? 600, popMs = p.popMs ?? 300;
   const padX = p.padX ?? Math.round(size * 0.7), padY = p.padY ?? Math.round(size * 0.35);
   const gap = p.gap ?? Math.round(size * 0.6), rowGap = p.rowGap ?? Math.round(size * 0.7);
   const travel = (speed * p.scrollMs) / 1000, cover = (p.coverWidth ?? 1920) + 2 * travel + 400;

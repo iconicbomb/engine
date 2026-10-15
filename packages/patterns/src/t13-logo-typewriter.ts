@@ -6,7 +6,7 @@
 // scales down at 9:16 so the mark stays on canvas. Not modelled yet: the mark "splitting/widening" as the wordmark
 // leaves it, and R7's 130 ms wordmark wipe.
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type MacroResult, type TextStyleIn, type TypewriterTrackIn } from "./macro";
+import { result, sec, type AnchorIn, type MacroResult, type TextStyleIn, type TypewriterTrackIn, sizeOf } from "./macro";
 import { withTypingMs } from "./typing";
 
 export interface LogoTypewriterParams {
@@ -24,8 +24,8 @@ export interface LogoTypewriterParams {
 export function logoTypewriter(p: LogoTypewriterParams): MacroResult {
   const n = [...p.text].length;
   const typeMs = p.typeMs ?? 400;
-  const size = p.mark?.size ?? Math.round(p.style.size * 0.8);
-  const gap = p.mark?.gap ?? Math.round(p.style.size * 0.2);
+  const size = p.mark?.size ?? Math.round(sizeOf(p.style) * 0.8);
+  const gap = p.mark?.gap ?? Math.round(sizeOf(p.style) * 0.2);
   const track: TypewriterTrackIn = {
     mode: "typewriter",
     prop: "glyph.opacity",

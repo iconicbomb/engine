@@ -189,13 +189,15 @@ assert(s10.rotY === 14 && s10.rotX === 6 && s10.tracks[0].prop === "rotY" && s10
   && s10.tracks[2].to === 1.06 && s10.tracks[2].ease === "linear" && s10.tracks[2].ms === 3000 && s10.tracks[3].to === -60,
   "S10: plane tilted 14 / 6 deg, enters from 34 deg, dolly 2 %/s (1 -> 1.06 over 3 s), linear pan");
 
-// S11: seven-segment slabs turn in about Y (400 ms, 70 ms stagger), numeral scales up 800 ms emphasis, fly-through frame
+// S11: extruded glyph digits turn in about Y (400 ms, 70 ms stagger) with their depth growing, numeral scales up 800 ms
+// emphasis, fly-through frame
 const s11 = slabNumeral({ id: "b1-n", value: "17", size: 400, at: 0.2, flyThrough: { at: 2 } });
-const s11n: any = s11.nodes[0], slabs = s11n.children.flatMap((d: any) => d.children);
-assert(slabs.length === 2 + 3 && slabs.every((sl: any) => sl.rotY === 90 && sl.tracks[0].prop === "rotY" && sl.tracks[0].ms === 400)
-  && slabs.map((sl: any) => sl.tracks[0].at).join() === "0.2,0.27,0.34,0.41,0.48" && s11n.tracks[0].ms === 800 && s11n.tracks[0].ease === "emphasis"
-  && s11.camera[0].mode === "frame" && s11.camera[0].ms === 400 && throws(() => slabNumeral({ id: "b1-n", value: "x", size: 10, at: 0 })),
-  "S11: '17' = 2 + 3 slabs turning in (400 ms, 70 ms apart), 800 ms emphasis scale-up, 400 ms fly-through frame");
+const s11n: any = s11.nodes[0], digits = s11n.children;
+assert(digits.length === 2 && digits.every((d: any) => d.type === "text" && d.rotY === 90 && d.style.extrude.depth === 24 && d.tracks[0].prop === "rotY" && d.tracks[0].ms === 400
+  && d.tracks.some((t: any) => t.prop === "extrude.depth"))
+  && digits.map((d: any) => d.tracks[0].at).join() === "0.2,0.27" && s11n.tracks[0].ms === 800 && s11n.tracks[0].ease === "emphasis"
+  && s11.camera[0].mode === "frame" && s11.camera[0].ms === 400 && s11.camera[0].target === "b1-n-d1",
+  "S11: '17' = 2 extruded glyph digits turning in (400 ms, 70 ms apart), depth growing, 800 ms emphasis scale-up, 400 ms fly-through frame");
 
 // S12: strokes matched by nearest midpoint, rotate the short way, lengths via symmetric trim; extras grow in / shrink out
 const s12: any = strokeMorph({ id: "b1-g", at: 0.5, from: [{ x1: -100, y1: -100, x2: 100, y2: 100 }], to: [{ x1: -100, y1: 100, x2: 100, y2: -100 }, { x1: 300, y1: 0, x2: 300, y2: 50 }] }).nodes[0];
@@ -249,7 +251,7 @@ for (const [name, build] of Object.entries(SCENES)) {
   else {
     const built: any = buildShowcase(), committed = parseGraph(JSON.parse(readFileSync(file, "utf8")));
     const json = JSON.stringify(built);
-    const sceneCount = Object.keys(SCENES).length, xfades = built.beats.filter((b: any) => b.transition?.type === "crossfade").length;
+    const sceneCount = Object.keys(SCENES).filter((n) => n !== "promo").length, xfades = built.beats.filter((b: any) => b.transition?.type === "crossfade").length;
     const last = built.beats.at(-1);
     assert(isDeepStrictEqual(parseGraph(built), committed) && !/"tokens\./.test(json) && xfades >= sceneCount - 1
       && built.beats.every((b: any, i: number) => b.id === `b${i + 1}`),

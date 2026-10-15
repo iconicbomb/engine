@@ -1,7 +1,7 @@
 // @engine/runtime — Canvas 2D implementation of `Runtime`. renderFrame(graph, t) is a pure function of its inputs:
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
-import type { Graph, Node, Track, Beat } from "@engine/graph";
-import { glyphTime, glyphHideTime, typewriterEnd, formatCount, transitionParams } from "@engine/graph";
+import type { Graph, Node, Track, Beat, Field } from "@engine/graph";
+import { glyphTime, glyphHideTime, typewriterEnd, formatCount, transitionParams, resolveTextStyle } from "@engine/graph";
 import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, dirVec, pathLength, pathBounds, anchorPoint, wirePath, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
@@ -80,8 +80,11 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const beat = pickBeat(graph.beats, tSec);
     const prev = previousBeat(graph.beats, beat);
     const tp = beat.transition ? transitionParams(beat.transition) : null;
-    if (!tp || !prev || tp.ms <= 0 || tSec < beat.start || tSec >= beat.start + tp.ms / 1000) return drawBeat(graph, beat, tSec, target);
-    drawTransition(graph, prev, beat, tSec, target, tp);
+    if (!tp || !prev || tp.ms <= 0 || tSec < beat.start || tSec >= beat.start + tp.ms / 1000) drawBeat(graph, beat, tSec, target);
+    else drawTransition(graph, prev, beat, tSec, target, tp);
+    // grain goes over the finished frame (both paths), keyed by the frame index so each frame is its own function of t
+    const field = fieldOf(graph, beat);
+    if (field.mode === "auto" && field.grain > 0) drawGrain(target.ctx, target.width, target.height, field.grain, Math.round(tSec * graph.canvas.fps));
   }
 
   // offscreen buffers for compositing transitions (fully overwritten before each use)
@@ -164,7 +167,12 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     else { ctx.fillStyle = color(beat.background, tokens); ctx.fillRect(0, 0, target.width, target.height); }
     ctx.setTransform(k, 0, 0, k, 0, 0);
 
-    if (layer !== "content") drawGlows(beat, ctx, tokens, tl, w, h);
+    const field = fieldOf(graph, beat);
+    if (layer !== "content") {
+      if (field.mode === "auto" && beat.glows.length === 0 && field.glow > 0) drawGlows(derivedGlows(field, tokens), ctx, tokens, tl, w, h);
+      else drawGlows(beat.glows, ctx, tokens, tl, w, h);
+      if (field.mode === "auto" && field.vignette > 0) drawVignette(ctx, w, h, field.vignette);
+    }
     if (layer === "background") return;
     if (offset) ctx.translate(offset.x, offset.y);
     // camera over nodes and cursors (glows stay put); skipped entirely when it is the identity
@@ -231,14 +239,70 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     return out;
   }
   function fullTextBox(L: ReturnType<typeof layoutText>): Box {
-    const { metrics, size, baseline, fullScale: fs, fullWidth: fw, style } = L;
+    const { fullScale: fs, fullWidth: fw, style, nLines, blockLeft, blockRight, blockTop, blockBottom } = L;
+    if (nLines > 1) return { left: blockLeft * fs, right: blockRight * fs, top: blockTop * fs, bottom: blockBottom * fs };
     const x0 = style.align === "left" ? 0 : style.align === "right" ? -fw : -fw / 2;
-    return { left: x0 * fs, right: (x0 + fw) * fs, top: (baseline - metrics.ascender * size) * fs, bottom: (baseline - metrics.descender * size) * fs };
+    return { left: x0 * fs, right: (x0 + fw) * fs, top: blockTop * fs, bottom: blockBottom * fs };
+  }
+
+  // ---------- background field (look layer) ----------
+  function fieldOf(graph: Graph, beat: Beat): Field { return beat.field ?? graph.style.field; }
+  // the R3-measured two-glow profile, tinted from tokens.glow (else the accent), scaled by the field's glow
+  function derivedGlows(field: Field, tokens: Record<string, string>): Beat["glows"] {
+    const c = field.glowColor ? color(field.glowColor, tokens) : tokens.glow ? tokens.glow : deepen(resolveToken("tokens.accent", tokens));
+    return [
+      { x: 0.5, y: 1.03, rx: 0.72, ry: 0.9, color: c, intensity: Math.min(1, 0.39 * field.glow), tracks: [] },
+      { x: 0.5, y: -0.03, rx: 0.6, ry: 0.65, color: c, intensity: Math.min(1, 0.2 * field.glow), tracks: [] },
+    ];
+  }
+  // edge darkening over the background: transparent to `amount` black from 55 % of the half-diagonal to the corners
+  function drawVignette(ctx: CanvasRenderingContext2D, w: number, h: number, amount: number) {
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+    const R = Math.hypot(w, h) / 2;
+    const g = ctx.createRadialGradient(w / 2, h / 2, R * 0.55, w / 2, h / 2, R);
+    g.addColorStop(0, "rgba(0,0,0,0)");
+    g.addColorStop(1, `rgba(0,0,0,${amount.toFixed(3)})`);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+  // grain: a 256 px tile of deterministic noise (xorshift from a fixed seed), drawn over the finished frame at `amount`
+  // with a per-frame tile offset hashed from the frame index — the same frame always gets the same grain.
+  let grainTile: HTMLCanvasElement | OffscreenCanvas | null = null;
+  function grainPattern(ctx: CanvasRenderingContext2D): CanvasPattern | null {
+    if (!grainTile) {
+      const N = 256;
+      const c = typeof OffscreenCanvas !== "undefined" ? new OffscreenCanvas(N, N) : Object.assign(document.createElement("canvas"), { width: N, height: N });
+      const g = c.getContext("2d") as unknown as CanvasRenderingContext2D;
+      const img = g.createImageData(N, N);
+      let s = 0x9e3779b9 >>> 0;
+      const rnd = () => { s ^= s << 13; s >>>= 0; s ^= s >>> 17; s ^= s << 5; s >>>= 0; return s / 4294967296; };
+      for (let i = 0; i < N * N; i++) {
+        const v = Math.round(255 * ((rnd() + rnd()) / 2));   // triangular: mostly mid grey
+        img.data[i * 4] = v; img.data[i * 4 + 1] = v; img.data[i * 4 + 2] = v; img.data[i * 4 + 3] = 255;
+      }
+      g.putImageData(img, 0, 0);
+      grainTile = c;
+    }
+    return ctx.createPattern(grainTile as CanvasImageSource, "repeat");
+  }
+  function drawGrain(ctx: CanvasRenderingContext2D, width: number, height: number, amount: number, frame: number) {
+    const pat = grainPattern(ctx);
+    if (!pat) return;
+    const hx = ((frame * 73 + 17) * 2654435761 >>> 0) % 256, hy = ((frame * 151 + 5) * 2246822519 >>> 0) % 256;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, -hx, -hy);
+    ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = amount;
+    ctx.fillStyle = pat;
+    ctx.fillRect(0, 0, width + 256, height + 256);
+    ctx.restore();
   }
 
   // Background glows: additive elliptical radial gradients with a gaussian-like falloff that reaches zero.
-  function drawGlows(beat: Beat, ctx: CanvasRenderingContext2D, tokens: Record<string, string>, tl: number, w: number, h: number) {
-    for (const g of beat.glows) {
+  function drawGlows(glows: Beat["glows"], ctx: CanvasRenderingContext2D, tokens: Record<string, string>, tl: number, w: number, h: number) {
+    for (const g of glows) {
       let intensity = g.intensity;
       for (const tr of g.tracks) if (tr.mode === "tween" && tr.prop === "intensity") intensity = tweenValue(tr, tl, 0, intensity);
       if (intensity <= 0) continue;
@@ -359,7 +423,8 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   // drawText paints from it; sizeToContent measures with it without painting.
   function layoutText(node: TextNode, env: Env) {
     const { tokens, tl, fps } = env;
-    const style = node.style;
+    const rs = resolveTextStyle(node.style, env.w, env.h);   // role -> size / weight / tracking / alpha
+    const style = { ...node.style, size: rs.size, weight: rs.weight, tracking: rs.tracking, color: rs.color };
     const fontName = resolveToken(style.font, tokens);
     const size = style.size;
     const axes: Record<string, number> = { wght: style.weight, ...style.axes };
@@ -368,7 +433,8 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     for (const tag of new Set(axisCands.map((c) => c.tr.prop.slice(5)))) axes[tag] = resolve(`axis.${tag}`, axes[tag] ?? 0, tl, axisCands);
     let oblique = 0;
     if (axes.slnt !== undefined && !(shaper.axes?.(fontName) ?? {}).slnt) { oblique = axes.slnt; delete axes.slnt; }
-    const text = countText(node, tl) ?? node.text;
+    const rawText = countText(node, tl) ?? node.text;
+    const text = rs.uppercase ? rawText.toUpperCase() : rawText;
     const glyphs = shaper.shape(text, fontName, size, axes, style.features);
     const metrics = shaper.metrics(fontName);
     const chars = [...text];
@@ -392,18 +458,44 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const steps: { t: number; right: number }[] = [];
     // safe area: no text run may exceed 90% of the canvas width, whatever the aspect (9:16 reuses 16:9 graphs)
     const safeW = env.w * 0.9;
+    // word wrap: lines break inside wrapW (per-aspect override, clamped to the safe width); a wrapped block never
+    // needs the implicit safe-width fit, and an explicit fit measures the whole block
+    const wrapW = node.wrap ? Math.min(node.wrap.overrides?.[env.aspect]?.maxWidth ?? node.wrap.maxWidth, safeW) : undefined;
+    // ---- lines: one line (today's layout, bit-for-bit) or greedy word wrap inside wrap.maxWidth ----
+    // gpos[gi] = pen x of each glyph (before its xOffset) and the line's y offset; lineX0 / lineW / lineVisW per line.
+    const lineGap = (node.wrap?.lineHeight ?? 1.15) * size;
+    const lines: { from: number; to: number; w: number; visW: number }[] = [];   // glyph index ranges [from, to)
+    if (wrapW !== undefined) {
+      let li = 0, lineStart = 0, lineW = 0, wordStart = 0, wordW = 0;
+      const isSpace = (g: ShapedGlyph) => /\s/.test(g.glyph);
+      for (let gi = 0; gi < glyphs.length; gi++) {
+        const g = glyphs[gi];
+        wordW += advance(g);
+        if (isSpace(g) || gi === glyphs.length - 1) {
+          const wordNoSpace = wordW - (isSpace(g) ? advance(g) : 0);
+          if (lineW > 0 && lineW + wordNoSpace > wrapW) { lines.push({ from: lineStart, to: wordStart, w: lineW, visW: 0 }); li++; lineStart = wordStart; lineW = 0; }
+          lineW += wordW; wordStart = gi + 1; wordW = 0;   // the trailing space stays on the line (dropped from its width below)
+        }
+      }
+      lines.push({ from: lineStart, to: glyphs.length, w: lineW, visW: 0 });
+      // drop each line's trailing space from its width
+      for (const L of lines) { const last = glyphs[L.to - 1]; if (last && isSpace(last) && L.to > L.from) L.w -= advance(last); }
+    } else lines.push({ from: 0, to: glyphs.length, w: fullWidth, visW: visibleWidth });
+    // what a fit measures: the single run, or the wrapped block (widest line x all lines)
+    const fitW = wrapW === undefined ? fullWidth : Math.max(...lines.map((L) => L.w));
+    const fitLines = lines.length;
     const fit = node.fit
       ? { ...node.fit, w: Math.min(node.fit.w, safeW) }
-      : fullWidth > safeW ? { w: safeW, h: env.h, minScale: 0.1, recenter: true, easeMs: 0 } : undefined;
+      : wrapW === undefined && fullWidth > safeW ? { w: safeW, h: env.h, minScale: 0.1, recenter: true, easeMs: 0 } : undefined;
     if (fit) {
       const f = fit;
-      const lineH = size * (metrics.ascender - metrics.descender);
-      fullScale = fitScale(fullWidth, lineH, f.w, f.h, f.minScale);   // the scale once fully typed (measure pass)
-      if (tw) {
+      const lineH = size * (metrics.ascender - metrics.descender) + (fitLines - 1) * lineGap;
+      fullScale = fitScale(fitW, lineH, f.w, f.h, f.minScale);   // the scale once fully typed (measure pass)
+      if (tw && wrapW === undefined) {
         const stepScales = chars.map((_, i) => ({ t: glyphTime(tw, chars, i + 1), value: fitScale(widthUpTo(i + 1), lineH, f.w, f.h, f.minScale) }));
         scale = smoothedSteps(stepScales, tl, f.easeMs, fitScale(0, lineH, f.w, f.h, f.minScale));
       } else {
-        scale = fitScale(fullWidth, lineH, f.w, f.h, f.minScale);
+        scale = fitScale(fitW, lineH, f.w, f.h, f.minScale);
       }
     }
     // run origin (centre of the visible run on the anchor when recentering)
@@ -417,38 +509,86 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       for (let i = 0; i < chars.length; i++) steps.push({ t: glyphTime(tw, chars, i + 1), right: 0 }); // filled below
     }
 
-    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, fullScale, oblique };
+    const nLines = lines.length;
+    const lineX0 = lines.map((L) => wrapW === undefined ? x0 : style.align === "left" ? 0 : style.align === "right" ? -L.w : -L.w / 2);
+    const lineDy = lines.map((_, i) => (i - (nLines - 1) / 2) * lineGap);
+    const gpos: { x: number; y: number; line: number }[] = [];
+    lines.forEach((L, li) => {
+      let pen = lineX0[li], vis = 0;
+      for (let gi = L.from; gi < L.to; gi++) {
+        gpos.push({ x: pen, y: lineDy[li], line: li });
+        const g = glyphs[gi];
+        if (states[g.cluster]?.visible) vis = pen + advance(g) - lineX0[li];
+        pen += advance(g);
+      }
+      if (wrapW !== undefined) L.visW = Math.min(vis, L.w);
+    });
+    const blockTop = baseline - metrics.ascender * size + lineDy[0], blockBottom = baseline - metrics.descender * size + lineDy[nLines - 1];
+    const blockLeft = Math.min(...lineX0), blockRight = Math.max(...lines.map((L, i) => lineX0[i] + L.w));
+
+    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, fullScale, oblique, alpha: rs.alpha,
+      lines, lineX0, lineDy, gpos, nLines, blockTop, blockBottom, blockLeft, blockRight };
   }
   // the text's box in its own space (after its fit scale), as drawText reports it
   function textBox(L: ReturnType<typeof layoutText>): Box {
-    const { metrics, size, baseline, scale, x0, visibleWidth } = L;
-    return { left: x0 * scale, right: (x0 + visibleWidth) * scale, top: (baseline - metrics.ascender * size) * scale, bottom: (baseline - metrics.descender * size) * scale };
+    const { scale, x0, visibleWidth, blockTop, blockBottom, nLines, blockLeft, blockRight } = L;
+    if (nLines > 1) return { left: blockLeft * scale, right: blockRight * scale, top: blockTop * scale, bottom: blockBottom * scale };
+    return { left: x0 * scale, right: (x0 + visibleWidth) * scale, top: blockTop * scale, bottom: blockBottom * scale };
   }
 
   function drawText(node: TextNode, env: Env): Extents & { scale: number } {
     const { ctx, tokens, tl } = env;
     const L = layoutText(node, env);
-    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, oblique } = L;
+    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, oblique, alpha, gpos, lines, lineX0, lineDy, nLines, blockTop, blockBottom, blockLeft, blockRight } = L;
     ctx.save();
     ctx.scale(scale, scale);
+    if (alpha < 1) ctx.globalAlpha *= alpha;             // a role's text alpha (body 70 %, label 55 %)
     const baseColor = color(style.color, tokens);
     const grad = gradientOf(node, tl);
     const tailColor = tw ? color(tw.tail.color, tokens) : baseColor;
     const sweep = sweepAt(node, tl);
     const sweepColor = sweep ? color(sweep.track.color, tokens) : baseColor;
 
+    // extrusion (look layer / S11): side copies of every glyph behind the face, back to front, before the faces
+    const ex = style.extrude;
+    if (ex) {
+      const depthCands = (node.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop === "extrude.depth").map((tr) => ({ tr, start: tr.at }));
+      const depth = depthCands.length ? resolve("extrude.depth", ex.depth, tl, depthCands) : ex.depth;
+      const side = ex.color ? color(ex.color, tokens) : lighten(baseColor.startsWith("#") ? baseColor : "#888888", -0.4);
+      const steps = Math.max(1, Math.ceil(depth));
+      ctx.save();
+      ctx.fillStyle = side;
+      for (let i = steps; i >= 1; i--) {
+        const f = (i / steps) * depth;
+        for (let gi = 0; gi < glyphs.length; gi++) {
+          const g = glyphs[gi];
+          const st = states[g.cluster] ?? states[states.length - 1];
+          if (st?.visible) {
+            const gp = glyphProps(node, tl, g.cluster, tw ? glyphTime(tw, chars, g.cluster) : 0);
+            if (gp.opacity > 0) {
+              ctx.save();
+              ctx.translate(gpos[gi].x + g.xOffset + gp.x + ex.dx * f, baseline + gpos[gi].y + g.yOffset + gp.y + ex.dy * f);
+              if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
+              ctx.globalAlpha *= clamp01(gp.opacity);
+              ctx.fill(path2d(st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes, style.features) : g.d));
+              ctx.restore();
+            }
+          }
+        }
+      }
+      ctx.restore();
+    }
     // pass 1: glyphs
-    let pen = x0;
-    const positions: number[] = [];
-    for (const g of glyphs) {
-      positions.push(pen);
+    const positions: number[] = gpos.map((p) => p.x);
+    for (let gi = 0; gi < glyphs.length; gi++) {
+      const g = glyphs[gi], pen = gpos[gi].x, dy = gpos[gi].y;
       const st = states[g.cluster] ?? states[states.length - 1];
       if (st?.visible) {
         const gp = glyphProps(node, tl, g.cluster, tw ? glyphTime(tw, chars, g.cluster) : 0);
         if (gp.opacity > 0) {
           const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes, style.features) : g.d;
           ctx.save();
-          ctx.translate(pen + g.xOffset + gp.x, baseline + g.yOffset + gp.y);
+          ctx.translate(pen + g.xOffset + gp.x, baseline + dy + g.yOffset + gp.y);
           if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
           if (oblique) ctx.transform(1, 0, Math.tan((oblique * Math.PI) / 180), 1, 0, 0);   // synthetic slnt (negative = lean right)
           ctx.globalAlpha *= clamp01(gp.opacity);
@@ -468,7 +608,6 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
           ctx.restore();
         }
       }
-      pen += advance(g);
     }
     // pass 2: bloom on fresh glyphs (phase-0 stand-in: blurred additive redraw; real multi-radius bloom is phase 6)
     if (tw && tw.bloom.radius > 0 && tw.bloom.intensity > 0) {
@@ -481,7 +620,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
           ctx.globalCompositeOperation = "lighter";
           ctx.globalAlpha *= clamp01(st.freshness * tw.bloom.intensity * wgt);
           ctx.filter = `blur(${r}px)`;
-          ctx.translate(positions[gi] + g.xOffset, baseline + g.yOffset);
+          ctx.translate(positions[gi] + g.xOffset, baseline + gpos[gi].y + g.yOffset);
           ctx.fillStyle = tailColor;
           ctx.fill(path2d(d));
           ctx.restore();
@@ -500,7 +639,10 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
         const em = size * pre;
         const cw = tw.caret.style === "block" ? em * 0.5 : tw.caret.style === "glass" ? Math.max(3, em * 0.09) : Math.max(2, em * 0.06);
         const chh = (metrics.ascender - metrics.descender) * em * 0.95;
-        const cx0 = x0 + visibleWidth + size * 0.04, cy0 = baseline - metrics.ascender * size * 0.95 - (chh - (metrics.ascender - metrics.descender) * size * 0.95) / 2;
+        let cLine = 0;
+        for (let gi = glyphs.length - 1; gi >= 0; gi--) if (states[glyphs[gi].cluster]?.visible) { cLine = gpos[gi].line; break; }
+        const cx0 = (nLines > 1 ? lineX0[cLine] + lines[cLine].visW : x0 + visibleWidth) + size * 0.04;
+        const cy0 = baseline + lineDy[cLine] - metrics.ascender * size * 0.95 - (chh - (metrics.ascender - metrics.descender) * size * 0.95) / 2;
         const cc = tw.caret.color ? color(tw.caret.color, tokens) : tailColor;
         if (tw.caret.style === "glass") {
           ctx.save();
@@ -517,12 +659,13 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     ctx.restore();
 
     // extents in this node's local space (before the fit scale is undone by the caller's nodeScale)
-    const top = baseline - metrics.ascender * size, bottom = baseline - metrics.descender * size;
+    const top = blockTop, bottom = blockBottom;
     for (let i = 0; i < steps.length; i++) {
       const wI = widthUpTo(i + 1);
       const xr = (style.align === "left" ? 0 : style.align === "right" ? -wI : -wI / 2) + wI;
       steps[i].right = xr * scale;                     // approximate: uses the current scale for all steps
     }
+    if (nLines > 1) return { left: blockLeft * scale, right: blockRight * scale, top: top * scale, bottom: bottom * scale, scale, steps };
     return { left: x0 * scale, right: (x0 + visibleWidth) * scale, top: top * scale, bottom: bottom * scale, scale, steps };
   }
 
@@ -555,9 +698,10 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const { ctx, tokens, tl } = env;
     const ext = env.extents.get(node.follows);
     if (!ext) return;
+    const bs = resolveTextStyle(node.style, env.w, env.h);
     const fontName = resolveToken(node.style.font, tokens);
-    const size = node.style.size * ext.scale;          // brackets follow the text's fit scale
-    const axes = { wght: node.style.weight, ...node.style.axes };
+    const size = bs.size * ext.scale;                  // brackets follow the text's fit scale
+    const axes = { wght: bs.weight, ...node.style.axes };
     const [lg] = shaper.shape(node.glyphs[0], fontName, size, axes, node.style.features);
     const [rg] = shaper.shape(node.glyphs[1], fontName, size, axes, node.style.features);
     const m = shaper.metrics(fontName);
@@ -573,7 +717,8 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const sp = node.spring;
     const rightX = tStep > 0 ? prevTarget + (rightTarget - prevTarget) * spring(tl - tStep, sp.stiffness, sp.damping, sp.mass) : ext.right;
     const pad = node.padding * ext.scale;
-    ctx.fillStyle = color(node.style.color, tokens);
+    ctx.fillStyle = color(bs.color, tokens);
+    if (bs.alpha < 1) ctx.globalAlpha *= bs.alpha;
     // we are inside this node's own transform; undo it to draw in the parent's space
     ctx.save();
     ctx.scale(1 / nodeScale, 1 / nodeScale);
@@ -892,8 +1037,44 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
     ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
     const fill = rectFill(node, env);
-    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    const surface = surfaceOf(node, fill, h);
+    if (surface === "flat") {
+      if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+      if (node.stroke) { ctx.strokeStyle = color(node.stroke.color, tokens); ctx.lineWidth = node.stroke.width; ctx.stroke(); }
+      return;
+    }
+    // ---- surface (look layer): shadow, under-glow, gradient fill, 1 px light border, top highlight ----
+    const S = SURFACES[surface];
+    const m = ctx.getTransform(), dev = Math.hypot(m.a, m.b);   // canvas shadows ignore the transform: scale to device px
+    const accent = isAccent(fill!, tokens);
+    // the path is current (built above); shadows are drawn by filling it with shadow set
+    ctx.save();
+    ctx.shadowColor = `rgba(0,0,0,${S.shadowAlpha})`; ctx.shadowBlur = S.shadowBlur * dev; ctx.shadowOffsetY = S.shadowY * dev;
+    ctx.fillStyle = fill!; ctx.fill();
+    if (accent) { ctx.shadowColor = withAlpha(fill!, S.glowAlpha); ctx.shadowBlur = S.glowBlur * dev; ctx.shadowOffsetY = 0; ctx.fill(); }
+    ctx.restore();
+    const g = ctx.createLinearGradient(0, y, 0, y + h);
+    g.addColorStop(0, lighten(fill!, S.lift)); g.addColorStop(1, fill!);
+    ctx.fillStyle = g; ctx.fill();
+    // border, inset so a 1 px line stays inside the rounded shape
+    ctx.save();
+    ctx.clip();
+    const b = ctx.createLinearGradient(0, y, 0, y + h);
+    b.addColorStop(0, `rgba(255,255,255,${S.borderTop})`); b.addColorStop(1, `rgba(255,255,255,${S.borderBottom})`);
+    ctx.strokeStyle = b; ctx.lineWidth = 2; ctx.stroke();        // clipped: 1 px visible inside the edge
+    // top highlight: a 1 px light line just under the top edge, fading at the corners
+    const hl = ctx.createLinearGradient(x, 0, x + w, 0);
+    hl.addColorStop(0, "rgba(255,255,255,0)"); hl.addColorStop(0.5, `rgba(255,255,255,${S.highlight})`); hl.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.strokeStyle = hl; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x + r, y + 1.5); ctx.lineTo(x + w - r, y + 1.5); ctx.stroke();
+    ctx.restore();
     if (node.stroke) { ctx.strokeStyle = color(node.stroke.color, tokens); ctx.lineWidth = node.stroke.width; ctx.stroke(); }
+  }
+  // which surface a rect gets: explicit, else by size; translucent or missing fills stay flat (nested bands, rings)
+  function surfaceOf(node: RectNode, fill: string | null, h: number): "flat" | "card" | "pill" | "button" {
+    if (node.surface !== "auto") return node.surface;
+    if (!fill || !fill.startsWith("#") || (fill.length === 9 && fill.slice(7).toLowerCase() !== "ff") || h < 20) return "flat";
+    return h >= 120 ? "card" : h <= 48 ? "pill" : "button";
   }
 
   function measure(graph: Graph, tSec: number): Map<string, Box> {
@@ -956,4 +1137,43 @@ function mix(a: string, b: string, t: number): string {
   const A = hexToRgb(a), B = hexToRgb(b);
   const c = A.map((v, i) => Math.round(v + (B[i] - v) * t));
   return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+// ---------- surface specs (look layer) ----------
+const SURFACES = {
+  card:   { lift: 0.06, borderTop: 0.14, borderBottom: 0.04, highlight: 0.08, shadowAlpha: 0.45, shadowBlur: 40, shadowY: 12, glowAlpha: 0.35, glowBlur: 60 },
+  button: { lift: 0.05, borderTop: 0.12, borderBottom: 0.04, highlight: 0.08, shadowAlpha: 0.35, shadowBlur: 24, shadowY: 6,  glowAlpha: 0.40, glowBlur: 40 },
+  pill:   { lift: 0.04, borderTop: 0.10, borderBottom: 0.03, highlight: 0.06, shadowAlpha: 0.30, shadowBlur: 16, shadowY: 4,  glowAlpha: 0.35, glowBlur: 28 },
+} as const;
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min, s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  const h = max === r ? ((g - b) / d + (g < b ? 6 : 0)) : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+  return [h / 6, s, l];
+}
+function hslToHex(h: number, s: number, l: number): string {
+  const f = (n: number) => { const k = (n + h * 12) % 12; const a = s * Math.min(l, 1 - l); return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); };
+  return "#" + [f(0), f(8), f(4)].map((v) => Math.round(v * 255).toString(16).padStart(2, "0")).join("");
+}
+function lighten(hex: string, dl: number): string {
+  const [h, s, l] = rgbToHsl(...hexToRgb(hex));
+  return hslToHex(h, s, Math.min(1, l + dl));
+}
+// the glow colour behind an accent: same hue, saturated, deep (R3: accent #8FBBFF -> glow #0A2EDC)
+function deepen(hex: string): string {
+  const [h, s] = rgbToHsl(...hexToRgb(hex));
+  return hslToHex(h, Math.max(s, 0.85), 0.26);
+}
+function withAlpha(hex: string, a: number): string {
+  const [r, g, b] = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${a})`;
+}
+// a fill counts as "accent" when it is the accent token or a saturated mid-tone colour
+function isAccent(fill: string, tokens: Record<string, string>): boolean {
+  if (!fill.startsWith("#")) return false;
+  if (tokens.accent && fill.slice(0, 7).toLowerCase() === tokens.accent.slice(0, 7).toLowerCase()) return true;
+  const [, s, l] = rgbToHsl(...hexToRgb(fill));
+  return s > 0.5 && l > 0.3 && l < 0.75;
 }

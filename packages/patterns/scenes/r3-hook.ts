@@ -45,6 +45,9 @@ export function buildR3Hook() {
     version: 1,
     canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
     tokens: { bg: "#010415", text: "#FFFFFF", accent: "#8FBBFF", bracket: "#4A5A8A", font: "Inter" },
+    // the measured R3 field is its two explicit glows; the derived field (vignette, grain) stays off so the
+    // acceptance checksum keeps matching the reference measurements
+    style: { field: { mode: "none" } },
     timing: { cps: 26, enterMs: 400, exitMs: 200, staggerMs: 70, glyphStaggerMs: 30, freshDecayMs: 300 },
     dials: { luminance: 0.1, glow: 0.6, kineticText: 1.0, playfulness: 0.3, tempo: 0.7, density: 0.1 },
     beats: [{
