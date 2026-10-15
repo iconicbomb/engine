@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Create",
+      "nodes": [
+        {
+          "id": "b1-word",
+          "type": "text",
+          "text": "Create",
+          "style": {
+            "size": 220,
+            "weight": 800,
+            "gradient": {
+              "from": "#FF5FA2",
+              "to": "#8B5CF6",
+              "amount": 1
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.2,
+              "ms": 270,
+              "from": 0,
+              "to": 1,
+              "ease": "settle",
+              "staggerMs": 30
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 0.2,
+              "ms": 270,
+              "from": 30,
+              "to": 0,
+              "ease": "settle",
+              "staggerMs": 30
+            },
+            {
+              "mode": "tween",
+              "prop": "gradient.amount",
+              "at": 0.62,
+              "ms": 500,
+              "from": 1,
+              "to": 0,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 1.22,
+              "ms": 200,
+              "from": 1,
+              "to": 0,
+              "ease": "settle",
+              "staggerMs": 30
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 1.22,
+              "ms": 200,
+              "from": 0,
+              "to": 40,
+              "ease": "settle",
+              "staggerMs": 30
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

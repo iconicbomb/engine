@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -202,6 +202,13 @@ const [m1, g2] = s12.children;
 const rot = m1.tracks.find((t: any) => t.prop === "rotation"), ts = g2.tracks.find((t: any) => t.prop === "trim.start");
 assert(s12.children.length === 2 && rot.from === 45 && rot.to === -45 && rot.ms === 500 && ts.from === 0.5 && ts.to === 0
   && m1.tracks.find((t: any) => t.prop === "trim.start").to === 0, "S12: matched stroke rotates the short way (45 -> -45), unmatched grows in from trim 0.5 -> 0, 500 ms");
+
+// T7: per-glyph enter (270 ms, 30 ms stagger), gradient settles 500 ms after the last glyph lands, 600 ms hold, exit 200 ms
+const t7: any = gradientSettle({ id: "b1-w", text: "Abc", style: { size: 100 }, at: 0.2 }).nodes[0];
+const t7t = Object.fromEntries(t7.tracks.map((t: any, i: number) => [`${t.prop}${i}`, t]));
+assert(t7.style.gradient.from === "#FF5FA2" && t7t.opacity0.staggerMs === 30 && t7t.opacity0.ms === 270 && t7t["gradient.amount2"].at === 0.53
+  && t7t["gradient.amount2"].ms === 500 && t7t.opacity3.at === 1.13 && t7t.opacity3.ms === 200 && t7t.y4.to === 40,
+  "T7: enter 270 ms / 30 ms stagger; gradient -> white 500 ms from 0.53 s; exit at 1.13 s (600 ms hold), 200 ms, drop 40 px");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

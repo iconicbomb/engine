@@ -423,10 +423,11 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   function drawText(node: TextNode, env: Env): Extents & { scale: number } {
     const { ctx, tokens, tl } = env;
     const L = layoutText(node, env);
-    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline } = L;
+    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth } = L;
     ctx.save();
     ctx.scale(scale, scale);
     const baseColor = color(style.color, tokens);
+    const grad = gradientOf(node, tl);
     const tailColor = tw ? color(tw.tail.color, tokens) : baseColor;
     const sweep = sweepAt(node, tl);
     const sweepColor = sweep ? color(sweep.track.color, tokens) : baseColor;
@@ -445,9 +446,18 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
           ctx.translate(pen + g.xOffset + gp.x, baseline + g.yOffset + gp.y);
           if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
           ctx.globalAlpha *= clamp01(gp.opacity);
-          const sw = sweep ? clamp01(sweep.track.window / 2 + 0.5 - Math.abs(g.cluster + 0.5 - sweep.pos)) : 0;
-          const body = sw > 0 ? mixHex(baseColor, sweepColor, sw) : baseColor;
-          ctx.fillStyle = st.freshness > 0 ? mix(body, tailColor, st.freshness * tw!.tail.strength) : body;
+          if (grad) {
+            // one gradient across the whole laid-out run, expressed in this glyph's local space
+            const ox = pen + g.xOffset + gp.x, s = gp.scale || 1;
+            const lg = ctx.createLinearGradient((x0 - ox) / s, 0, (x0 + fullWidth - ox) / s, 0);
+            lg.addColorStop(0, mixHex(baseColor, color(grad.from, tokens), grad.amount));
+            lg.addColorStop(1, mixHex(baseColor, color(grad.to, tokens), grad.amount));
+            ctx.fillStyle = lg;
+          } else {
+            const sw = sweep ? clamp01(sweep.track.window / 2 + 0.5 - Math.abs(g.cluster + 0.5 - sweep.pos)) : 0;
+            const body = sw > 0 ? mixHex(baseColor, sweepColor, sw) : baseColor;
+            ctx.fillStyle = st.freshness > 0 ? mix(body, tailColor, st.freshness * tw!.tail.strength) : body;
+          }
           ctx.fill(path2d(d));
           ctx.restore();
         }
@@ -661,6 +671,15 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       for (const q of glyphs) { ctx.save(); ctx.translate(pen + q.xOffset, base + q.yOffset); ctx.fill(path2d(q.d)); ctx.restore(); pen += q.xAdvance; }
     }
     ctx.restore();
+  }
+
+  // the text gradient at t (amount resolved from "gradient.amount" tweens); null when absent or fully settled
+  function gradientOf(node: TextNode, tl: number): { from: string; to: string; amount: number } | null {
+    const g = node.style.gradient;
+    if (!g) return null;
+    const cands = (node.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop === "gradient.amount").map((tr) => ({ tr, start: tr.at }));
+    const amount = clamp01(resolve("gradient.amount", g.amount, tl, cands));
+    return amount > 0 ? { from: g.from, to: g.to, amount } : null;
   }
 
   // ---------- clip ----------

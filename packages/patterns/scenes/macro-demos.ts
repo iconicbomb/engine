@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, slabNumeral, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, gradientSettle, group, mascot, slabNumeral, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -264,4 +264,10 @@ export function buildS12Demo() {
   const VI = [{ x1: -260, y1: -200, x2: -120, y2: 200 }, { x1: 20, y1: -200, x2: -120, y2: 200 }, { x1: 200, y1: -200, x2: 200, y2: 200 }];
   const morph = strokeMorph({ id: "b1-glyph", from: X, to: VI, at: 0.6, anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } } });
   return demo("Ten becomes six", 1.8, morph.nodes, [morph]);
+}
+
+// T7 demo: "Create" enters in a pink -> purple gradient, settles to white, holds, and drops out
+export function buildT7Demo() {
+  const word = gradientSettle({ id: "b1-word", text: "Create", style: { size: 220, weight: 800 }, at: 0.2 });
+  return demo("Create", 2.4, word.nodes, [word]);
 }

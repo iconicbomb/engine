@@ -192,6 +192,9 @@ export const TextStyle = z.object({
   axes: z.record(z.string(), z.number()).default({}),
   // OpenType features passed to HarfBuzz, e.g. ["tnum"] for tabular digits (counters), ["-liga"], ["ss01"]
   features: z.array(z.string().regex(/^[+-]?[A-Za-z0-9]{4}(=\d+)?$/, "OpenType feature tag, e.g. tnum, -liga, ss01=1")).default([]),
+  // horizontal gradient across the run (from -> to), mixed over the body colour by `amount` (animatable as
+  // "gradient.amount": 1 = full gradient, 0 = body colour; T7 gradient -> white settle). Hex colours or tokens.
+  gradient: z.object({ from: Color, to: Color, amount: z.number().min(0).max(1).default(1) }).optional(),
 });
 
 export const TextNode = NodeBase.extend({
