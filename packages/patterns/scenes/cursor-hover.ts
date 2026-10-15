@@ -1,7 +1,7 @@
 // Cursor system fixture: a giant arrow travels to card 1 (hover fill), on to card 2 (card 1 reverts, card 2 fills),
 // pauses 150 ms and presses; card 2 dips to 0.96 with the press; each card's rows wipe in left -> right via clip.w.
 // Spec timing: move 400–600 ms (500), pause 150 ms before press, press 80 ms, fill 130 ms, rows 300 ms / 40 ms stagger.
-import { applyEdits, cursorClick, giantCursor, group, hoverFillCard, jumpCuts, pressTimes, sec, type NodeIn, type TrackIn } from "../src/index";
+import { applyEdits, cursorClick, giantCursor, group, hoverFillCard, jumpCuts, pressTimes, sec, tiltedPlane, type NodeIn, type TrackIn } from "../src/index";
 
 const TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", surface: "#1A1D26", font: "Inter" };
 
@@ -107,5 +107,34 @@ export function buildS4Demo() {
     tokens: TOKENS,
     beats: [{ id: "b1", type: "feature", start: 0, duration: 3.0, script: "Starter or Pro", nodes: applyEdits([stack, cursor], [clickStarter, clickPro]),
       glows: [], camera: { tracks: cuts.camera } }],
+  };
+}
+
+// S10 demo: a rebuilt dashboard on a tilted plane that eases in, dollies and pans; the cursor clicks a stat card on
+// the plane (moveTo resolves the tilted geometry from the measure pass)
+export function buildS10Demo() {
+  const stat = (n: number, label: string, value: string): NodeIn => ({
+    id: `b1-ui-stat-${n}`, type: "rect", w: 300, h: 150, radius: 22, fill: "#22273A",
+    children: [
+      { id: `b1-ui-stat-${n}-label`, type: "text", text: label, style: { size: 28, weight: 500, color: "#8A90A0" }, y: -30 },
+      { id: `b1-ui-stat-${n}-value`, type: "text", text: value, style: { size: 54, weight: 700 }, y: 26 },
+    ] });
+  const ui: NodeIn[] = [
+    { id: "b1-ui-panel", type: "rect", w: 1120, h: 640, radius: 36, fill: "#161A26", stroke: { color: "#2C3140", width: 2 } },
+    { id: "b1-ui-title", type: "text", text: "Revenue", style: { size: 48, weight: 700, align: "left" }, x: -500, y: -250 },
+    { ...group({ id: "b1-ui-stats", layout: { type: "row", gap: 30 } }, [stat(1, "MRR", "$84k"), stat(2, "Churn", "1.8%"), stat(3, "NPS", "62")]), y: -70 } as NodeIn,
+    { id: "b1-ui-chart", type: "path", d: "M -500 220 C -380 120 -300 200 -180 150 S 20 40 140 90 S 360 -10 500 30", stroke: "tokens.accent", strokeWidth: 6,
+      trim: { start: 0, end: 0 }, tracks: [{ mode: "tween", prop: "trim.end", at: 0.6, ms: 900, from: 0, to: 1, ease: "settle" }] },
+  ];
+  const plane = tiltedPlane({ id: "b1-ui", children: ui, at: 0.1, until: 3.0, pan: { x: -60 },
+    // the pan is in parent px (not scaled with the plane), so portrait leaves room for it
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.55, y: 0.5, scale: 0.42 } } } });
+  const cursor = giantCursor({ id: "b1-cursor", anchor: { x: 0.85, y: 0.9, overrides: { "9:16": { x: 0.8, y: 0.85, scale: 0.6 } } } });
+  const click = cursorClick({ cursor: "b1-cursor", target: "b1-ui-stat-2", at: 1.2, hover: { to: "#33395A" } });
+  return {
+    version: 1,
+    canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
+    tokens: TOKENS,
+    beats: [{ id: "b1", type: "feature", start: 0, duration: 3.0, script: "Your numbers, live", nodes: applyEdits([...plane.nodes, cursor], [click]), glows: [] }],
   };
 }

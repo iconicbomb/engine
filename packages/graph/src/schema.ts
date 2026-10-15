@@ -168,6 +168,10 @@ const NodeBase = z.object({
   rotation: z.number().default(0),
   // Gaussian blur in px at refHeight over the node and its children (animatable as "blur"; S7 depth of field)
   blur: z.number().min(0).default(0),
+  // tilt in degrees about the X then Y axis, projected orthographically (an affine: a plane stays a parallelogram;
+  // perspective foreshortening is not modelled). Animatable as "rotX" / "rotY" (S10 tilted UI plane).
+  rotX: z.number().default(0),
+  rotY: z.number().default(0),
   // base offset from the anchor in px at refHeight (the units of x/y tracks); an x/y track replaces it while it runs
   x: z.number().default(0),
   y: z.number().default(0),

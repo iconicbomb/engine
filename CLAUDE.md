@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S9, S13, S14, S16 in (phase 2); `pnpm test` 123 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S10, S13, S14, S16 in (phase 2); `pnpm test` 125 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -192,6 +192,12 @@ byte-identical") — review this reading:
   then orbs drift 900 ms (settle) to golden-angle offsets with a depth that sets scale (0.6–1.5) and blur (node
   `blur`, px, animatable — added for S7; ctx.filter scaled by the live transform). Fixture s7-collapse-to-orbs.
   Not modelled yet: lit spheres (orbs are flat circles with a highlight).
+- S10 tiltedPlane: a group with node tilt `rotX` / `rotY` (degrees, animatable — added for S10 as a plain extension of
+  `rotation`, on every node rather than the spec example's dedicated `plane` type; open question) projected
+  orthographically (x' = x cos Y + y sin X sin Y, y' = y cos X: an affine, so the measure pass and cursor moveTo see
+  the tilted geometry). Eases in from a steeper Y angle, dolly 2 %/s (linear scale), linear pan. Defaults 14 / 6 deg
+  (the spec's example plane). Fixture s10-tilted-plane (dashboard + cursor click on the plane). Not modelled yet:
+  perspective foreshortening (the main 3D cue — orthographic tilt reads subtle) and depth of field.
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 

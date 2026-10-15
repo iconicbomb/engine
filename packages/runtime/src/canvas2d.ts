@@ -32,6 +32,12 @@ type Box = { left: number; right: number; top: number; bottom: number };
 type M = [number, number, number, number, number, number];
 const I: M = [1, 0, 0, 1, 0, 0];
 const mul = (m: M, n: M): M => [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]];
+// orthographic projection of a plane tilted about X (phi) then Y (theta): x' = x cos(theta) + y sin(phi) sin(theta),
+// y' = y cos(phi) — an affine, so a tilted plane stays a parallelogram
+const tiltMatrix = (p: { rotX: number; rotY: number }): M => {
+  const f = (p.rotX * Math.PI) / 180, t = (p.rotY * Math.PI) / 180;
+  return [Math.cos(t), 0, Math.sin(f) * Math.sin(t), Math.cos(f), 0, 0];
+};
 const worldBox = (m: M, b: Box): Box => {
   const pts = [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]].map(([x, y]) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]);
   return { left: Math.min(...pts.map((p) => p[0])), right: Math.max(...pts.map((p) => p[0])), top: Math.min(...pts.map((p) => p[1])), bottom: Math.max(...pts.map((p) => p[1])) };
@@ -40,8 +46,8 @@ type Slot = { x: number; y: number };
 type Layer = "all" | "background" | "content";
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
 
-type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number; blur: number };
-const NUMERIC = new Set(["opacity", "scale", "rotation", "x", "y", "blur"]);
+type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number; blur: number; rotX: number; rotY: number };
+const NUMERIC = new Set(["opacity", "scale", "rotation", "x", "y", "blur", "rotX", "rotY"]);
 
 // images: decoded assets by name (ImageBitmap / HTMLImageElement / canvas), supplied before the first frame
 export function createRuntime(opts: { shaper: Shaper; images?: Record<string, CanvasImageSource> }): Runtime {
@@ -201,7 +207,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
         const props = hoverProps(n, numericProps(n, env.tl), env);
         const { cx, cy, s } = place(n, props, { ...env, slots }, top);
         const r = props.rotation * Math.PI / 180;
-        const m = mul(mul(mul(parent, [1, 0, 0, 1, cx, cy]), [Math.cos(r), Math.sin(r), -Math.sin(r), Math.cos(r), 0, 0]), [s, 0, 0, s, 0, 0]);
+        const m = mul(mul(mul(mul(parent, [1, 0, 0, 1, cx, cy]), [Math.cos(r), Math.sin(r), -Math.sin(r), Math.cos(r), 0, 0]), tiltMatrix(props)), [s, 0, 0, s, 0, 0]);
         const children = (n as { children?: Node[] }).children ?? [];
         walk(children, m, false, n.type === "group" ? layoutSlots(n as GroupNode, env) : undefined);
         let box: Box | null = null;
@@ -272,6 +278,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     ctx.save();
     ctx.translate(cx, cy);
     if (props.rotation) ctx.rotate(props.rotation * Math.PI / 180);
+    if (props.rotX || props.rotY) { const t = tiltMatrix(props); ctx.transform(t[0], t[1], t[2], t[3], 0, 0); }
     ctx.scale(nodeScale, nodeScale);
     ctx.globalAlpha *= clamp01(props.opacity);
     // blur is in graph px: scale it by the live transform to device px (canvas filters ignore the transform)
@@ -323,7 +330,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const cands = (node.tracks as Track[])
       .filter((tr): tr is TweenTrack => tr.mode === "tween" && NUMERIC.has(tr.prop) && tr.staggerMs === 0 && tr.relativeTo !== "reveal")
       .map((tr) => ({ tr, start: tr.at }));
-    const base: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: node.x, y: node.y, blur: node.blur };
+    const base: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: node.x, y: node.y, blur: node.blur, rotX: node.rotX, rotY: node.rotY };
     for (const k of NUMERIC) base[k as keyof NumericProps] = resolve(k as keyof NumericProps, base[k as keyof NumericProps], tl, cands);
     return base;
   }
@@ -332,7 +339,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const cands = (node.tracks as Track[])
       .filter((tr): tr is TweenTrack => tr.mode === "tween" && NUMERIC.has(tr.prop) && (tr.staggerMs > 0 || tr.relativeTo === "reveal"))
       .map((tr) => ({ tr, start: tr.relativeTo === "reveal" ? revealAt + tr.at : tr.at + tr.staggerMs * index / 1000 }));
-    const p: NumericProps = { opacity: 1, scale: 1, rotation: 0, x: 0, y: 0, blur: 0 };
+    const p: NumericProps = { opacity: 1, scale: 1, rotation: 0, x: 0, y: 0, blur: 0, rotX: 0, rotY: 0 };
     for (const k of NUMERIC) p[k as keyof NumericProps] = resolve(k as keyof NumericProps, p[k as keyof NumericProps], tl, cands);
     return p;
   }

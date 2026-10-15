@@ -24,3 +24,4 @@ export { smearCut } from "./s14-smear-cut";
 export { enterDelay } from "@engine/graph";
 export { mascot, type MascotParams } from "./s16-mascot";
 export { collapseToOrbs, type CollapseToOrbsParams } from "./s7-collapse-to-orbs";
+export { tiltedPlane, type TiltedPlaneParams } from "./s10-tilted-plane";

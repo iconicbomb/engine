@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -181,6 +181,12 @@ assert(isDeepStrictEqual(s7a, s7b) && labT.every((t: any) => t.prop === "clip.w"
   && orbT.every((ts: any[]) => ts.map((t) => t.prop).join() === "x,y,scale,blur" && ts.every((t) => t.at === 0.7 && t.ms === 900))
   && new Set(orbT.map((ts: any[]) => ts[0].to)).size === 3 && orbT.some((ts: any[]) => ts[3].to > 0),
   "S7: labels collapse in 200 ms; orbs drift apart over 900 ms with depth scale + blur (deterministic)");
+
+// S10: tilt 14 / 6 degrees, eases in from a steeper Y angle, dollies 2 %/s linearly, pans
+const s10: any = tiltedPlane({ id: "b1-p", children: [], at: 0.5, until: 3.5, pan: { x: -60 } }).nodes[0];
+assert(s10.rotY === 14 && s10.rotX === 6 && s10.tracks[0].prop === "rotY" && s10.tracks[0].from === 34 && s10.tracks[2].prop === "scale"
+  && s10.tracks[2].to === 1.06 && s10.tracks[2].ease === "linear" && s10.tracks[2].ms === 3000 && s10.tracks[3].to === -60,
+  "S10: plane tilted 14 / 6 deg, enters from 34 deg, dolly 2 %/s (1 -> 1.06 over 3 s), linear pan");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

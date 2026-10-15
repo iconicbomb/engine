@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "surface": "#1A1D26",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 3,
+      "script": "Your numbers, live",
+      "nodes": [
+        {
+          "id": "b1-ui",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.55,
+                "y": 0.5,
+                "scale": 0.42
+              }
+            }
+          },
+          "rotX": 6,
+          "rotY": 14,
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "rotY",
+              "at": 0.1,
+              "ms": 600,
+              "from": 34,
+              "to": 14,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.1,
+              "ms": 200,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            },
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.1,
+              "ms": 2900,
+              "from": 1,
+              "to": 1.058,
+              "ease": "linear"
+            },
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.1,
+              "ms": 2900,
+              "from": 0,
+              "to": -60,
+              "ease": "linear"
+            }
+          ],
+          "children": [
+            {
+              "id": "b1-ui-panel",
+              "type": "rect",
+              "w": 1120,
+              "h": 640,
+              "radius": 36,
+              "fill": "#161A26",
+              "stroke": {
+                "color": "#2C3140",
+                "width": 2
+              }
+            },
+            {
+              "id": "b1-ui-title",
+              "type": "text",
+              "text": "Revenue",
+              "style": {
+                "size": 48,
+                "weight": 700,
+                "align": "left"
+              },
+              "x": -500,
+              "y": -250
+            },
+            {
+              "id": "b1-ui-stats",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 30
+              },
+              "y": -70,
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-ui-stat-1",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 150,
+                  "radius": 22,
+                  "fill": "#22273A",
+                  "children": [
+                    {
+                      "id": "b1-ui-stat-1-label",
+                      "type": "text",
+                      "text": "MRR",
+                      "style": {
+                        "size": 28,
+                        "weight": 500,
+                        "color": "#8A90A0"
+                      },
+                      "y": -30
+                    },
+                    {
+                      "id": "b1-ui-stat-1-value",
+                      "type": "text",
+                      "text": "$84k",
+                      "style": {
+                        "size": 54,
+                        "weight": 700
+                      },
+                      "y": 26
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-ui-stat-2",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 150,
+                  "radius": 22,
+                  "fill": "#22273A",
+                  "tracks": [
+                    {
+                      "mode": "onHover",
+                      "cursor": "b1-cursor",
+                      "prop": "fill",
+                      "to": "#33395A",
+                      "ms": 100,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.85,
+                      "ms": 40,
+                      "from": 1,
+                      "to": 0.96,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.89,
+                      "ms": 40,
+                      "from": 0.96,
+                      "to": 1,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-ui-stat-2-label",
+                      "type": "text",
+                      "text": "Churn",
+                      "style": {
+                        "size": 28,
+                        "weight": 500,
+                        "color": "#8A90A0"
+                      },
+                      "y": -30
+                    },
+                    {
+                      "id": "b1-ui-stat-2-value",
+                      "type": "text",
+                      "text": "1.8%",
+                      "style": {
+                        "size": 54,
+                        "weight": 700
+                      },
+                      "y": 26
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-ui-stat-3",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 150,
+                  "radius": 22,
+                  "fill": "#22273A",
+                  "children": [
+                    {
+                      "id": "b1-ui-stat-3-label",
+                      "type": "text",
+                      "text": "NPS",
+                      "style": {
+                        "size": 28,
+                        "weight": 500,
+                        "color": "#8A90A0"
+                      },
+                      "y": -30
+                    },
+                    {
+                      "id": "b1-ui-stat-3-value",
+                      "type": "text",
+                      "text": "62",
+                      "style": {
+                        "size": 54,
+                        "weight": 700
+                      },
+                      "y": 26
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-ui-chart",
+              "type": "path",
+              "d": "M -500 220 C -380 120 -300 200 -180 150 S 20 40 140 90 S 360 -10 500 30",
+              "stroke": "tokens.accent",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "trim.end",
+                  "at": 0.6,
+                  "ms": 900,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "strokeWidth": 6,
+              "trim": {
+                "start": 0,
+                "end": 0
+              }
+            }
+          ]
+        },
+        {
+          "id": "b1-cursor",
+          "type": "cursor",
+          "style": "arrow",
+          "anchor": {
+            "x": 0.85,
+            "y": 0.9,
+            "overrides": {
+              "9:16": {
+                "x": 0.8,
+                "y": 0.85,
+                "scale": 0.6
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b1-ui-stat-2",
+              "at": 1.2,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "press",
+              "at": 1.85,
+              "ms": 80
+            }
+          ],
+          "size": 2
+        }
+      ],
+      "glows": []
+    }
+  ]
+}
