@@ -10,7 +10,7 @@ export function group(p: { id: string; anchor?: AnchorIn; x?: number; y?: number
 }
 
 // Key order for emitted nodes, so a regenerated fixture diffs cleanly against a hand-written one.
-const NODE_KEYS = ["id", "type", "text", "follows", "glyphs", "padding", "w", "h", "radius", "fill", "stroke", "sizeToContent", "style", "fit", "recenterEaseMs", "spring", "anchor", "x", "y", "opacity", "scale", "tracks", "children"];
+const NODE_KEYS = ["id", "type", "text", "follows", "glyphs", "padding", "w", "h", "radius", "fill", "stroke", "sizeToContent", "style", "fit", "recenterEaseMs", "spring", "anchor", "x", "y", "clip", "opacity", "scale", "tracks", "children"];
 function ordered(n: NodeIn): NodeIn {
   const src = n as Record<string, unknown>;
   const keys = [...NODE_KEYS.filter((k) => k in src), ...Object.keys(src).filter((k) => !NODE_KEYS.includes(k))];

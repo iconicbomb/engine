@@ -2,7 +2,7 @@
 // pattern of the spec's library (T1–T14, S1–S16) into plain scene-graph data. The runtime never sees pattern ids;
 // it only sees the nodes and tracks emitted here (spec: "Engine architecture and scene-graph format").
 import type { z } from "zod";
-import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, Beat } from "@engine/graph";
+import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, Beat } from "@engine/graph";
 
 // Macros emit the graph's *input* form (defaults may be omitted), exactly what a hand-written fixture contains.
 export type TextNodeIn = z.input<typeof TextNode>;
@@ -12,12 +12,16 @@ export type GroupNodeIn = {
   id: string; type: "group"; anchor?: AnchorIn; x?: number; y?: number; opacity?: number; scale?: number; rotation?: number;
   tracks?: TrackIn[]; children: NodeIn[];
 };
-export type NodeIn = TextNodeIn | RectNodeIn | BracketNodeIn | GroupNodeIn;
+export type CursorNodeIn = z.input<typeof CursorNode>;
+export type NodeIn = TextNodeIn | RectNodeIn | BracketNodeIn | CursorNodeIn | GroupNodeIn;
 export type TweenTrackIn = z.input<typeof TweenTrack>;
 export type TypewriterTrackIn = z.input<typeof TypewriterTrack>;
 export type SweepTrackIn = z.input<typeof SweepTrack>;
 export type CountTrackIn = z.input<typeof CountTrack>;
-export type TrackIn = TweenTrackIn | TypewriterTrackIn | SweepTrackIn | CountTrackIn;
+export type MoveToTrackIn = z.input<typeof MoveToTrack>;
+export type PressTrackIn = z.input<typeof PressTrack>;
+export type OnHoverTrackIn = z.input<typeof OnHoverTrack>;
+export type TrackIn = TweenTrackIn | TypewriterTrackIn | SweepTrackIn | CountTrackIn | MoveToTrackIn | PressTrackIn | OnHoverTrackIn;
 export type GlowIn = NonNullable<z.input<typeof Beat>["glows"]>[number];
 export type TextStyleIn = z.input<typeof TextStyle>;
 export type FitIn = z.input<typeof Fit>;

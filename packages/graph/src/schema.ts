@@ -86,7 +86,37 @@ export const CountTrack = TrackBase.extend({
   suffix: z.string().default(""),
 });
 
-export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack, CountTrack]);
+// ---------- cursor (S3, S5) ----------
+// moveTo: the cursor travels from where it is to a point on the target node's box (canvas space, resolved by the
+// runtime's layout pass each frame), arriving at at + ms. The target must be drawn before the cursor (cursors are
+// top-level and drawn last).
+export const MoveToTrack = TrackBase.extend({
+  mode: z.literal("moveTo"),
+  prop: z.string().min(1).default("position"),
+  target: z.string(),
+  anchor: z.enum(["center", "left", "right", "top", "bottom"]).default("center"),
+  offset: z.object({ x: z.number().default(0), y: z.number().default(0) }).default({}),
+  ms: z.number().min(0).default(500),
+  ease: z.enum(["linear", "settle", "emphasis"]).default("emphasis"),
+});
+// press: the cursor dips to 0.96 and back over ms
+export const PressTrack = TrackBase.extend({
+  mode: z.literal("press"),
+  prop: z.string().min(1).default("scale"),
+  ms: z.number().min(0).default(80),
+});
+// onHover: on any node, animate `prop` to `to` while `cursor` hovers it — from the arrival of a moveTo that targets
+// this node until that cursor's next moveTo starts (then it eases back). Derived from the cursor's tracks, so it
+// stays a pure function of t. prop: "fill" (rects) or opacity / scale / rotation / x / y.
+export const OnHoverTrack = TrackBase.extend({
+  mode: z.literal("onHover"),
+  cursor: z.string(),
+  to: z.union([z.number(), Color]),
+  ms: z.number().min(0).default(130),
+  ease: z.enum(["linear", "settle", "emphasis"]).default("settle"),
+});
+
+export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack]);
 export type Track = z.infer<typeof Track>;
 
 // ---------- layout ----------
@@ -117,6 +147,9 @@ const NodeBase = z.object({
   // base offset from the anchor in px at refHeight (the units of x/y tracks); an x/y track replaces it while it runs
   x: z.number().default(0),
   y: z.number().default(0),
+  // clip to a rect in the node's local space (after its transform); animatable as clip.x / clip.y / clip.w / clip.h
+  // (clip.w 0 -> w = left-to-right wipe, S3 rows; S13 curtain wipe)
+  clip: z.object({ x: z.number(), y: z.number(), w: z.number().min(0), h: z.number().min(0) }).optional(),
   tracks: z.array(Track).default([]),
 });
 
@@ -176,7 +209,15 @@ export const GroupNode: z.ZodType<any> = z.lazy(() =>
   })
 );
 
-export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode]).or(GroupNode);
+// Cursor: drawn last, on top; top-level only. x/y are its start position; moveTo / press tracks drive it.
+// avatar renders a circle placeholder until image nodes exist.
+export const CursorNode = NodeBase.extend({
+  type: z.literal("cursor"),
+  style: z.enum(["arrow", "hand", "avatar"]).default("arrow"),
+  size: z.number().positive().default(1),            // multiplier; R5's giant cursor is ~2
+});
+
+export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode, CursorNode]).or(GroupNode);
 export type Node = z.infer<typeof Node>;
 
 // ---------- beats + document ----------
@@ -239,17 +280,23 @@ export const Graph = z.object({
     (n.children ?? []).forEach((c: any) => walk(c, beat));
   };
   g.beats.forEach((b) => b.nodes.forEach((n) => walk(n, b.id)));
-  // bracket.follows / rect.follows must resolve inside the same beat
+  // follows / moveTo targets / onHover cursors must resolve inside the same beat; cursors are top-level
   g.beats.forEach((b) => {
     const local = new Set<string>();
     const collect = (n: any) => { local.add(n.id); (n.children ?? []).forEach(collect); };
     b.nodes.forEach(collect);
-    const check = (n: any) => {
+    const cursors = new Set(b.nodes.filter((n: any) => n.type === "cursor").map((n: any) => n.id));
+    const check = (n: any, top: boolean) => {
       const target = n.type === "bracket" ? n.follows : n.type === "rect" ? n.follows?.node : undefined;
       if (target !== undefined && !local.has(target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.type} ${n.id} follows unknown node ${target}` });
-      (n.children ?? []).forEach(check);
+      if (n.type === "cursor" && !top) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `cursor ${n.id} must be a top-level node of its beat` });
+      for (const t of n.tracks ?? []) {
+        if (t.mode === "moveTo" && !local.has(t.target)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.id}: moveTo targets unknown node ${t.target}` });
+        if (t.mode === "onHover" && !cursors.has(t.cursor)) ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${n.id}: onHover names unknown cursor ${t.cursor}` });
+      }
+      (n.children ?? []).forEach((c: any) => check(c, false));
     };
-    b.nodes.forEach(check);
+    b.nodes.forEach((n: any) => check(n, true));
   });
 });
 export type Graph = z.infer<typeof Graph>;

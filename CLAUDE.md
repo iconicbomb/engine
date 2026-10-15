@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); `pnpm test` 60 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system in (phase 2 groundwork); `pnpm test` 67 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -87,7 +87,24 @@ Not modelled yet: T13's mark split/widen and R7's wordmark wipe; S15's god-rays,
 fit (text + mark) — T13 and S1/S2 demos scale down at 9:16 via anchor overrides instead; S1's 3D perspective
 (phase-6 plane layer); S2's pill *width* spring (it slides instead). S2's pulse ring wraps an invisible copy of the
 counter, since a rect can only size to its own children.
-NEXT (phase 2 per the spec): S3, S4, S5 (cursor system), S6, S8, S9, S13, S14, S16; jump-cut coverage.
+NEXT (phase 2 per the spec): S3 and S5 as macros on the cursor system below, then S4, S6, S8, S9, S13, S14, S16;
+jump-cut coverage.
+
+## Cursor system (designed with Niloy, 2026-10-15)
+- `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base
+  x/y = start position. Top-level only; the runtime draws cursors after every other node.
+- `moveTo` track: travels to a point on a target node's box (anchor center/left/right/top/bottom + offset), arriving at
+  at + ms (default 500, emphasis). Targets are resolved each frame from a canvas-space box the runtime records for
+  every drawn node (`env.boxes`, graph units). The bracket/follows `extents` map stays per-group in parent space so R3's
+  bracket maths is untouched. A target that isn't drawn (e.g. opacity 0) holds the cursor where it was.
+- `press` track: cursor scale dips to 0.96 and back over ms (80). Pause 150 ms before a press (spec) is the macro's job;
+  a pressed target's own dip is explicit tracks on the target.
+- `onHover` track (any node): prop `fill` or opacity/scale/rotation/x/y eases to `to` from the arrival of a moveTo that
+  targets the node until the cursor's next moveTo starts, then eases back — derived purely from the cursor's tracks.
+- Rect `fill` tweens lerp in sRGB (#RRGGBB[AA]); OKLab interpolation is a later improvement.
+- `clip { x, y, w, h }` on any node, local space after its transform, animatable as clip.x/y/w/h (S3 row wipe via
+  clip.w; S13 curtain wipe later).
+- Fixture: `cursor-hover` (two cards, hover fill in/out, press dip, clip-wipe rows) at both aspects.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 

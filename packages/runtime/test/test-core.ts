@@ -1,5 +1,5 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier } from "../src/runtime-core";
-import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount } from "@engine/graph";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition } from "../src/runtime-core";
+import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount, Track, OnHoverTrack } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 // endpoints + monotonic
@@ -58,3 +58,18 @@ void (async () => {
   const p1 = width("1111"), p0 = width("0000"), t1 = width("1111", ["tnum"]), t0 = width("0000", ["tnum"]);
   assert(p1 < p0 && Math.abs(t1 - t0) < 1e-6, `features: proportional 1111=${p1.toFixed(1)} < 0000=${p0.toFixed(1)}; tnum 1111=${t1.toFixed(1)} == 0000=${t0.toFixed(1)}`);
 })();
+// cursor math (pure): press dip, hover intervals / amount, moveTo path, colour lerp
+{
+  const tr = (o: object) => Track.parse(o);
+  assert(lerpColor("#000000", "#FFFFFF", 0.5) === "#808080ff" && lerpColor("#FF000000", "#FF0000FF", 1) === "#ff0000ff", "lerpColor: sRGB midpoint, alpha channel");
+  const press = [tr({ mode: "press", at: 1 })];
+  assert(pressFactor(press, 0.99) === 1 && Math.abs(pressFactor(press, 1.04) - 0.96) < 1e-9 && pressFactor(press, 1.081) === 1, "press: 1 -> 0.96 at mid-press -> 1 after 80 ms");
+  const moves = [tr({ mode: "moveTo", target: "b1-a", at: 0.4 }), tr({ mode: "moveTo", target: "b1-b", at: 1.4 }), press[0]];
+  const iv = hoverIntervals(moves, "b1-a");
+  assert(iv.length === 1 && iv[0].start === 0.9 && iv[0].end === 1.4 && hoverIntervals(moves, "b1-b")[0].end === Infinity, "hover: from moveTo arrival until the next moveTo starts");
+  const h = OnHoverTrack.parse({ mode: "onHover", cursor: "b1-c", prop: "fill", to: "#FFFFFF" });
+  assert(hoverAmount(h, iv, 0.89) === 0 && hoverAmount(h, iv, 1.1) === 1 && hoverAmount(h, iv, 1.45) > 0 && hoverAmount(h, iv, 1.6) === 0, "hover: eases in over 130 ms, out after leaving");
+  const pts: Record<string, { x: number; y: number }> = { "b1-a": { x: 100, y: 0 }, "b1-b": { x: 300, y: 50 } };
+  const pos = (t: number) => cursorPosition(moves, t, { x: 0, y: 0 }, (m) => pts[m.target]);
+  assert(pos(0.3).x === 0 && pos(0.9).x === 100 && pos(1.9).x === 300 && pos(1.9).y === 50 && pos(1.65).x > 100 && pos(1.65).x < 300, "moveTo: holds, travels, arrives at at + ms, chains from the last target");
+}

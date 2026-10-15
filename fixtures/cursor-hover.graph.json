@@ -1,0 +1,270 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "surface": "#1A1D26",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.6,
+      "script": "Pick a plan",
+      "nodes": [
+        {
+          "id": "b1-cards",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.45,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.45,
+                "scale": 0.6
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-cards-1",
+              "type": "rect",
+              "w": 420,
+              "h": 260,
+              "radius": 28,
+              "fill": "tokens.surface",
+              "x": -250,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-cursor",
+                  "prop": "fill",
+                  "to": "tokens.accent",
+                  "ms": 130,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-cards-1-label",
+                  "type": "text",
+                  "text": "Starter",
+                  "style": {
+                    "size": 48,
+                    "weight": 600
+                  },
+                  "y": -50
+                },
+                {
+                  "id": "b1-cards-1-row-1",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#FFFFFF59",
+                  "x": 0,
+                  "y": 30,
+                  "clip": {
+                    "x": -150,
+                    "y": -9,
+                    "w": 0,
+                    "h": 18
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.2,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 300,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-cards-1-row-2",
+                  "type": "rect",
+                  "w": 220,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#FFFFFF59",
+                  "x": -40,
+                  "y": 70,
+                  "clip": {
+                    "x": -110,
+                    "y": -9,
+                    "w": 0,
+                    "h": 18
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.24,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 220,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-cards-2",
+              "type": "rect",
+              "w": 420,
+              "h": 260,
+              "radius": 28,
+              "fill": "tokens.surface",
+              "x": 250,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-cursor",
+                  "prop": "fill",
+                  "to": "tokens.accent",
+                  "ms": 130,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 2.05,
+                  "ms": 40,
+                  "from": 1,
+                  "to": 0.96,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 2.09,
+                  "ms": 120,
+                  "from": 0.96,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-cards-2-label",
+                  "type": "text",
+                  "text": "Pro",
+                  "style": {
+                    "size": 48,
+                    "weight": 600
+                  },
+                  "y": -50
+                },
+                {
+                  "id": "b1-cards-2-row-1",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#FFFFFF59",
+                  "x": 0,
+                  "y": 30,
+                  "clip": {
+                    "x": -150,
+                    "y": -9,
+                    "w": 0,
+                    "h": 18
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.27,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 300,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-cards-2-row-2",
+                  "type": "rect",
+                  "w": 220,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#FFFFFF59",
+                  "x": -40,
+                  "y": 70,
+                  "clip": {
+                    "x": -110,
+                    "y": -9,
+                    "w": 0,
+                    "h": 18
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.31,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 220,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b1-cursor",
+          "type": "cursor",
+          "style": "arrow",
+          "anchor": {
+            "x": 0.82,
+            "y": 0.85,
+            "overrides": {
+              "9:16": {
+                "x": 0.8,
+                "y": 0.85
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b1-cards-1",
+              "at": 0.4,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "moveTo",
+              "target": "b1-cards-2",
+              "at": 1.4,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "press",
+              "at": 2.05,
+              "ms": 80
+            }
+          ],
+          "size": 2
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

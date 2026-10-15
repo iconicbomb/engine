@@ -51,10 +51,70 @@ export function trackProgress(track: Track, t: number, index = 0): number | null
   }
   const raw = track.ms === 0 ? 1 : (t - start) / (track.ms / 1000);
   const x = raw >= 1 - 1e-6 ? 1 : raw;
-  return EASES[track.ease as Exclude<Ease, "bounce">](x);   // bounce returned above
+  const ease = track.mode === "press" ? "linear" : track.ease;
+  return EASES[ease as Exclude<Ease, "bounce">](x);   // bounce returned above
 }
 
 export function lerp(a: number, b: number, p: number) { return a + (b - a) * p; }
+
+// ---------- colour (fill tweens, onHover fill) ----------
+// sRGB lerp of #RRGGBB / #RRGGBBAA, returned as #RRGGBBAA. Perceptual (OKLab) interpolation is a later improvement.
+export function lerpColor(a: string, b: string, p: number): string {
+  const A = parseHex(a), B = parseHex(b);
+  if (!A || !B) return p < 0.5 ? a : b;
+  return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * p).toString(16).padStart(2, "0")).join("");
+}
+function parseHex(c: string): number[] | null {
+  const m = /^#([0-9a-fA-F]{6})([0-9a-fA-F]{2})?$/.exec(c);
+  if (!m) return null;
+  const n = parseInt(m[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255, m[2] ? parseInt(m[2], 16) : 255];
+}
+
+// ---------- cursor (pure functions of the cursor's tracks and t) ----------
+type MoveTo = Extract<Track, { mode: "moveTo" }>;
+type OnHover = Extract<Track, { mode: "onHover" }>;
+const byAt = <T extends { at: number }>(xs: T[]) => [...xs].sort((a, b) => a.at - b.at);
+
+// press: scale multiplier, dipping to 0.96 and back over each press track's ms
+export function pressFactor(tracks: Track[], t: number): number {
+  let f = 1;
+  for (const tr of tracks) {
+    if (tr.mode !== "press" || t < tr.at || tr.ms <= 0 || t > tr.at + tr.ms / 1000) continue;
+    f *= 1 - 0.04 * Math.sin(Math.PI * (t - tr.at) / (tr.ms / 1000));
+  }
+  return f;
+}
+
+// cursor position: from `start`, each started moveTo eases from where the cursor was toward its target point.
+// `point` resolves a moveTo's target point (canvas space) for this frame; null = target not laid out, hold position.
+export function cursorPosition(tracks: Track[], t: number, start: { x: number; y: number }, point: (m: MoveTo) => { x: number; y: number } | null) {
+  let cur = start;
+  for (const m of byAt(tracks.filter((tr): tr is MoveTo => tr.mode === "moveTo"))) {
+    if (t < m.at) break;
+    const target = point(m);
+    if (!target) continue;
+    const p = trackProgress(m, t) ?? 0;
+    cur = { x: lerp(cur.x, target.x, p), y: lerp(cur.y, target.y, p) };
+  }
+  return cur;
+}
+
+// hover intervals of `nodeId` under a cursor: [arrival of a moveTo that targets it, start of the cursor's next moveTo)
+export function hoverIntervals(cursorTracks: Track[], nodeId: string): { start: number; end: number }[] {
+  const moves = byAt(cursorTracks.filter((tr): tr is MoveTo => tr.mode === "moveTo"));
+  return moves.flatMap((m, i) => m.target === nodeId ? [{ start: m.at + m.ms / 1000, end: i + 1 < moves.length ? moves[i + 1].at : Infinity }] : []);
+}
+// hover amount 0..1 at t: eases in from each interval's start over ms, eases back out from its end
+export function hoverAmount(h: OnHover, intervals: { start: number; end: number }[], t: number): number {
+  const live = intervals.filter((iv) => iv.start <= t);
+  if (!live.length) return 0;
+  const iv = live[live.length - 1];
+  const ease = EASES[h.ease], d = Math.max(1e-6, h.ms / 1000);
+  const into = (x: number) => ease(Math.min(1, Math.max(0, x / d)));
+  if (t < iv.end) return into(t - iv.start);
+  return into(iv.end - iv.start) * (1 - into(t - iv.end));
+}
 
 // ---------- typewriter state (what the renderer needs per glyph at time t) ----------
 export type GlyphState = {

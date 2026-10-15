@@ -1,0 +1,44 @@
+// Cursor system fixture: a giant arrow travels to card 1 (hover fill), on to card 2 (card 1 reverts, card 2 fills),
+// pauses 150 ms and presses; card 2 dips to 0.96 with the press; each card's rows wipe in left -> right via clip.w.
+// Spec timing: move 400–600 ms (500), pause 150 ms before press, press 80 ms, fill 130 ms, rows 300 ms / 40 ms stagger.
+import { applyEdits, group, sec, type NodeIn, type TrackIn } from "../src/index";
+
+const TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", surface: "#1A1D26", font: "Inter" };
+
+function card(n: number, x: number, label: string): NodeIn {
+  const id = `b1-cards-${n}`;
+  const rows = [0, 1].map((r): NodeIn => ({
+    id: `${id}-row-${r + 1}`, type: "rect", w: 300 - r * 80, h: 18, radius: 9, fill: "#FFFFFF59",
+    x: r ? -(r * 80) / 2 : 0, y: 30 + r * 40,      // (avoid -0: JSON writes it as 0)
+    clip: { x: -(300 - r * 80) / 2, y: -9, w: 0, h: 18 },
+    tracks: [{ mode: "tween", prop: "clip.w", at: sec(0.2 + (n - 1) * 0.07 + r * 0.04), ms: 300, from: 0, to: 300 - r * 80, ease: "settle" }],
+  }));
+  const tracks: TrackIn[] = [{ mode: "onHover", cursor: "b1-cursor", prop: "fill", to: "tokens.accent", ms: 130, ease: "settle" }];
+  return { id, type: "rect", w: 420, h: 260, radius: 28, fill: "tokens.surface", x, tracks,
+    children: [{ id: `${id}-label`, type: "text", text: label, style: { size: 48, weight: 600 }, y: -50 }, ...rows] };
+}
+
+export function buildCursorHover() {
+  const cards = [card(1, -250, "Starter"), card(2, 250, "Pro")];
+  // the press lands on card 2: it dips with the cursor (explicit tracks, latest started wins)
+  (cards[1] as { tracks: TrackIn[] }).tracks.push(
+    { mode: "tween", prop: "scale", at: 2.05, ms: 40, from: 1, to: 0.96, ease: "settle" },
+    { mode: "tween", prop: "scale", at: 2.09, ms: 120, from: 0.96, to: 1, ease: "settle" },
+  );
+  const stack = group({ id: "b1-cards", anchor: { x: 0.5, y: 0.45, overrides: { "9:16": { x: 0.5, y: 0.45, scale: 0.6 } } } }, cards);
+  const cursor: NodeIn = {
+    id: "b1-cursor", type: "cursor", style: "arrow", size: 2,
+    anchor: { x: 0.82, y: 0.85, overrides: { "9:16": { x: 0.8, y: 0.85 } } },
+    tracks: [
+      { mode: "moveTo", target: "b1-cards-1", at: 0.4, ms: 500, ease: "emphasis" },
+      { mode: "moveTo", target: "b1-cards-2", at: 1.4, ms: 500, ease: "emphasis" },
+      { mode: "press", at: 2.05, ms: 80 },                       // 150 ms after arriving at 1.9
+    ],
+  };
+  return {
+    version: 1,
+    canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
+    tokens: TOKENS,
+    beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Pick a plan", nodes: applyEdits([stack, cursor], []), glows: [] }],
+  };
+}

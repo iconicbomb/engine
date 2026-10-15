@@ -2,7 +2,7 @@
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
 import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, spring } from "./runtime-core";
+import { trackProgress, typewriterGlyphs, spring, lerpColor, pressFactor, cursorPosition, hoverIntervals, hoverAmount } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
@@ -16,6 +16,9 @@ type TweenTrack = Extract<Track, { mode: "tween" }>;
 type TypewriterTrack = Extract<Track, { mode: "typewriter" }>;
 type SweepTrack = Extract<Track, { mode: "sweep" }>;
 type CountTrack = Extract<Track, { mode: "count" }>;
+type CursorNode = Extract<Node, { type: "cursor" }>;
+type MoveToTrack = Extract<Track, { mode: "moveTo" }>;
+type OnHoverTrack = Extract<Track, { mode: "onHover" }>;
 
 // What a drawn text node leaves behind for siblings (brackets) in the parent's coordinate space.
 type Box = { left: number; right: number; top: number; bottom: number };
@@ -46,8 +49,13 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.setTransform(k, 0, 0, k, 0, 0);
 
     drawGlows(beat, ctx, tokens, tl, w, h);
-    const env: Env = { ctx, tokens, tl, fps, aspect, w, h, extents: new Map() };
-    drawNodes(beat.nodes, env, true);
+    const byId = new Map<string, Node>();
+    const index = (n: Node) => { byId.set(n.id, n); ((n as { children?: Node[] }).children ?? []).forEach(index); };
+    beat.nodes.forEach(index);
+    const env: Env = { ctx, tokens, tl, fps, aspect, w, h, k, extents: new Map(), boxes: new Map(), byId };
+    // cursors are top-level and drawn last, so every moveTo target has been laid out this frame
+    drawNodes(beat.nodes.filter((n) => n.type !== "cursor"), env, true);
+    drawNodes(beat.nodes.filter((n) => n.type === "cursor"), env, true);
   }
 
   // Background glows: additive elliptical radial gradients with a gaussian-like falloff that reaches zero.
@@ -70,7 +78,12 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     }
   }
 
-  type Env = { ctx: CanvasRenderingContext2D; tokens: Record<string, string>; tl: number; fps: number; aspect: Aspect; w: number; h: number; extents: Map<string, Extents> };
+  // extents: per group, parent space (brackets / follows). boxes: every drawn node's box in canvas space (graph units),
+  // shared by the whole frame (moveTo targets). byId: every node of the beat (onHover finds its cursor).
+  type Env = {
+    ctx: CanvasRenderingContext2D; tokens: Record<string, string>; tl: number; fps: number; aspect: Aspect; w: number; h: number; k: number;
+    extents: Map<string, Extents>; boxes: Map<string, Box>; byId: Map<string, Node>;
+  };
 
   function drawNodes(nodes: Node[], env: Env, topLevel: boolean) {
     for (const node of nodes) drawNode(node, env, topLevel);
@@ -78,8 +91,9 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
 
   function drawNode(node: Node, env: Env, topLevel: boolean) {
     const { ctx } = env;
+    if (node.type === "cursor") return drawCursor(node as CursorNode, env);
     const a = resolveAnchor(node, env.aspect, env.w, env.h);
-    const props = numericProps(node, env.tl);
+    const props = hoverProps(node, numericProps(node, env.tl), env);
     // top-level anchors are canvas positions; a child's anchor is relative to its parent's origin
     const cx = (topLevel ? a.x : a.x - env.w / 2) + props.x;
     const cy = (topLevel ? a.y : a.y - env.h / 2) + props.y;
@@ -91,22 +105,30 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     if (props.rotation) ctx.rotate(props.rotation * Math.PI / 180);
     ctx.scale(nodeScale, nodeScale);
     ctx.globalAlpha *= clamp01(props.opacity);
+    const clip = clipRect(node, env.tl);
+    if (clip) { ctx.beginPath(); ctx.rect(clip.x, clip.y, clip.w, clip.h); ctx.clip(); }
 
     switch (node.type) {
       case "group": {
         const inner: Env = { ...env, extents: new Map() };
-        drawNodes((node as { children: Node[] }).children, inner, false);
+        const children = (node as { children: Node[] }).children;
+        drawNodes(children, inner, false);
+        const u = unionBox(children.map((c) => env.boxes.get(c.id) ?? null));
+        if (u) env.boxes.set(node.id, u);
         break;
       }
       case "rect": {
         const r = node as RectNode;
         const inner: Env = { ...env, extents: new Map() };
-        drawRect(r, env, cx, cy, nodeScale, r.sizeToContent ? sizedBox(r, inner) : undefined);
+        const box = r.sizeToContent ? sizedBox(r, inner) : undefined;
+        drawRect(r, env, cx, cy, nodeScale, box);
+        if (!r.follows) recordBox(node.id, box ?? { left: -r.w / 2, right: r.w / 2, top: -r.h / 2, bottom: r.h / 2 }, env);
         if (r.children.length) drawNodes(r.children, inner, false);
         break;
       }
       case "text": {
         const ext = drawText(node as TextNode, env);
+        recordBox(node.id, ext, env);
         // extents are reported in the parent's space (undo this node's transform)
         env.extents.set(node.id, {
           left: cx + ext.left * nodeScale, right: cx + ext.right * nodeScale,
@@ -380,6 +402,95 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.restore();
   }
 
+  // ---------- frame layout map (canvas space) ----------
+  // a box in the current local space -> canvas space (graph units) through the live canvas transform
+  function recordBox(id: string, b: Box, env: Env) {
+    const m = env.ctx.getTransform();
+    const pts = [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]]
+      .map(([x, y]) => ({ x: (m.a * x + m.c * y + m.e) / env.k, y: (m.b * x + m.d * y + m.f) / env.k }));
+    env.boxes.set(id, { left: Math.min(...pts.map((q) => q.x)), right: Math.max(...pts.map((q) => q.x)), top: Math.min(...pts.map((q) => q.y)), bottom: Math.max(...pts.map((q) => q.y)) });
+  }
+
+  // ---------- clip ----------
+  function clipRect(node: Node, tl: number): { x: number; y: number; w: number; h: number } | null {
+    if (!node.clip) return null;
+    const cands = (node.tracks as Track[])
+      .filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop.startsWith("clip."))
+      .map((tr) => ({ tr, start: tr.at }));
+    const c = node.clip;
+    return {
+      x: resolve("clip.x", c.x, tl, cands), y: resolve("clip.y", c.y, tl, cands),
+      w: Math.max(0, resolve("clip.w", c.w, tl, cands)), h: Math.max(0, resolve("clip.h", c.h, tl, cands)),
+    };
+  }
+
+  // ---------- hover (derived from the named cursor's moveTo tracks) ----------
+  function hoverTracks(node: Node): OnHoverTrack[] {
+    return (node.tracks as Track[]).filter((tr): tr is OnHoverTrack => tr.mode === "onHover");
+  }
+  function hoverOf(h: OnHoverTrack, node: Node, env: Env): number {
+    const cursor = env.byId.get(h.cursor);
+    return cursor ? hoverAmount(h, hoverIntervals(cursor.tracks as Track[], node.id), env.tl) : 0;
+  }
+  function hoverProps(node: Node, p: NumericProps, env: Env): NumericProps {
+    for (const h of hoverTracks(node)) {
+      if (!NUMERIC.has(h.prop) || typeof h.to !== "number") continue;
+      const key = h.prop as keyof NumericProps;
+      p[key] = p[key] + (h.to - p[key]) * hoverOf(h, node, env);
+    }
+    return p;
+  }
+  // a rect's fill at t: fill tweens (latest started wins, sRGB lerp), then onHover fill
+  function rectFill(node: RectNode, env: Env): string | null {
+    const base = node.fill ? color(node.fill, env.tokens) : null;
+    const tweens = (node.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop === "fill");
+    const hovers = hoverTracks(node).filter((h) => h.prop === "fill");
+    if (!tweens.length && !hovers.length) return base;
+    let c = base ?? "#00000000";
+    if (tweens.length) {
+      const started = tweens.filter((tr) => tr.at <= env.tl);
+      const pick = started.length ? started.reduce((x, y) => (y.at >= x.at ? y : x)) : tweens.reduce((x, y) => (y.at < x.at ? y : x));
+      const from = typeof pick.from === "string" ? color(pick.from, env.tokens) : c;
+      const to = typeof pick.to === "string" ? color(pick.to, env.tokens) : c;
+      c = lerpColor(from, to, trackProgress(pick, env.tl) ?? 0);
+    }
+    for (const h of hovers) if (typeof h.to === "string") c = lerpColor(c, color(h.to, env.tokens), hoverOf(h, node, env));
+    return c;
+  }
+
+  // ---------- cursor ----------
+  function drawCursor(node: CursorNode, env: Env) {
+    const { ctx } = env;
+    const a = resolveAnchor(node, env.aspect, env.w, env.h);
+    const props = numericProps(node, env.tl);
+    if (props.opacity <= 0) return;
+    const point = (m: MoveToTrack) => {
+      const b = env.boxes.get(m.target);
+      if (!b) return null;
+      const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
+      const [x, y] = m.anchor === "left" ? [b.left, my] : m.anchor === "right" ? [b.right, my]
+        : m.anchor === "top" ? [mx, b.top] : m.anchor === "bottom" ? [mx, b.bottom] : [mx, my];
+      return { x: x + m.offset.x, y: y + m.offset.y };
+    };
+    const pos = cursorPosition(node.tracks as Track[], env.tl, { x: a.x + props.x, y: a.y + props.y }, point);
+    const s = props.scale * a.scale * node.size * pressFactor(node.tracks as Track[], env.tl);
+    ctx.save();
+    ctx.translate(pos.x, pos.y);                       // the hotspot (arrow / hand tip, avatar centre)
+    ctx.scale(s, s);
+    ctx.globalAlpha *= clamp01(props.opacity);
+    ctx.lineJoin = "round";
+    if (node.style === "avatar") {
+      ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2);
+      ctx.fillStyle = color("tokens.accent", env.tokens); ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = "#FFFFFF"; ctx.stroke();
+    } else {
+      ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = "#111111"; ctx.lineWidth = 1.5;
+      const pth = path2d(node.style === "hand" ? HAND_PATH : ARROW_PATH);
+      ctx.fill(pth); ctx.stroke(pth);
+    }
+    ctx.restore();
+  }
+
   // ---------- layout pass (sizeToContent) ----------
   // A child's box in its parent's space: its anchor/x/y/scale applied to its own box. Opacity is ignored (layout).
   function measureNode(n: Node, env: Env): Box | null {
@@ -423,12 +534,19 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
     ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
     ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
-    if (node.fill) { ctx.fillStyle = color(node.fill, tokens); ctx.fill(); }
+    const fill = rectFill(node, env);
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
     if (node.stroke) { ctx.strokeStyle = color(node.stroke.color, tokens); ctx.lineWidth = node.stroke.width; ctx.stroke(); }
   }
 
   return { renderFrame };
 }
+
+// ---------- cursor glyphs: px at size 1, hotspot at the origin ----------
+const ARROW_PATH = "M0 0 L0 26 L6.5 20 L11 30.5 L15 28.7 L10.6 18.6 L19 18.6 Z";
+const HAND_PATH = "M0 0 C1.7 0 3 1.3 3 3 L3 11 C4.6 10.2 6.6 10.6 7.4 12 C9 11.3 10.9 11.8 11.6 13.3 C13.3 12.8 15 13.6 15.4 15.3 "
+  + "L16.6 21.5 C17.4 25.8 14.6 30 10.2 30 L5.6 30 C3.2 30 1.1 28.6 0.2 26.4 L-4.6 15.6 C-5.3 14 -4.5 12.2 -2.9 11.7 "
+  + "C-1.9 11.4 -0.8 11.7 -0.1 12.5 L-3 8.6 L-3 3 C-3 1.3 -1.7 0 0 0 Z";
 
 // ---------- helpers ----------
 function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
