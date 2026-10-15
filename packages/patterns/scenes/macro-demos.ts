@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, curtainWipe, group, mascot, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -237,4 +237,13 @@ export function buildS16Demo() {
     anchor: { x: 0.36, y: 0.5, overrides: { "9:16": { x: 0.22, y: 0.5, scale: 0.6 } } },
     wordmark: { text: "Lumi", style: { size: 150, weight: 800 } } });
   return demo("Meet Lumi", 3.4, m.nodes, [m]);
+}
+
+// S7 demo: an integrations list collapses to its icons, which drift apart as depth-blurred orbs
+export function buildS7Demo() {
+  const orbs = collapseToOrbs({ id: "b1-list", at: 0.8, style: { size: 48, weight: 600 },
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.6 } } },
+    rows: [{ label: "Slack", color: "#4A154B" }, { label: "Notion", color: "#E6E6E6" }, { label: "GitHub", color: "#6E40C9" },
+      { label: "Stripe", color: "#635BFF" }, { label: "Figma", color: "#F24E1E" }] });
+  return demo("Everything, connected", 2.4, orbs.nodes, [orbs]);
 }

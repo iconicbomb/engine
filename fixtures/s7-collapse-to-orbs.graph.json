@@ -1,0 +1,534 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Everything, connected",
+      "nodes": [
+        {
+          "id": "b1-list",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.6
+              }
+            }
+          },
+          "layout": {
+            "type": "column",
+            "gap": 22,
+            "align": "start"
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-list-row-1",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 24,
+                "align": "center"
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-list-orb-1",
+                  "type": "rect",
+                  "w": 62,
+                  "h": 62,
+                  "radius": 31,
+                  "fill": "#4A154B",
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 209,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 1,
+                      "to": 0.78,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "blur",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 7.2,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-list-orb-1-shine",
+                      "type": "rect",
+                      "w": 21.080000000000002,
+                      "h": 21.080000000000002,
+                      "radius": 62,
+                      "fill": "#FFFFFF59",
+                      "x": -11.16,
+                      "y": -11.16
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-list-label-1",
+                  "type": "text",
+                  "text": "Slack",
+                  "style": {
+                    "size": 48,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "clip": {
+                    "x": 0,
+                    "y": -48,
+                    "w": 149,
+                    "h": 96
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 200,
+                      "from": 149,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-list-row-2",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 24,
+                "align": "center"
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-list-orb-2",
+                  "type": "rect",
+                  "w": 62,
+                  "h": 62,
+                  "radius": 31,
+                  "fill": "#E6E6E6",
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": -232.039,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 148.795,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 1,
+                      "to": 1.124,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "blur",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 1.967,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-list-orb-2-shine",
+                      "type": "rect",
+                      "w": 21.080000000000002,
+                      "h": 21.080000000000002,
+                      "radius": 62,
+                      "fill": "#FFFFFF59",
+                      "x": -11.16,
+                      "y": -11.16
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-list-label-2",
+                  "type": "text",
+                  "text": "Notion",
+                  "style": {
+                    "size": 48,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "clip": {
+                    "x": 0,
+                    "y": -48,
+                    "w": 179,
+                    "h": 96
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 200,
+                      "from": 179,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-list-row-3",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 24,
+                "align": "center"
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-list-orb-3",
+                  "type": "rect",
+                  "w": 62,
+                  "h": 62,
+                  "radius": 31,
+                  "fill": "#6E40C9",
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 21.803,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": -173.889,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 1,
+                      "to": 1.468,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "blur",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 11.134,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-list-orb-3-shine",
+                      "type": "rect",
+                      "w": 21.080000000000002,
+                      "h": 21.080000000000002,
+                      "radius": 62,
+                      "fill": "#FFFFFF59",
+                      "x": -11.16,
+                      "y": -11.16
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-list-label-3",
+                  "type": "text",
+                  "text": "GitHub",
+                  "style": {
+                    "size": 48,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "clip": {
+                    "x": 0,
+                    "y": -48,
+                    "w": 179,
+                    "h": 96
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 200,
+                      "from": 179,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-list-row-4",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 24,
+                "align": "center"
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-list-orb-4",
+                  "type": "rect",
+                  "w": 62,
+                  "h": 62,
+                  "radius": 31,
+                  "fill": "#635BFF",
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 216.024,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 197.24,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 1,
+                      "to": 0.911,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "blur",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 3.698,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-list-orb-4-shine",
+                      "type": "rect",
+                      "w": 21.080000000000002,
+                      "h": 21.080000000000002,
+                      "radius": 62,
+                      "fill": "#FFFFFF59",
+                      "x": -11.16,
+                      "y": -11.16
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-list-label-4",
+                  "type": "text",
+                  "text": "Stripe",
+                  "style": {
+                    "size": 48,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "clip": {
+                    "x": 0,
+                    "y": -48,
+                    "w": 179,
+                    "h": 96
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 200,
+                      "from": 179,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-list-row-5",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 24,
+                "align": "center"
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-list-orb-5",
+                  "type": "rect",
+                  "w": 62,
+                  "h": 62,
+                  "radius": 31,
+                  "fill": "#F24E1E",
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": -285.305,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": -35.33,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 1,
+                      "to": 1.255,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "blur",
+                      "at": 1,
+                      "ms": 900,
+                      "from": 0,
+                      "to": 5.469,
+                      "ease": "settle"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-list-orb-5-shine",
+                      "type": "rect",
+                      "w": 21.080000000000002,
+                      "h": 21.080000000000002,
+                      "radius": 62,
+                      "fill": "#FFFFFF59",
+                      "x": -11.16,
+                      "y": -11.16
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-list-label-5",
+                  "type": "text",
+                  "text": "Figma",
+                  "style": {
+                    "size": 48,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "clip": {
+                    "x": 0,
+                    "y": -48,
+                    "w": 149,
+                    "h": 96
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 200,
+                      "from": 149,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

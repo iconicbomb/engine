@@ -166,6 +166,8 @@ const NodeBase = z.object({
   opacity: z.number().min(0).max(1).default(1),
   scale: z.number().positive().default(1),
   rotation: z.number().default(0),
+  // Gaussian blur in px at refHeight over the node and its children (animatable as "blur"; S7 depth of field)
+  blur: z.number().min(0).default(0),
   // base offset from the anchor in px at refHeight (the units of x/y tracks); an x/y track replaces it while it runs
   x: z.number().default(0),
   y: z.number().default(0),
