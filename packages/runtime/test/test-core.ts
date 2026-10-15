@@ -1,5 +1,5 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition } from "../src/runtime-core";
-import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount, Track, OnHoverTrack } from "@engine/graph";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition, frameView, clampView, cameraState } from "../src/runtime-core";
+import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount, Track, OnHoverTrack, FrameTrack } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 // endpoints + monotonic
@@ -73,3 +73,46 @@ void (async () => {
   const pos = (t: number) => cursorPosition(moves, t, { x: 0, y: 0 }, (m) => pts[m.target]);
   assert(pos(0.3).x === 0 && pos(0.9).x === 100 && pos(1.9).x === 300 && pos(1.9).y === 50 && pos(1.65).x > 100 && pos(1.65).x < 300, "moveTo: holds, travels, arrives at at + ms, chains from the last target");
 }
+// camera math (pure): fill-fraction zoom, clamp, hard cut, log-space zoom, transitions start from the replayed state
+{
+  const W = 1920, H = 1080, box = { left: 100, right: 500, top: 200, bottom: 400 };       // 400 x 200
+  const f = (o: object) => FrameTrack.parse({ mode: "frame", target: "b1-x", ...o });
+  const close = frameView(f({ size: "close" }), box, W, H), wide = frameView(f({ size: "wide" }), box, W, H);
+  assert(Math.abs(close.zoom - Math.min(W * 0.9 / 400, H * 0.9 / 200)) < 1e-9 && close.cx === 300 && close.cy === 300 && Math.abs(wide.zoom - 2.4) < 1e-9,
+    `frame: close zoom = min(W*0.9/w, H*0.9/h) = ${close.zoom.toFixed(2)}, centred on the box; wide ${wide.zoom.toFixed(2)}`);
+  const off = frameView(f({ size: 2, anchor: "left", offset: { x: 0.5, y: -0.5 } }), box, W, H);
+  assert(off.zoom === 2 && off.cx === 300 && off.cy === 200, "frame: explicit zoom; anchor + offset as box fractions");
+  const c = clampView({ zoom: 0.5, cx: 0, cy: 0 }, W, H), c2 = clampView({ zoom: 2, cx: 100, cy: 2000 }, W, H);
+  assert(c.zoom === 1 && c.cx === W / 2 && c.cy === H / 2 && c2.cx === W / 4 && c2.cy === H - H / 4, "clamp: zoom >= 1, viewport kept inside the canvas");
+  const base = () => ({ zoom: 1, cx: W / 2, cy: H / 2 });
+  const frames = [f({ at: 1, size: 4, ms: 0 }), f({ at: 2, size: 1, ms: 400 })];
+  const st = (t: number) => cameraState(frames, t, base, (fr) => frameView(fr, box, W, H), W, H);
+  const mid = st(2.2);
+  assert(st(0.99).zoom === 1 && st(1).zoom === 4 && st(1.99).zoom === 4 && st(2.4).zoom === 1 && mid.zoom < 4 && mid.zoom > 1,
+    "cameraState: holds base, hard cut at 1 s, 400 ms transition back from the replayed state");
+  const p = EASES.emphasis(0.5);
+  assert(Math.abs(Math.log(mid.zoom) - (Math.log(4) + (Math.log(1) - Math.log(4)) * p)) < 1e-9, "cameraState: zoom interpolates in log space");
+}
+// camera fixture (S4): the framed card's projected box stays fully inside the canvas through the close-up
+void (async () => {
+  const { createShaper } = await import("../src/shaper");
+  const { createRuntime } = await import("../src/canvas2d");
+  const sh = await createShaper({ wasm: new Uint8Array(readFileSync("packages/runtime/wasm/hb.wasm")), fonts: { Inter: new Uint8Array(readFileSync("packages/runtime/fonts/Inter-Variable.ttf")) } });
+  const rt = createRuntime({ shaper: sh });
+  const raw = JSON.parse(readFileSync("fixtures/s4-jump-cut.graph.json", "utf8"));
+  const press = raw.beats[0].camera.tracks.map((t: any) => t.at);              // [0, press1, press2]
+  for (const aspect of ["9:16", "16:9"] as const) {
+    const gr = parseGraph({ ...raw, canvas: { ...raw.canvas, aspect } });
+    const W = aspect === "9:16" ? Math.round(1080 * 9 / 16) : Math.round(1080 * 16 / 9), H = 1080;
+    let worst = Infinity, n = 0, zooms: number[] = [];
+    for (let t = press[1] + 0.3; t < press[2]; t += 1 / 30, n++) {
+      const cam = rt.camera(gr, t), b = rt.measure(gr, t).get("b1-cards-1")!;
+      const sx = (x: number) => (x - cam.cx) * cam.zoom + W / 2, sy = (y: number) => (y - cam.cy) * cam.zoom + H / 2;
+      worst = Math.min(worst, sx(b.left), W - sx(b.right), sy(b.top), H - sy(b.bottom));
+      zooms.push(cam.zoom);
+    }
+    const before = rt.camera(gr, press[1] - 0.01), after = rt.camera(gr, press[2]), justBefore = rt.camera(gr, press[2] - 0.001);
+    assert(worst >= 0 && n > 20 && Math.min(...zooms) > 1.5 && after.zoom === before.zoom && after.cx === before.cx && justBefore.zoom > 1.5,
+      `camera fixture ${aspect}: card 1 fully inside the canvas through the close-up (min margin ${worst.toFixed(1)} px over ${n} frames, zoom ${zooms[0].toFixed(2)}); hard cut back to the same wide framing (zoom ${before.zoom.toFixed(2)})`);
+  }
+})();

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pressTimes, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -121,6 +121,12 @@ assert(s5[0].track.mode === "moveTo" && (s5[0].track as any).ms === 500 && s5pre
   "S5: cursor moves 500 ms, pauses 150 ms, presses for 80 ms at 0.95 s");
 assert(s5[2].target === "b1-btn" && s5hover.mode === "onHover" && s5hover.ms === 100 && s5dip[0].to === 0.96 && s5dip[0].at === 0.95 && s5dip[1].at === 0.99 && s5dip[1].to === 1,
   "S5: target hover background over 100 ms; dips to 0.96 and back across the press");
+
+// S4: shots become camera frame tracks (hard cuts by default); pressTimes reads cut-on-action points
+const s4 = jumpCuts({ shots: [{ at: 0, target: "b1-a", size: "wide" }, { at: 0.95, target: "b1-b", size: "close", ms: 300 }] });
+const clicks = [cursorClick({ cursor: "b1-cur", target: "b1-a", at: 1.2 }), cursorClick({ cursor: "b1-cur", target: "b1-b", at: 0.3 })];
+assert(s4.camera.length === 2 && s4.camera[0].mode === "frame" && s4.camera[0].ms === 0 && s4.camera[1].ms === 300 && s4.camera[1].size === "close"
+  && pressTimes(clicks, "b1-cur").join() === "0.95,1.85", "S4: frame tracks (hard cut default, one 300 ms push); press times sorted for cut on action");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

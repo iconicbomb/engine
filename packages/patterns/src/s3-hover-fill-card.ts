@@ -47,9 +47,9 @@ export function hoverFillCard(p: HoverFillCardParams): MacroResult {
   };
   return result({
     nodes: [card],
-    // park near the card's bottom edge, right of centre, clear of the rows. moveTo offsets are canvas px and don't
-    // scale with the card, so they're kept small enough to stay inside it when its group is scaled down (9:16)
-    tracks: [{ target: p.cursor, track: { mode: "moveTo", target: p.id, anchor: "bottom", offset: { x: Math.round(p.w * 0.22), y: -Math.round(p.h * 0.12) },
+    // park near the card's bottom edge, right of centre, clear of the rows (offsets are fractions of the card's box,
+    // so they hold at any scale)
+    tracks: [{ target: p.cursor, track: { mode: "moveTo", target: p.id, anchor: "bottom", offset: { x: 0.22, y: -0.12 },
       at: p.enterAt, ms: moveMs, ease: "emphasis" } }],
   });
 }

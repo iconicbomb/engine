@@ -87,9 +87,8 @@ export const CountTrack = TrackBase.extend({
 });
 
 // ---------- cursor (S3, S5) ----------
-// moveTo: the cursor travels from where it is to a point on the target node's box (canvas space, resolved by the
-// runtime's layout pass each frame), arriving at at + ms. The target must be drawn before the cursor (cursors are
-// top-level and drawn last).
+// moveTo: the cursor travels from where it is to a point on the target node's box (world space, from the runtime's
+// measure pass), arriving at at + ms. offset is a fraction of the target's box (x * width, y * height).
 export const MoveToTrack = TrackBase.extend({
   mode: z.literal("moveTo"),
   prop: z.string().min(1).default("position"),
@@ -117,6 +116,26 @@ export const OnHoverTrack = TrackBase.extend({
 });
 
 export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack]);
+
+// ---------- camera (S4) ----------
+// frame: frame a target node. size presets are fill fractions of the frame (wide 0.5, medium 0.7, close 0.9):
+// zoom = min(W*f / box.w, H*f / box.h); a number is an explicit zoom. The view centres the box anchor + offset
+// (fractions of the box). follow false resolves the box once at `at`; true re-resolves it every frame.
+// ms 0 = hard cut; ms > 0 interpolates zoom in log space and the centre linearly. Holds until the next frame track.
+// The view is clamped to the canvas (zoom >= 1, pan within bounds).
+export const FrameTrack = TrackBase.extend({
+  mode: z.literal("frame"),
+  prop: z.string().min(1).default("camera"),
+  target: z.string(),
+  size: z.union([z.enum(["wide", "medium", "close"]), z.number().positive()]).default("medium"),
+  anchor: z.enum(["center", "left", "right", "top", "bottom"]).default("center"),
+  offset: z.object({ x: z.number().default(0), y: z.number().default(0) }).default({}),
+  ms: z.number().min(0).default(0),
+  ease: z.enum(["linear", "settle", "emphasis"]).default("emphasis"),
+  follow: z.boolean().default(false),
+});
+export const CameraTrack = z.discriminatedUnion("mode", [TweenTrack, FrameTrack]);
+export type CameraTrack = z.infer<typeof CameraTrack>;
 export type Track = z.infer<typeof Track>;
 
 // ---------- layout ----------
@@ -235,7 +254,8 @@ export const Beat = z.object({
     color: Color.default("tokens.accent"), intensity: z.number().min(0).max(1).default(0.6),
     tracks: z.array(Track).default([]),
   })).default([]),
-  camera: z.object({ zoom: z.number().positive().default(1), x: z.number().default(0), y: z.number().default(0), tracks: z.array(Track).default([]) }).default({}),
+  // camera over the nodes and cursors (not the background or glows): zoom about the frame centre, x/y = pan in px
+  camera: z.object({ zoom: z.number().positive().default(1), x: z.number().default(0), y: z.number().default(0), tracks: z.array(CameraTrack).default([]) }).default({}),
   nodes: z.array(Node),
 });
 
@@ -297,6 +317,8 @@ export const Graph = z.object({
       (n.children ?? []).forEach((c: any) => check(c, false));
     };
     b.nodes.forEach((n: any) => check(n, true));
+    for (const t of b.camera.tracks) if (t.mode === "frame" && !local.has(t.target))
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${b.id}: camera frame targets unknown node ${t.target}` });
   });
 });
 export type Graph = z.infer<typeof Graph>;

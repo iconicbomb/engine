@@ -134,6 +134,42 @@ export function typewriterGlyphs(track: Extract<Track, { mode: "typewriter" }>, 
   });
 }
 
+// ---------- camera (pure) ----------
+type FrameTrackT = Extract<import("@engine/graph").CameraTrack, { mode: "frame" }>;
+const FILL = { wide: 0.5, medium: 0.7, close: 0.9 } as const;
+// the view a frame track asks for, for a target box (world space), before clamping
+export function frameView(f: FrameTrackT, b: { left: number; right: number; top: number; bottom: number }, W: number, H: number): { zoom: number; cx: number; cy: number } {
+  const bw = Math.max(1e-3, b.right - b.left), bh = Math.max(1e-3, b.bottom - b.top);
+  const zoom = typeof f.size === "number" ? f.size : Math.min((W * FILL[f.size]) / bw, (H * FILL[f.size]) / bh);
+  const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
+  const [x, y] = f.anchor === "left" ? [b.left, my] : f.anchor === "right" ? [b.right, my]
+    : f.anchor === "top" ? [mx, b.top] : f.anchor === "bottom" ? [mx, b.bottom] : [mx, my];
+  return { zoom, cx: x + f.offset.x * bw, cy: y + f.offset.y * bh };
+}
+// keep the viewport inside the canvas: zoom >= 1, centre within [W/2z, W - W/2z] x [H/2z, H - H/2z]
+export function clampView(v: { zoom: number; cx: number; cy: number }, W: number, H: number) {
+  const zoom = Math.max(1, v.zoom), hw = W / (2 * zoom), hh = H / (2 * zoom);
+  return { zoom, cx: Math.min(W - hw, Math.max(hw, v.cx)), cy: Math.min(H - hh, Math.max(hh, v.cy)) };
+}
+// camera at t by replaying frame tracks: each transition starts from the replayed state at its own `at`
+export function cameraState(frames: FrameTrackT[], t: number, base: (t: number) => { zoom: number; cx: number; cy: number },
+  target: (f: FrameTrackT, t: number) => { zoom: number; cx: number; cy: number } | null, W: number, H: number) {
+  const fs = [...frames].sort((a, b) => a.at - b.at);
+  const at = (k: number, time: number): { zoom: number; cx: number; cy: number } => {
+    if (k === 0) return clampView(base(time), W, H);
+    const f = fs[k - 1];
+    if (time < f.at) return at(k - 1, time);
+    const to = target(f, time);
+    if (!to) return at(k - 1, time);
+    const toC = clampView(to, W, H);
+    const p = f.ms <= 0 ? 1 : EASES[f.ease](Math.min(1, (time - f.at) / (f.ms / 1000)));
+    if (p >= 1) return toC;
+    const from = at(k - 1, f.at);
+    return clampView({ zoom: Math.exp(lerp(Math.log(from.zoom), Math.log(toC.zoom), p)), cx: lerp(from.cx, toC.cx, p), cy: lerp(from.cy, toC.cy, p) }, W, H);
+  };
+  return at(fs.length, t);
+}
+
 // ---------- interfaces the rest of phase 0 implements ----------
 export interface ShapedGlyph {
   glyph: string;      // the source character(s) of this glyph's cluster
@@ -155,6 +191,13 @@ export interface Shaper {
 export interface RenderTarget { width: number; height: number; ctx: CanvasRenderingContext2D }
 
 // The one entry point. Pure: same (graph, t) -> same pixels. The Remotion harness and the editor both call it.
+export type Box = { left: number; right: number; top: number; bottom: number };
+export type CameraState = { zoom: number; cx: number; cy: number };   // cx/cy: the world point at the frame centre
+
 export interface Runtime {
   renderFrame(graph: Graph, tSec: number, target: RenderTarget): void;
+  // pure layout pass: every node's box in world space (graph units, before the camera), full laid-out extents
+  measure(graph: Graph, tSec: number): Map<string, Box>;
+  // the camera at tSec (identity = { zoom: 1, cx: W/2, cy: H/2 })
+  camera(graph: Graph, tSec: number): CameraState;
 }

@@ -1,7 +1,7 @@
 // Cursor system fixture: a giant arrow travels to card 1 (hover fill), on to card 2 (card 1 reverts, card 2 fills),
 // pauses 150 ms and presses; card 2 dips to 0.96 with the press; each card's rows wipe in left -> right via clip.w.
 // Spec timing: move 400–600 ms (500), pause 150 ms before press, press 80 ms, fill 130 ms, rows 300 ms / 40 ms stagger.
-import { applyEdits, cursorClick, giantCursor, group, hoverFillCard, sec, type NodeIn, type TrackIn } from "../src/index";
+import { applyEdits, cursorClick, giantCursor, group, hoverFillCard, jumpCuts, pressTimes, sec, type NodeIn, type TrackIn } from "../src/index";
 
 const TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", surface: "#1A1D26", font: "Inter" };
 
@@ -84,5 +84,28 @@ export function buildS5Demo() {
     canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
     tokens: TOKENS,
     beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Connect Slack", nodes: applyEdits([panel, cursor], [connect, apply]), glows: [] }],
+  };
+}
+
+// S4 demo (camera fixture): wide on the cards -> at the first click, a 300 ms push into a close-up on card 1 ->
+// at the second click, a hard cut back to wide. Cuts land on the cursor's press times (cut on action).
+export function buildS4Demo() {
+  const cards = [card(1, -250, "Starter"), card(2, 250, "Pro")];
+  const stack = group({ id: "b1-cards", anchor: { x: 0.5, y: 0.45, overrides: { "9:16": { x: 0.5, y: 0.45, scale: 0.6 } } } }, cards);
+  const cursor = giantCursor({ id: "b1-cursor", anchor: { x: 0.82, y: 0.85, overrides: { "9:16": { x: 0.8, y: 0.85, scale: 0.7 } } } });
+  const clickStarter = cursorClick({ cursor: "b1-cursor", target: "b1-cards-1", at: 0.3, hover: false });
+  const clickPro = cursorClick({ cursor: "b1-cursor", target: "b1-cards-2", at: 1.6, hover: false });
+  const [press1, press2] = pressTimes([clickStarter, clickPro], "b1-cursor");
+  const cuts = jumpCuts({ shots: [
+    { at: 0, target: "b1-cards", size: "wide" },
+    { at: press1, target: "b1-cards-1", size: "close", ms: 300 },
+    { at: press2, target: "b1-cards", size: "wide" },
+  ] });
+  return {
+    version: 1,
+    canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
+    tokens: TOKENS,
+    beats: [{ id: "b1", type: "feature", start: 0, duration: 3.0, script: "Starter or Pro", nodes: applyEdits([stack, cursor], [clickStarter, clickPro]),
+      glows: [], camera: { tracks: cuts.camera } }],
   };
 }

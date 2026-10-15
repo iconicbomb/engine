@@ -2,8 +2,8 @@
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
 import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, spring, lerpColor, pressFactor, cursorPosition, hoverIntervals, hoverAmount } from "./runtime-core";
-import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState } from "./runtime-core";
+import { trackProgress, typewriterGlyphs, spring, lerpColor, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
+import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
 const EASE_SETTLE = EASES.settle;
@@ -22,6 +22,14 @@ type OnHoverTrack = Extract<Track, { mode: "onHover" }>;
 
 // What a drawn text node leaves behind for siblings (brackets) in the parent's coordinate space.
 type Box = { left: number; right: number; top: number; bottom: number };
+// 2D affine matrix [a, b, c, d, e, f] (canvas convention) for the measure pass
+type M = [number, number, number, number, number, number];
+const I: M = [1, 0, 0, 1, 0, 0];
+const mul = (m: M, n: M): M => [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]];
+const worldBox = (m: M, b: Box): Box => {
+  const pts = [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]].map(([x, y]) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]);
+  return { left: Math.min(...pts.map((p) => p[0])), right: Math.max(...pts.map((p) => p[0])), top: Math.min(...pts.map((p) => p[1])), bottom: Math.max(...pts.map((p) => p[1])) };
+};
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
 
 type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number };
@@ -32,15 +40,31 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   const pathCache = new Map<string, Path2D>();
   const path2d = (d: string) => { let p = pathCache.get(d); if (!p) { p = new Path2D(d); pathCache.set(d, p); } return p; };
 
+  // Everything a frame needs, as a pure function of (graph, t). boxesAt(t) runs the measure pass for beat-local t
+  // (memoised per frame: camera frames with follow false measure at their own `at`).
+  function frameEnv(graph: Graph, tSec: number, ctx: CanvasRenderingContext2D | null, k: number): { env: Env; beat: Beat } {
+    const aspect = graph.canvas.aspect as Aspect;
+    const { w, h } = canvasSize(aspect, graph.canvas.refHeight);
+    const beat = pickBeat(graph.beats, tSec);
+    const tl = tSec - beat.start;                      // beat-local time
+    const byId = new Map<string, Node>();
+    const index = (n: Node) => { byId.set(n.id, n); ((n as { children?: Node[] }).children ?? []).forEach(index); };
+    beat.nodes.forEach(index);
+    const memo = new Map<number, Map<string, Box>>();
+    const env: Env = {
+      ctx: ctx as CanvasRenderingContext2D, tokens: graph.tokens, tl, fps: graph.canvas.fps, aspect, w, h, k, extents: new Map(), byId,
+      boxesAt: (t: number) => { let b = memo.get(t); if (!b) { b = measureBoxes(beat, { ...env, tl: t }); memo.set(t, b); } return b; },
+    };
+    return { env, beat };
+  }
+
   function renderFrame(graph: Graph, tSec: number, target: RenderTarget) {
     const { ctx } = target;
     const aspect = graph.canvas.aspect as Aspect;
     const { w, h } = canvasSize(aspect, graph.canvas.refHeight);
     const k = target.height / h;                       // graph units -> device px
-    const beat = pickBeat(graph.beats, tSec);
-    const tl = tSec - beat.start;                      // beat-local time
-    const tokens = graph.tokens;
-    const fps = graph.canvas.fps;
+    const { env, beat } = frameEnv(graph, tSec, ctx, k);
+    const tl = env.tl, tokens = graph.tokens;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
@@ -49,13 +73,70 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.setTransform(k, 0, 0, k, 0, 0);
 
     drawGlows(beat, ctx, tokens, tl, w, h);
-    const byId = new Map<string, Node>();
-    const index = (n: Node) => { byId.set(n.id, n); ((n as { children?: Node[] }).children ?? []).forEach(index); };
-    beat.nodes.forEach(index);
-    const env: Env = { ctx, tokens, tl, fps, aspect, w, h, k, extents: new Map(), boxes: new Map(), byId };
-    // cursors are top-level and drawn last, so every moveTo target has been laid out this frame
+    // camera over nodes and cursors (glows stay put); skipped entirely when it is the identity
+    if (hasCamera(beat)) {
+      const cam = cameraAt(beat, env);
+      ctx.translate(w / 2, h / 2); ctx.scale(cam.zoom, cam.zoom); ctx.translate(-cam.cx, -cam.cy);
+    }
+    // cursors are top-level and drawn last, on top of everything
     drawNodes(beat.nodes.filter((n) => n.type !== "cursor"), env, true);
     drawNodes(beat.nodes.filter((n) => n.type === "cursor"), env, true);
+  }
+
+  function hasCamera(beat: Beat) {
+    const c = beat.camera;
+    return c.tracks.length > 0 || c.zoom !== 1 || c.x !== 0 || c.y !== 0;
+  }
+  function cameraAt(beat: Beat, env: Env): CameraState {
+    const c = beat.camera, W = env.w, H = env.h;
+    const tweens = (c.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween").map((tr) => ({ tr, start: tr.at }));
+    const base = (t: number) => ({
+      zoom: resolve("zoom", c.zoom, t, tweens), cx: W / 2 + resolve("x", c.x, t, tweens), cy: H / 2 + resolve("y", c.y, t, tweens),
+    });
+    const frames = c.tracks.filter((tr): tr is Extract<typeof tr, { mode: "frame" }> => tr.mode === "frame");
+    const target = (f: (typeof frames)[number], t: number) => {
+      const b = env.boxesAt(f.follow ? t : f.at).get(f.target);
+      return b ? frameView(f, b, W, H) : null;
+    };
+    return cameraState(frames, env.tl, base, target, W, H);
+  }
+
+  // ---------- measure pass: world-space boxes for every node (pure) ----------
+  // Full laid-out extents: text uses its whole run at its fully-typed fit scale (a shot doesn't drift while a
+  // typewriter runs); opacity is ignored. Cursors are measured last (their position reads the other boxes).
+  function measureBoxes(beat: Beat, env: Env): Map<string, Box> {
+    const out = new Map<string, Box>();
+    const walk = (nodes: Node[], parent: M, top: boolean) => {
+      for (const n of nodes) {
+        if (n.type === "cursor") continue;
+        const a = resolveAnchor(n, env.aspect, env.w, env.h);
+        const props = hoverProps(n, numericProps(n, env.tl), env);
+        const cx = (top ? a.x : a.x - env.w / 2) + props.x, cy = (top ? a.y : a.y - env.h / 2) + props.y;
+        const s = props.scale * a.scale, r = props.rotation * Math.PI / 180;
+        const m = mul(mul(mul(parent, [1, 0, 0, 1, cx, cy]), [Math.cos(r), Math.sin(r), -Math.sin(r), Math.cos(r), 0, 0]), [s, 0, 0, s, 0, 0]);
+        const children = (n as { children?: Node[] }).children ?? [];
+        walk(children, m, false);
+        let box: Box | null = null;
+        if (n.type === "text") box = worldBox(m, fullTextBox(layoutText(n as TextNode, env)));
+        else if (n.type === "rect") {
+          const rn = n as RectNode;
+          box = worldBox(m, rn.sizeToContent ? sizedBox(rn, env) : { left: -rn.w / 2, right: rn.w / 2, top: -rn.h / 2, bottom: rn.h / 2 });
+        } else if (n.type === "group") box = unionBox(children.map((c) => out.get(c.id) ?? null));
+        else if (n.type === "bracket") box = out.get((n as BracketNode).follows) ?? null;
+        if (box) out.set(n.id, box);
+      }
+    };
+    walk(beat.nodes, I, true);
+    for (const n of beat.nodes) if (n.type === "cursor") {
+      const p = cursorWorldPos(n as CursorNode, env, out), r = 16 * (n as CursorNode).size;
+      out.set(n.id, { left: p.x - r, right: p.x + r, top: p.y - r, bottom: p.y + r });
+    }
+    return out;
+  }
+  function fullTextBox(L: ReturnType<typeof layoutText>): Box {
+    const { metrics, size, baseline, fullScale: fs, fullWidth: fw, style } = L;
+    const x0 = style.align === "left" ? 0 : style.align === "right" ? -fw : -fw / 2;
+    return { left: x0 * fs, right: (x0 + fw) * fs, top: (baseline - metrics.ascender * size) * fs, bottom: (baseline - metrics.descender * size) * fs };
   }
 
   // Background glows: additive elliptical radial gradients with a gaussian-like falloff that reaches zero.
@@ -78,11 +159,11 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     }
   }
 
-  // extents: per group, parent space (brackets / follows). boxes: every drawn node's box in canvas space (graph units),
-  // shared by the whole frame (moveTo targets). byId: every node of the beat (onHover finds its cursor).
+  // extents: per group, parent space (brackets / follows). boxesAt(t): the measure pass, every node's box in world
+  // space (moveTo / camera targets). byId: every node of the beat (onHover finds its cursor).
   type Env = {
     ctx: CanvasRenderingContext2D; tokens: Record<string, string>; tl: number; fps: number; aspect: Aspect; w: number; h: number; k: number;
-    extents: Map<string, Extents>; boxes: Map<string, Box>; byId: Map<string, Node>;
+    extents: Map<string, Extents>; byId: Map<string, Node>; boxesAt: (t: number) => Map<string, Box>;
   };
 
   function drawNodes(nodes: Node[], env: Env, topLevel: boolean) {
@@ -113,8 +194,6 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         const inner: Env = { ...env, extents: new Map() };
         const children = (node as { children: Node[] }).children;
         drawNodes(children, inner, false);
-        const u = unionBox(children.map((c) => env.boxes.get(c.id) ?? null));
-        if (u) env.boxes.set(node.id, u);
         break;
       }
       case "rect": {
@@ -122,13 +201,11 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         const inner: Env = { ...env, extents: new Map() };
         const box = r.sizeToContent ? sizedBox(r, inner) : undefined;
         drawRect(r, env, cx, cy, nodeScale, box);
-        if (!r.follows) recordBox(node.id, box ?? { left: -r.w / 2, right: r.w / 2, top: -r.h / 2, bottom: r.h / 2 }, env);
         if (r.children.length) drawNodes(r.children, inner, false);
         break;
       }
       case "text": {
         const ext = drawText(node as TextNode, env);
-        recordBox(node.id, ext, env);
         // extents are reported in the parent's space (undo this node's transform)
         env.extents.set(node.id, {
           left: cx + ext.left * nodeScale, right: cx + ext.right * nodeScale,
@@ -218,7 +295,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const visibleWidth = widthUpTo(visibleCount);
 
     // fit-to-width: replay the typewriter steps so the smoothed scale depends only on t
-    let scale = 1;
+    let scale = 1, fullScale = 1;
     const steps: { t: number; right: number }[] = [];
     // safe area: no text run may exceed 90% of the canvas width, whatever the aspect (9:16 reuses 16:9 graphs)
     const safeW = env.w * 0.9;
@@ -228,6 +305,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     if (fit) {
       const f = fit;
       const lineH = size * (metrics.ascender - metrics.descender);
+      fullScale = fitScale(fullWidth, lineH, f.w, f.h, f.minScale);   // the scale once fully typed (measure pass)
       if (tw) {
         const stepScales = chars.map((_, i) => ({ t: glyphTime(tw, chars, i + 1), value: fitScale(widthUpTo(i + 1), lineH, f.w, f.h, f.minScale) }));
         scale = smoothedSteps(stepScales, tl, f.easeMs, fitScale(0, lineH, f.w, f.h, f.minScale));
@@ -246,7 +324,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       for (let i = 0; i < chars.length; i++) steps.push({ t: glyphTime(tw, chars, i + 1), right: 0 }); // filled below
     }
 
-    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline };
+    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, fullScale };
   }
   // the text's box in its own space (after its fit scale), as drawText reports it
   function textBox(L: ReturnType<typeof layoutText>): Box {
@@ -402,15 +480,6 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.restore();
   }
 
-  // ---------- frame layout map (canvas space) ----------
-  // a box in the current local space -> canvas space (graph units) through the live canvas transform
-  function recordBox(id: string, b: Box, env: Env) {
-    const m = env.ctx.getTransform();
-    const pts = [[b.left, b.top], [b.right, b.top], [b.left, b.bottom], [b.right, b.bottom]]
-      .map(([x, y]) => ({ x: (m.a * x + m.c * y + m.e) / env.k, y: (m.b * x + m.d * y + m.f) / env.k }));
-    env.boxes.set(id, { left: Math.min(...pts.map((q) => q.x)), right: Math.max(...pts.map((q) => q.x)), top: Math.min(...pts.map((q) => q.y)), bottom: Math.max(...pts.map((q) => q.y)) });
-  }
-
   // ---------- clip ----------
   function clipRect(node: Node, tl: number): { x: number; y: number; w: number; h: number } | null {
     if (!node.clip) return null;
@@ -459,20 +528,27 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   }
 
   // ---------- cursor ----------
+  // the cursor's world position: a replay of its moveTo tracks over this frame's measured boxes — a function of (graph, t)
+  function cursorWorldPos(node: CursorNode, env: Env, boxes: Map<string, Box>) {
+    const a = resolveAnchor(node, env.aspect, env.w, env.h);
+    const props = numericProps(node, env.tl);
+    const point = (m: MoveToTrack) => {
+      const b = boxes.get(m.target);
+      if (!b) return null;                               // unreachable for a valid graph: every node is measured
+      const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
+      const [x, y] = m.anchor === "left" ? [b.left, my] : m.anchor === "right" ? [b.right, my]
+        : m.anchor === "top" ? [mx, b.top] : m.anchor === "bottom" ? [mx, b.bottom] : [mx, my];
+      return { x: x + m.offset.x * (b.right - b.left), y: y + m.offset.y * (b.bottom - b.top) };   // offset: box fractions
+    };
+    return cursorPosition(node.tracks as Track[], env.tl, { x: a.x + props.x, y: a.y + props.y }, point);
+  }
+
   function drawCursor(node: CursorNode, env: Env) {
     const { ctx } = env;
     const a = resolveAnchor(node, env.aspect, env.w, env.h);
     const props = numericProps(node, env.tl);
     if (props.opacity <= 0) return;
-    const point = (m: MoveToTrack) => {
-      const b = env.boxes.get(m.target);
-      if (!b) return null;
-      const mx = (b.left + b.right) / 2, my = (b.top + b.bottom) / 2;
-      const [x, y] = m.anchor === "left" ? [b.left, my] : m.anchor === "right" ? [b.right, my]
-        : m.anchor === "top" ? [mx, b.top] : m.anchor === "bottom" ? [mx, b.bottom] : [mx, my];
-      return { x: x + m.offset.x, y: y + m.offset.y };
-    };
-    const pos = cursorPosition(node.tracks as Track[], env.tl, { x: a.x + props.x, y: a.y + props.y }, point);
+    const pos = cursorWorldPos(node, env, env.boxesAt(env.tl));
     const s = props.scale * a.scale * node.size * pressFactor(node.tracks as Track[], env.tl);
     ctx.save();
     ctx.translate(pos.x, pos.y);                       // the hotspot (arrow / hand tip, avatar centre)
@@ -542,7 +618,16 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     if (node.stroke) { ctx.strokeStyle = color(node.stroke.color, tokens); ctx.lineWidth = node.stroke.width; ctx.stroke(); }
   }
 
-  return { renderFrame };
+  function measure(graph: Graph, tSec: number): Map<string, Box> {
+    const { env } = frameEnv(graph, tSec, null, 1);
+    return env.boxesAt(env.tl);
+  }
+  function camera(graph: Graph, tSec: number): CameraState {
+    const { env, beat } = frameEnv(graph, tSec, null, 1);
+    return hasCamera(beat) ? cameraAt(beat, env) : { zoom: 1, cx: env.w / 2, cy: env.h / 2 };
+  }
+
+  return { renderFrame, measure, camera };
 }
 
 // ---------- cursor glyphs: px at size 1, hotspot at the origin ----------

@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, S3, S5 in (phase 2); `pnpm test` 73 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, S3, S4, S5 in (phase 2); `pnpm test` 82 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -90,17 +90,17 @@ counter, since a rect can only size to its own children.
 DONE (phase 2): S3 hover-fill card (emits the cursor's moveTo onto the card; 130 ms onHover fill; rows wipe in via
 clip.w from the arrival, 40 ms apart, done in 300 ms; fixture s3-hover-fill-card with an avatar cursor);
 S5 cursorClick + giantCursor (move 500 ms, pause 150 ms, press 80 ms; target onHover background 100 ms and a 0.96
-dip across the press; fixture s5-cursor-click). Built ahead of S4, which is waiting on the shot/camera design.
-NEXT (phase 2 per the spec): S4 (needs the camera/shot design), S6, S8, S9, S13, S14, S16;
+dip across the press; fixture s5-cursor-click); S4 jumpCuts + pressTimes (camera frame tracks, cut on the cursor's
+press times; fixture s4-jump-cut: wide -> 300 ms push to a close-up on a card -> hard cut back to wide).
+NEXT (phase 2 per the spec): S6, S8, S9, S13, S14, S16;
 jump-cut coverage.
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base
   x/y = start position. Top-level only; the runtime draws cursors after every other node.
-- `moveTo` track: travels to a point on a target node's box (anchor center/left/right/top/bottom + offset), arriving at
-  at + ms (default 500, emphasis). Targets are resolved each frame from a canvas-space box the runtime records for
-  every drawn node (`env.boxes`, graph units). The bracket/follows `extents` map stays per-group in parent space so R3's
-  bracket maths is untouched. A target that isn't drawn (e.g. opacity 0) holds the cursor where it was.
+- `moveTo` track: travels to a point on a target node's box (anchor center/left/right/top/bottom + offset as
+  fractions of the box), arriving at at + ms (default 500, emphasis). Targets come from the measure pass below.
+  The cursor position is a replay of its moveTo tracks from its start position: a pure function of (graph, t).
 - `press` track: cursor scale dips to 0.96 and back over ms (80). Pause 150 ms before a press (spec) is the macro's job;
   a pressed target's own dip is explicit tracks on the target.
 - `onHover` track (any node): prop `fill` or opacity/scale/rotation/x/y eases to `to` from the arrival of a moveTo that
@@ -110,8 +110,23 @@ jump-cut coverage.
   clip.w; S13 curtain wipe later).
 - Fixture: `cursor-hover` (two cards, hover fill in/out, press dip, clip-wipe rows) at both aspects.
 - The avatar placeholder is neutral grey (#C9CED6) with a white ring so it reads on brand-filled cards.
-- moveTo offsets are canvas px and don't scale with the target's group; S3 keeps them small (bottom anchor) so the
-  cursor stays on the card at 9:16. Scale a cursor for portrait with its anchor override `scale`.
+- Scale a cursor for portrait with its anchor override `scale`.
+
+## Measure pass + camera (designed with Niloy, 2026-10-15)
+- Two passes per frame, both pure: `measure(graph, t)` -> world-space boxes (graph units, before the camera) for every
+  node, including opacity-0 nodes; text uses its full laid-out run at its fully-typed fit scale (shots don't drift
+  while a typewriter runs). Then draw. The measure pass only runs when a beat has cursors or camera frame tracks, so
+  scenes without them render exactly as before. The bracket/follows `extents` map stays per-group in parent space.
+- Beat camera: zoom about the frame centre + pan, applied to nodes and cursors (cursors scale with the shot), not to
+  the background or glows. Camera tracks: tweens on zoom/x/y, and `frame` tracks { at, ms (0 = hard cut), ease
+  (emphasis), target, size wide|medium|close|<zoom>, anchor, offset (box fractions), follow }.
+- size presets are fill fractions: zoom = min(W*f/box.w, H*f/box.h), f = 0.5 / 0.7 / 0.9. View = translate(frame
+  centre) . scale(zoom) . translate(-target point). follow false resolves the box at `at` (measure(graph, at)); true
+  every frame. ms > 0: zoom interpolates in log space, centre linearly, from the replayed camera state at the track's
+  `at`. Clamped: zoom >= 1, viewport inside the canvas. A transition can land on a wide framing slightly above zoom 1
+  (e.g. 1.04 on a wide card row at 16:9) — that is the fill formula, not drift.
+- `runtime.measure(graph, t)` and `runtime.camera(graph, t)` are on the Runtime interface; test-core uses them in Node
+  (shaper + runtime, no canvas) to assert the framed card stays fully inside the canvas at 9:16 and 16:9.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 

@@ -15,3 +15,4 @@ export { echoTrail, type EchoTrailParams } from "./t10-echo-trail";
 export { trackingContraction, type TrackingContractionParams } from "./t11-tracking-contraction";
 export { hoverFillCard, type HoverFillCardParams } from "./s3-hover-fill-card";
 export { cursorClick, giantCursor, type CursorClickParams } from "./s5-cursor-click";
+export { jumpCuts, pressTimes, type Shot } from "./s4-jump-cut";
