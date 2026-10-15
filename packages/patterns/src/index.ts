@@ -22,3 +22,4 @@ export { wireFan, type WireFanParams } from "./s8-wire-fan";
 export { curtainWipe } from "./s13-curtain-wipe";
 export { smearCut } from "./s14-smear-cut";
 export { enterDelay } from "@engine/graph";
+export { mascot, type MascotParams } from "./s16-mascot";

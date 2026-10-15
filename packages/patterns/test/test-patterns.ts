@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -162,6 +162,16 @@ assert(s13t.type === "curtain" && s13t.ms === 130 && s13t.direction === "up" && 
 // S14: a vertical smear with the measured 1 frame + 100 ms; enter tracks delayed by ms
 const s14t = smearCut().transition!;
 assert(s14t.type === "smear" && s14t.ms === 133 && s14t.direction === "up" && enterDelay(s14t as never) === 0.133, "S14: smear 133 ms up; enter delay 133 ms");
+
+// S16: bounce drop; bob ±3 px half-periods to the end; 100 ms blinks every 3 s; wordmark wipes in with clip.w
+const s16: any = mascot({ id: "b1-m", src: "m.png", blinkSrc: "mb.png", w: 200, h: 200, at: 0.2, until: 6, wordmark: { text: "Lumi", style: { size: 100 } } }).nodes[0];
+const [mb, mk, mw] = s16.children;
+const ys = mb.tracks.map((t: any) => t.to);
+const opens = mk.tracks.filter((t: any) => t.to === 1).map((t: any) => t.at);
+const closes = mk.tracks.filter((t: any) => t.prop === "opacity" && t.to === 0 && t.at > 0).map((t: any) => t.at);
+assert(s16.tracks[0].ease === "bounce" && s16.tracks[0].ms === 200 && ys.every((y: number) => Math.abs(y) === 3) && ys[0] === -3 && ys[1] === 3
+  && mb.tracks.at(-1).at + mb.tracks.at(-1).ms / 1000 <= 6 && opens.join() === "1.4,4.4" && closes.every((c: number, i: number) => Math.abs(c - opens[i] - 0.1) < 1e-9)
+  && mw.tracks[0].prop === "clip.w" && mw.clip.w === 0, "S16: bounce drop, ±3 px bob list to the end, 100 ms blinks every 3 s, wordmark clip wipe");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

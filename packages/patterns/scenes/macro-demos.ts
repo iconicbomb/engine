@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, curtainWipe, group, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, curtainWipe, group, mascot, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -229,4 +229,12 @@ export function buildImageSlotsDemo() {
     tile(4, { src: null, placeholder: { kind: "video", label: "Demo video" } }),
   ]);
   return demo("Your media here", 1.6, [row], []);
+}
+
+// S16 demo: the mascot drops in, its wordmark wipes out of it, then it bobs and blinks
+export function buildS16Demo() {
+  const m = mascot({ id: "b1-mascot", src: "mascot.png", blinkSrc: "mascot-blink.png", w: 260, h: 260, at: 0.2, until: 3.4,
+    anchor: { x: 0.36, y: 0.5, overrides: { "9:16": { x: 0.22, y: 0.5, scale: 0.6 } } },
+    wordmark: { text: "Lumi", style: { size: 150, weight: 800 } } });
+  return demo("Meet Lumi", 3.4, m.nodes, [m]);
 }
