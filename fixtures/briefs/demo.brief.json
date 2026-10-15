@@ -1,0 +1,20 @@
+{
+  "script": "How many hours did your team lose to status updates this week? Specs live in one tool, tasks in another, and feedback is scattered across a dozen threads. Every Monday starts with copy and paste. Meet Relay, the workspace that keeps your whole team in sync. Your Inbox gathers every request into one prioritised list. Board turns specs into cards your team can pick up and ship. Insights charts your velocity, so you see a slowdown before it becomes a missed deadline. Ask Relay anything in chat and get answers drawn from your own docs. And Docs lets you write the spec right next to the work. Teams on Relay ship 40% faster and spend 6 fewer hours a week in meetings. Start your free trial at relay.app. Relay. Work, in sync.",
+  "product": {
+    "name": "Relay",
+    "tagline": "Work, in sync.",
+    "url": "relay.app",
+    "features": [
+      { "name": "Inbox", "blurb": "requests from email, chat and forms, one prioritised list, nothing slips", "kind": "list" },
+      { "name": "Board", "blurb": "specs become cards, owners and due dates, drag to ship", "kind": "card" },
+      { "name": "Insights", "blurb": "velocity, cycle time and burndown charted live", "kind": "chart" },
+      { "name": "Ask Relay", "blurb": "answers from your docs, tickets, threads, roadmap, meetings and wiki", "kind": "chat" },
+      { "name": "Docs", "blurb": "specs, notes and decisions written beside the work", "kind": "editor" }
+    ]
+  },
+  "tokens": { "bg": "#0B0B12", "fg": "#F4F4F8", "accent": "#6C5CE7", "muted": "#9A9AB0", "font": "Inter" },
+  "dials": { "energy": 0.55, "density": 0.5, "playfulness": 0.4, "contrast": 0.6, "typeScale": 0.45, "glow": 0.5, "uiRealism": 0.7, "referenceInfluence": 0.2 },
+  "aspects": ["16:9", "9:16"],
+  "targetSeconds": 60,
+  "assets": [{ "id": "board-shot", "kind": "image", "label": "Board screenshot" }]
+}

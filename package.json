@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "tsx packages/graph/test/validate.ts fixtures/r3-hook.graph.json && tsx packages/runtime/test/test-core.ts && tsx packages/patterns/test/test-patterns.ts",
+    "test": "tsx packages/graph/test/validate.ts fixtures/r3-hook.graph.json && tsx packages/runtime/test/test-core.ts && tsx packages/patterns/test/test-patterns.ts && tsx --tsconfig tsconfig.json packages/planner/test/test-planner.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "preview": "pnpm --filter @app/render preview",
     "render": "pnpm --filter @app/render render",
@@ -13,6 +13,8 @@
     "gen:r3": "tsx tools/gen-fixtures.ts r3-hook",
     "gen:fixtures": "tsx tools/gen-fixtures.ts",
     "test:render": "node tools/render-check.mjs",
+    "plan": "tsx --tsconfig tsconfig.json packages/planner/src/cli.ts plan",
+    "make": "tsx --tsconfig tsconfig.json packages/planner/src/cli.ts make",
     "render:showcase": "node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-16x9.mp4 --aspect 16:9 --no-frames && node tools/render-local.mjs fixtures/showcase.graph.json out/showcase-9x16.mp4 --aspect 9:16 --no-frames"
   },
   "devDependencies": {

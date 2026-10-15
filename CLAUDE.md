@@ -36,6 +36,9 @@ Render `fixtures/r3-hook.graph.json` so that
   a frame-hash mismatch against `fixtures/<name>.frames.sha256` (R3 only). Finds Chrome via CHROME_PATH, Playwright's
   download, or a system install. `--update-baseline` rewrites the hashes: only after looking at the frames in
   `out/render-check/`. Not part of `pnpm test` because it needs a browser — run it before finishing any runtime change.
+  Skips the long graphs (showcase, demo).
+- `pnpm plan <brief.json> <out.graph.json> [--seed 7]` — the planner: brief in, graph out (see Phase 5)
+- `pnpm make <brief.json> [--seed 7]` — plan, then render out/<name>-16x9.mp4 and out/<name>-9x16.mp4
 
 ## Status (2026-10-15)
 Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter variable TTF vendored in
@@ -44,6 +47,8 @@ packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, 
 byte-identical across renders.
 Phase 1 macros complete: T1–T14, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); showcase built; `pnpm test` 139 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
+Phase 5 planner in: packages/planner, golden brief fixtures/briefs/demo.brief.json -> fixtures/demo.graph.json,
+renders in fixtures/renders/demo-16x9.mp4 + demo-9x16.mp4.
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
 params in the R3 scene, then `pnpm gen:r3`.
@@ -240,6 +245,73 @@ byte-identical") — review this reading:
 - Beat overlap validation has a 1 µs tolerance (float sums such as 5.8 + 2.4 = 8.200000000000001).
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
+
+## Phase 5 — planner (brief in, graph out)
+packages/planner never imports the runtime; it produces a Graph that @engine/graph validates. plan(brief, seed,
+segmenter) composes five pure stages, each tested on its own in packages/planner/test/test-planner.ts:
+1. segment.ts — beats in the grammar hook -> problem -> reveal -> feature xN -> proof -> CTA -> tag
+   ({ id, type, text, emphasis, featureRef?, assetRef?, durationHint? }). Segmenters: ruleSegmenter (sentence split;
+   type by position + cues — an explicit feature name wins, then a number -> proof, then CTA verbs / urls, then
+   word overlap with a feature's blurb; the grammar only moves forward; a one-word sentence joins the next; all
+   after the CTA is the tag; emphasis = quoted / numeric / capitalised tokens), llmSegmenter (llm.ts: Claude,
+   structured output via jsonSchemaOutputFormat, server-side refusal fallback on), recordedSegmenter (replays
+   fixtures/plans/<brief>.plan.json). Tests and CI only ever replay recordings.
+2. select.ts — rules, not LLM. Table below; seeded (rng.ts: mulberry32 over FNV(seed:key)); no two consecutive beats
+   share a text macro unless it is the row's only candidate.
+3. timing.ts — durations and the motion laws (below); scaled to targetSeconds.
+4. compose.ts — transitions, glows, stage layout, asset placeholders.
+5. assemble.ts — macro calls (macros.ts adapts a selection to packages/patterns), beat-prefixed ids, motion-law
+   post-pass, parseGraph; a failure throws "plan validation failed at beat bN (rule: <selection rules>): <issue>".
+
+Selection table (beatType x contentKind -> candidates; weight, requires):
+| row | text macro (title device) | shapes (each drawn with p = weight x (0.5 + uiRealism)) |
+|---|---|---|
+| hook | T1 1, T12 1, T2 0.7, T7 0.6, T8 0.4 | — |
+| problem | T2 1, T4 1 | S9 0.6 (marquee of the mess; density >= 0.4) |
+| reveal | T13 1, T11 0.8 | — |
+| feature.list | T2 1, T4 0.8, T6 0.6 | S1 1, S3 1 |
+| feature.card | (feature titles) | S3 1, S5 0.7 |
+| feature.chart | (feature titles) | S10 1 (tilted panel, chart path draws) |
+| feature.chat | (feature titles) | S9 1, S8 1 |
+| feature.editor | (feature titles) | S10 1 (tilted editor, lines wipe in), S5 0.8 |
+| feature.generic | (feature titles) | S1 1 |
+| proof | T2 1, T6 0.7 | S2 1 (requires a number in the text) |
+| cta | T5 1 | S5 1 (button = product url) |
+| tag | T3 1, T7 0.5 | — |
+Dials: playfulness x(1 + 2p) on T11 and bounce springs above 0.6; uiRealism scales kinetic T rows (T1 T6 T7 T8 T12)
+by (1.5 - u) and shape odds by (0.5 + u); referenceInfluence r perturbs measured defaults by a seeded factor in
+1 ± 0.4r (0 = exact); density sets list items (2 + 3d); typeScale sets title size (64 + 72t px); glow scales the
+glows (2g x R3's 0.39 / 0.2); energy sets reading speed, cps, stagger and smears.
+
+Motion laws (timing.ts; applied as macro params or in assemble's post-pass):
+- beat duration = words / ((150 + 60(energy - 0.5)) / 60) + 400 enter + 200 exit ms, clamped 1.8–5 s (durationHint
+  may lengthen), then all scaled to targetSeconds; typewriter cps = 15 + 15 energy.
+- element durations x sqrt(size / 100 px) clamped 0.7–1.6; stagger = 70 ms x (1 - 0.5 energy).
+- every cursor moveTo gets arc 0.15 (schema: moveTo.arc, bow = arc x distance x 4p(1-p), perpendicular; default 0).
+- anticipation only when playfulness > 0.6: x / y / scale entrance tweens get a -3 % counter-move over 100 ms first.
+- coverage: no stretch > 250 ms without a visible node. timing.gapAt estimates each boundary's blank lead (a cut
+  shows nothing until the entry delay; crossfade / smear cover it; a curtain ~40 % of its ms); an excess over
+  200 ms is moved into the previous beat's hold (boundary later, the new beat's elements earlier). Checked over the
+  golden graph at both aspects with the runtime's visible(graph, t) (test-core; worst 133 ms).
+- object hand-off: consecutive beats on the same feature reuse its visual — same node id, frozen at its final state
+  (assemble.freezeFinal). The schema allows an id to continue into the immediately following beat only.
+Transitions: cut by default; curtain (accent) at problem -> reveal and last feature -> proof; smear when energy > 0.7;
+crossfade into the tag. Layout: each beat is one `<beat>-stage` column (title + `<beat>-visuals` row that wraps at
+9:16) with 16:9 / 9:16 anchor overrides scaling it to 90 % of the width (title width estimated at 0.55 em/char);
+titles over 42 chars split into two balanced lines (T2 T4 T6 T7 T8 T11), the second after the first lands.
+Assets: image nodes `<beat>-asset`, src null, placeholder label from the brief.
+Graph schema additions: Beat.type "tag"; moveTo.arc; hand-off ids. Runtime addition: visible(graph, t).
+
+CLI (packages/planner/src/cli.ts): replays fixtures/plans/<name>.plan.json when it exists (--refresh re-asks), else
+Claude when .env has a key (response recorded), else / on API failure the rule segmenter (--rule forces it,
+--record writes its plan). Secrets: only cli.ts -> env.ts reads .env (dotenv; a lone `sk-ant-...` line counts as
+ANTHROPIC_API_KEY); PLANNER_MODEL overrides claude-sonnet-5-5; ANTHROPIC_WORKSPACE_ID is sent as the
+anthropic-workspace-id header (required for keys not scoped to a workspace). Never log or commit it.
+Golden: demo.plan.json is currently rule-segmented (the key in .env needs a workspace id); after adding
+ANTHROPIC_WORKSPACE_ID, `pnpm plan fixtures/briefs/demo.brief.json out/demo.graph.json --refresh` records Claude's
+plan, then `UPDATE_GOLDEN=1 pnpm test` rewrites fixtures/demo.graph.json and `pnpm make` re-renders.
+Not modelled yet: wide visuals (S8 fan, S10 panel) shrink their whole stage at 9:16, titles included; true
+multi-line titles (split into two nodes); per-beat camera moves; video assets (placeholder only).
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

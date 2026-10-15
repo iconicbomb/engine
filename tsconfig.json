@@ -34,6 +34,9 @@
       ],
       "@engine/patterns": [
         "./packages/patterns/src/index.ts"
+      ],
+      "@engine/planner": [
+        "./packages/planner/src/index.ts"
       ]
     }
   },

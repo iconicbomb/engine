@@ -13,8 +13,10 @@ const argv = process.argv.slice(2);
 const flag = (k) => argv.includes(k);
 const arg = (k) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : undefined; };
 const files = argv.filter((a, i) => a.endsWith(".json") && argv[i - 1] !== "--chrome");
-// default: every fixture except the showcase (long; render it with tools/render-local.mjs --aspect ... --no-frames)
-const fixtures = files.length ? files : readdirSync("fixtures").filter((f) => f.endsWith(".graph.json") && f !== "showcase.graph.json").sort().map((f) => `fixtures/${f}`);
+// default: every fixture except the long ones — the showcase (render with tools/render-local.mjs --aspect ... --no-frames)
+// and the planner's golden demo (pnpm make fixtures/briefs/demo.brief.json)
+const LONG = new Set(["showcase.graph.json", "demo.graph.json"]);
+const fixtures = files.length ? files : readdirSync("fixtures").filter((f) => f.endsWith(".graph.json") && !LONG.has(f)).sort().map((f) => `fixtures/${f}`);
 const ASPECTS = ["16:9", "9:16"];
 const height = 1080;
 

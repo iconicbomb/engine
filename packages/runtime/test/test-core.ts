@@ -216,4 +216,14 @@ void (async () => {
   const v = (t: number) => rt.visible(g, t).join();
   assert(v(0.1) === "" && v(0.25) === "b1-t" && v(0.6) === "b1-a,b1-t" && v(1.1) === "b1-a,b1-t,b2-c" && v(1.5) === "b2-c",
     "visible: faded / untyped / near-transparent nodes don't count, groups aren't drawables, a crossfade shows both beats");
+  const golden = JSON.parse(readFileSync("fixtures/demo.graph.json", "utf8"));
+  for (const aspect of ["16:9", "9:16"]) {
+    const gr = parseGraph({ ...golden, canvas: { ...golden.canvas, aspect } });
+    const end = gr.beats.at(-1)!.start + gr.beats.at(-1)!.duration, fps = gr.canvas.fps;
+    let run = 0, worst = 0, worstAt = 0;
+    for (let f = 0; f < Math.ceil(end * fps); f++) {
+      if (rt.visible(gr, f / fps).length === 0) { run++; if (run > worst) { worst = run; worstAt = f / fps; } } else run = 0;
+    }
+    assert(worst / fps <= 0.25, `coverage ${aspect}: golden demo graph's longest stretch with no visible node is ${Math.round(worst / fps * 1000)} ms (<= 250 ms${worst ? `, ending ${worstAt.toFixed(2)} s` : ""})`);
+  }
 })();

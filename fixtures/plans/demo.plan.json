@@ -1,0 +1,101 @@
+{
+  "brief": "demo",
+  "segmenter": "rule",
+  "beats": [
+    {
+      "id": "b1",
+      "type": "hook",
+      "text": "How many hours did your team lose to status updates this week?",
+      "emphasis": []
+    },
+    {
+      "id": "b2",
+      "type": "problem",
+      "text": "Specs live in one tool, tasks in another, and feedback is scattered across a dozen threads.",
+      "emphasis": []
+    },
+    {
+      "id": "b3",
+      "type": "problem",
+      "text": "Every Monday starts with copy and paste.",
+      "emphasis": [
+        "Monday"
+      ]
+    },
+    {
+      "id": "b4",
+      "type": "reveal",
+      "text": "Meet Relay, the workspace that keeps your whole team in sync.",
+      "emphasis": [
+        "Relay"
+      ]
+    },
+    {
+      "id": "b5",
+      "type": "feature",
+      "text": "Your Inbox gathers every request into one prioritised list.",
+      "emphasis": [
+        "Inbox"
+      ],
+      "featureRef": "Inbox"
+    },
+    {
+      "id": "b6",
+      "type": "feature",
+      "text": "Board turns specs into cards your team can pick up and ship.",
+      "emphasis": [],
+      "featureRef": "Board",
+      "assetRef": "board-shot"
+    },
+    {
+      "id": "b7",
+      "type": "feature",
+      "text": "Insights charts your velocity, so you see a slowdown before it becomes a missed deadline.",
+      "emphasis": [],
+      "featureRef": "Insights"
+    },
+    {
+      "id": "b8",
+      "type": "feature",
+      "text": "Ask Relay anything in chat and get answers drawn from your own docs.",
+      "emphasis": [
+        "Relay"
+      ],
+      "featureRef": "Ask Relay"
+    },
+    {
+      "id": "b9",
+      "type": "feature",
+      "text": "And Docs lets you write the spec right next to the work.",
+      "emphasis": [
+        "Docs"
+      ],
+      "featureRef": "Docs"
+    },
+    {
+      "id": "b10",
+      "type": "proof",
+      "text": "Teams on Relay ship 40% faster and spend 6 fewer hours a week in meetings.",
+      "emphasis": [
+        "Relay",
+        "40%",
+        "6"
+      ]
+    },
+    {
+      "id": "b11",
+      "type": "cta",
+      "text": "Start your free trial at relay.app.",
+      "emphasis": []
+    },
+    {
+      "id": "b12",
+      "type": "tag",
+      "text": "Relay. Work, in sync.",
+      "emphasis": [
+        "Work",
+        "Relay"
+      ]
+    }
+  ]
+}
