@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, curtainWipe, group, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, curtainWipe, group, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -213,3 +213,4 @@ function twoBeat(a: [string, string], b: [string, string], tr: MacroResult) {
   return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats: [beat("b1", 0, a), beat("b2", 1.2, b, tr.transition)] };
 }
 export function buildS13Demo() { return twoBeat(["Before", "#0B0D12"], ["After", "#10213A"], curtainWipe()); }
+export function buildS14Demo() { return twoBeat(["Before", "#0B0D12"], ["After", "#0F2E24"], smearCut()); }

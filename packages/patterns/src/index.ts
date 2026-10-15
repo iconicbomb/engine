@@ -20,4 +20,5 @@ export { tickerList, type TickerListParams } from "./s6-ticker-list";
 export { pillMarquee, type PillMarqueeParams } from "./s9-pill-marquee";
 export { wireFan, type WireFanParams } from "./s8-wire-fan";
 export { curtainWipe } from "./s13-curtain-wipe";
+export { smearCut } from "./s14-smear-cut";
 export { enterDelay } from "@engine/graph";
