@@ -1,0 +1,83 @@
+{
+  "name": "light-blueprint",
+  "sources": ["R4"],
+  "summary": "Near-white page with a flat #007BFA primary blue, pure black type, blue-grey soft shadows, an accent haze in two opposite corners and a barely-there fine grid; no glow, no bloom, hard cuts.",
+  "tokens": {
+    "bg": "#FDFDFD",
+    "text": "#000000",
+    "accent": "#007BFA",
+    "muted": "#8A93A6",
+    "surface": "#FFFFFF",
+    "glow": "#007BFA",
+    "accent2": "#0D45BD"
+  },
+  "field": {
+    "mode": "auto",
+    "glow": 1,
+    "glowColor": "#007BFA",
+    "glows": [
+      { "x": 1.0, "y": 0.0, "rx": 0.31, "ry": 0.58, "color": "#007BFA", "intensity": 0.30 },
+      { "x": 0.0, "y": 1.0, "rx": 0.31, "ry": 0.58, "color": "#007BFA", "intensity": 0.30 }
+    ],
+    "vignette": 0,
+    "grain": 0,
+    "grid": { "color": "#8C939E", "alpha": 0.06, "spacing": 116 }
+  },
+  "surfaces": {
+    "card": {
+      "lift": 0,
+      "borderTop": 0.02, "borderBottom": 0.25, "borderColor": "#285AC8",
+      "highlight": 0,
+      "shadowAlpha": 0.22, "shadowBlur": 14, "shadowY": 4, "shadowColor": "#285AC8",
+      "glowAlpha": 0.08, "glowBlur": 28,
+      "radius": 0.17
+    },
+    "button": {
+      "lift": 0,
+      "borderTop": 0, "borderBottom": 0.2, "borderColor": "#285AC8",
+      "highlight": 0,
+      "shadowAlpha": 0.15, "shadowBlur": 20, "shadowY": 6, "shadowColor": "#285AC8",
+      "glowAlpha": 0.1, "glowBlur": 28,
+      "radius": 0.3
+    },
+    "pill": {
+      "lift": 0.03,
+      "borderTop": 0, "borderBottom": 0.2, "borderColor": "#285AC8",
+      "highlight": 0,
+      "shadowAlpha": 0.15, "shadowBlur": 20, "shadowY": 6, "shadowColor": "#285AC8",
+      "glowAlpha": 0.1, "glowBlur": 28,
+      "radius": 0.4
+    }
+  },
+  "type": {
+    "font": "Inter",
+    "display": { "weight": 600, "tracking": -0.01, "scale": 1 },
+    "headline": { "weight": 600, "tracking": 0, "scale": 1 },
+    "body": { "weight": 500, "tracking": 0, "scale": 1 },
+    "label": { "weight": 500, "tracking": 0, "scale": 1, "uppercase": false },
+    "textAlpha": { "display": 1, "headline": 1, "body": 0.85, "label": 0.85 },
+    "onAccent": "#FFFFFF"
+  },
+  "motion": {
+    "transition": "cut",
+    "bloom": 0,
+    "cameraDrift": 0
+  },
+  "evidence": [
+    "R4 t=6.0/7.0/13.0/14.0/14.8 bg median #FDFDFD (253,253,253) over the 30 % lightest pixels of each frame; t=12.2 and t=0.2 give (253,251,254). t=14.0 flat white region (150..600, 40..160): high-pass (gaussian r=3) std 0.02 levels -> grain 0; centre vs edge luminance 252-253 outside the haze -> vignette 0",
+    "R4 t=1.0 'Connect' and t=14.0 sentence: median of the darkest 1-5 % text pixels = (0,0,0) -> text #000000; t=0.2 'Co' (10,9,11)",
+    "R4 t=7.0 accent pill fill (1,123,251) sampled 8x27 at (304,295) and (626,295), flat top-to-bottom (0,122,248)/(0,123,249); t=4.0 ripple core (0,124,255); t=9.0 UI section bg top-left (1,123,250) -> accent #007BFA",
+    "R4 t=4.0 ripple bands at x=200 column: (36,142,252) (71,160,254) (109,179,254) (164,207,252) (217,236,253) = accent over white at alpha 0.86 / 0.72 / 0.57 / 0.35 / 0.14",
+    "R4 t=9.0/10.0 blue UI section: top-left (1,123,250) -> bottom-right (13,69,189)/(35,85,181): accent background is a diagonal gradient #007BFA -> ~#0D45BD (accent2)",
+    "R4 t=1.0/13.0/14.8 corner haze: corner pixel (105,175,250) = accent at ~0.6 over white, luminance 253 -> 176 (delta 77/255 = 0.30); reaches bg at ~225 px along the bottom edge (0.31 W) and ~240 px up the left edge (0.58 H); top-right and bottom-left only, breathes (t=12.2 corner (165,205,251), t=14.0 (173,210,252))",
+    "R4 t=6.0/6.5/7.0/7.5 faint vertical grid lines at x=454.5, 499, 586, 631.5 (736 px frame): spacing 44.3 px -> 116 px at 1080; neutral grey, 0.6-1.0 levels below bg over 3 px -> ~6-8 levels for a 1 px line at 1080 -> #8C939E at alpha 0.06; absent in 0-2 s, 2-5 s and 12-15 s frames (t=13.0, 13.6, 14.0 column/row profiles flat within +-0.5 level)",
+    "R4 t=0.2/0.5/1.0 intro guide grid: 1 px (at 414) lines at x=119.5/615.5, y=111.5/323.5 (t=0.2) tightening to x=236/500.5, y=182/242 (t=1.0), line colour ~#2F2F2F (pixel pairs (89,86,90)+(214,212,214)), crosshair ticks at the intersections; cells are not square -> a device, not the field grid",
+    "R4 t=7.0 hub card (322..412, 68..156): fill (254,252,253) flat; top/left edge (251,251,251) vs bg 253 -> border ~0.02; bottom edge rows 156/158 (169,194,228)/(203,223,249) fading to bg by y=164 (~5 px = 14 px at 1080), right edge (206,221,234) 2 px then 4 px fade -> blue-grey shadow/edge to the bottom-right; corner curve 324->338 px on an 88 px card -> radius 0.17",
+    "R4 t=7.0 white pill (240..560, 224..257, 33 px = 86 px at 1080): fill (252,252,252) at top -> (236,244,252) at bottom = HSL L 0.988 -> 0.957 (lift +0.03, tinted toward blue); bottom shadow pixel (213,225,246) over (253,251,254): consistent with colour ~(40,90,200) #285AC8 at alpha ~0.17, spread 8 px = 20 px at 1080; no visible top border; blue pill left edge 317 -> 302 over 15 rows on 39 px -> radius 0.4",
+    "R4 t=7.0 accent pill surroundings: right of the pill (240,246,252) at 3-20 px, below (231,241,253) -> faint accent halo ~0.05-0.1 (glowAlpha 0.1, blur 28 at 1080); buttons do not appear outside the tilted UI screenshot -> button spec derived from the pill with radius 0.3. Pill label colour median (36,44,54) -> alpha ~0.85 vs black; UI sub-label (157,165,181) through the tilted mockup -> muted #8A93A6 (AA-biased, approximate)",
+    "Type calibrated against packages/runtime/fonts/Inter-Variable.ttf (PIL, threshold 128, stem/cap-with-overshoot: 400=0.12 500=0.147 600=0.173 700=0.20): t=1.0 'Connect' n stem 7 / C cap 42 = 0.167 and t=0.2 13/86 = 0.151 -> 600; t=12.2 'Backboard.io' B/k stem 9-10 / cap 71 = 0.13 -> 500-600; t=4.0 '17,000+LLMs' L 5/29 = 0.17 -> 600; t=4.0 'with portable' b/p stem 3-4.5 / cap ~24 -> 500-600; t=14.0 sentence B/k 3-4 / 26 = 0.12-0.135 -> 400-500; t=7.0 pill labels 1-1.5 / 11 -> 400-500",
+    "Tracking: t=1.0 'Connect' inter-glyph gaps 0.071/0.107/0.125/0.107/0.089/0.036 em vs Inter 600 default 0.095/0.105/0.135/0.11/0.08/0.05 -> -0.01 em; t=12.2 wordmark and t=14.0 sentence gaps match defaults -> 0",
+    "Sizes: 'Connect' settled cap 42 px = 0.136 H, 'Backboard.io' cap 71 = 0.236 H (display scale left at 1); t=14.0 sentence cap 26 = 0.086 H and 'with portable' 0.08 H (headline ~0.9x, left at 1); pill labels cap 11 = 0.037 H = body size",
+    "Motion: t=11.900 -> 11.933 blue UI -> white wordmark is a one-frame hard cut; t=5.2-5.6 ripple pill collapses then the hub card pops (cut); t=7.9-8.3 the mockup rises while the white top strip goes 241 -> 106 blue over 4 frames (accent fill rising with the plane, not a crossfade); no bloom on any text; sentence cap height constant 193..227 from t=13.3 to 14.8 and hub icon width constant 39 px t=6.3-7.3 -> cameraDrift 0 (the icon slides up 14 px in 1 s, a layout move)"
+  ]
+}

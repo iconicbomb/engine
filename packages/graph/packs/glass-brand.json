@@ -1,0 +1,83 @@
+{
+  "name": "glass-brand",
+  "sources": ["R10", "R11"],
+  "summary": "Premium brand film: true-black base, one emissive accent (electric blue) that flashes and leaves an afterglow, heavy film grain, bloom on everything bright, glass slabs with lit rims; hard cuts on the beat.",
+  "tokens": {
+    "bg": "#000000",
+    "text": "#FFFFFF",
+    "accent": "#0054FE",
+    "muted": "#AAAAAA",
+    "surface": "#132948",
+    "glow": "#1480C8",
+    "accent2": "#F3BE0B"
+  },
+  "field": {
+    "mode": "auto",
+    "glow": 1,
+    "glowColor": "#003FC0",
+    "glows": [
+      { "x": 0.5, "y": 0.5, "rx": 0.33, "ry": 0.33, "color": "#0C63BF", "intensity": 0.06 },
+      { "x": 0.6, "y": 1.0, "rx": 0.8, "ry": 0.6, "color": "#003FC0", "intensity": 0.08 }
+    ],
+    "vignette": 0.1,
+    "grain": 0.02,
+    "grid": { "color": "#FFFFFF", "alpha": 0.2, "spacing": 120 }
+  },
+  "surfaces": {
+    "card": {
+      "lift": 0,
+      "borderTop": 0.65, "borderBottom": 0.6, "borderColor": "#FFFFFF",
+      "highlight": 0.3,
+      "shadowAlpha": 0.35, "shadowBlur": 140, "shadowY": 20, "shadowColor": "#000000",
+      "glowAlpha": 0.35, "glowBlur": 120,
+      "radius": 0.07
+    },
+    "button": {
+      "lift": 0,
+      "borderTop": 0, "borderBottom": 0, "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0, "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0.22
+    },
+    "pill": {
+      "lift": 0,
+      "borderTop": 0.1, "borderBottom": 0.04, "borderColor": "#000000",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0, "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0.21
+    }
+  },
+  "type": {
+    "font": "Inter",
+    "display": { "weight": 700, "tracking": -0.02, "scale": 1 },
+    "headline": { "weight": 600, "tracking": -0.01, "scale": 1 },
+    "body": { "weight": 400, "tracking": 0, "scale": 1 },
+    "label": { "weight": 700, "tracking": 0.1, "scale": 1, "uppercase": true },
+    "textAlpha": { "display": 1, "headline": 0.95, "body": 0.85, "label": 0.7 },
+    "onAccent": "#FFFFFF"
+  },
+  "motion": {
+    "transition": "cut",
+    "bloom": 2,
+    "cameraDrift": 0
+  },
+  "evidence": [
+    "R10 t=3.0 and t=8.5 bg median #000000 over 30 % darkest pixels (t=6.5 #010003, t=5.5 #010101): true black, no measurable grain or vignette on it",
+    "R10 t=0.5/1.5 blue bg median #0054FE over all pixels; t=4.0 LAUNCH button fill #0054FD top / #0154FE bottom (flat, lift 0) -> accent",
+    "R10 t=8.5 'Framer' wordmark brightest 3 % #FFFFFF, R11 t=47.0 'IIEleven Creative' #FFFFFE -> text; t=4.0 LAUNCH on blue #F3FFFF -> onAccent",
+    "R10 t=4.0 menu card: SHARE #AAAAAA (muted, 0.67 of white), EDIT #5C5C5C; card fill #1C1C1C at top fading to #040404, radius ~14 px on ~200 px; no border, no shadow visible on black",
+    "R10 t=6.5 glass slab interior #132948 (upper) / #132F55 (lower) sampled 20x12 -> surface; top rim 1 px #6F7CF9 L130 over interior L38 (alpha ~0.42), bottom rim L199 (~0.74); t=12.5 top rim #E7FFFF (~0.95) -> borderTop 0.65 / borderBottom 0.6",
+    "R10 t=12.5 shadow under the glass logo on #0054FE: L 49-60 just below vs bg 78 (0.37 darker) fading over ~100 px at 720 -> shadow 0.35 / blur 140 / y 20 at 1080",
+    "R10 t=6.0 blue flash afterglow: logo fill #0599FC, halo #1480C8 at the edge (L110), #084D7D at +30 px, #011E35 at +60 px, black by +100 px -> glow token, card under-glow 0.35 / 120 px",
+    "R10 t=5.0 white halo bloom: core half-size 56 px, L 218 at +40 px, 110 at +80 px, 35 at +120 px, 0 at +160 px from the core centre (halo radius ~1.8x core, neutral #49494B) -> bloom 2",
+    "R10 t=6.5 ambient glow centred behind the logo: ring 150-200 px #02101F L14, 200-240 L8.5, 280-320 L2.3 -> glow 1 at (0.5,0.5) r 0.33 intensity 0.06; t=4.5 bottom wash #001746 L21 at (600,420), rising to the bottom-right -> glow 2 intensity 0.08",
+    "R10 t=1.5 blueprint grid: dotted lines at x 280/360/439, y 265/345/425 (80 px at 720 = 120 px at 1080), dot colour #3789FF on #0054FE -> white alpha 0.22 (R channel), 60 % duty",
+    "R11 t=0.5/2.5/44.0/47.0 cloud background high-pass (gaussian r=2) sigma 3.3 / 5.1 / 5.2 / 4.9 levels, median ~5 -> grain 0.02 (R10 black bg sigma 0.2: none); vignette: R11 t=0.5 edge (r>0.9) 12 % darker than centre, t=47.0 1 %, R10 flat blue 0 % -> 0.1",
+    "R11 t=4.5 white card #FEFEFE flat, no border (edge 246->138 in 1 px), no shadow (bg 3 px below 163 vs 30 px below 166), radius 7/95 = 0.07, input #F1F1F1; t=28.0 pill '720p' fill #F8F8F8 on #FFFFFF, 1 px dark border L221 top (0.10) / L239 bottom (0.04), no shadow, radius 10/48 = 0.21",
+    "Type: R10 t=8.5 'F' stem 9 / cap 51 = 0.176 (~800), R11 t=7.0 '2' 10/81 = 0.123 (~500) -> display 700; R10 t=4.0 LAUNCH 11 px caps, gap 2 px (~0.13 em) uppercase bold -> label; R11 t=28 body stem 3/20 (low-res floor) read as 400",
+    "Transitions: R10 single-frame jumps at 1.97, 7.47, 7.97, 8.47, 8.97, 10.45, 11.97, 12.97, 14.97 s (cuts every ~0.5 s); R11 6-38 frame runs at 6.27, 16.0, 20.47, 24.7, 37.27, 41.47 s (dissolves) -> cut",
+    "cameraDrift: R10 wordmark hold 8.4-9.2 s bbox width 273 -> 262 -> 260 -> 262 px (settle then static); glass hold 6.2-7.0 s shrinks 234 -> 188 (3D turn, not a push) -> 0"
+  ]
+}

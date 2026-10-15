@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
-import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
+import { parseGraph, glyphTime, TypewriterTrack, STYLE_PACKS, STYLE_PACK_NAMES } from "@engine/graph";
 import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, glyphAnchorMorph, scrollSections, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 import { buildShowcase } from "../scenes/showcase";
@@ -257,4 +257,10 @@ for (const [name, build] of Object.entries(SCENES)) {
       && built.beats.every((b: any, i: number) => b.id === `b${i + 1}`),
       `showcase: ${built.beats.length} beats from ${sceneCount} scenes, ${(last.start + last.duration).toFixed(1)} s, no token refs, crossfades between scenes; matches the committed file`);
   }
+}
+
+// style packs: every pack in packages/graph/packs validates and carries its evidence
+{
+  assert(STYLE_PACK_NAMES.length === 5 && STYLE_PACK_NAMES.every((n) => STYLE_PACKS[n].evidence.length >= 8 && STYLE_PACKS[n].sources.length >= 1),
+    `style packs: ${STYLE_PACK_NAMES.join(", ")} validate, each with sources and >= 8 evidence lines`);
 }

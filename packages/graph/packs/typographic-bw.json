@@ -1,0 +1,82 @@
+{
+  "name": "typographic-bw",
+  "sources": ["R6"],
+  "summary": "Flat black / flat white polarity-flipping typographic look: huge tight bold sans wordmarks in pure white or a blue-to-pink gradient, extruded roman-numeral slabs with per-slab hue gradients, no bloom, no cards; the white sections carry a drifting pale blue / pink light field at the frame edges.",
+  "tokens": {
+    "bg": "#000000",
+    "text": "#FFFFFF",
+    "accent": "#4E83F3",
+    "accent2": "#D65F81",
+    "muted": "#B3B3B3",
+    "surface": "#1E2022",
+    "glow": "#6388FF"
+  },
+  "field": {
+    "mode": "auto",
+    "glow": 0,
+    "glowColor": "#6388FF",
+    "glows": [
+      { "x": -0.05, "y": 0.5, "rx": 0.35, "ry": 0.9, "color": "#4187FF", "intensity": 0.2 },
+      { "x": 1.05, "y": 0.4, "rx": 0.3, "ry": 0.9, "color": "#C460A7", "intensity": 0.17 }
+    ],
+    "vignette": 0,
+    "grain": 0
+  },
+  "surfaces": {
+    "card": {
+      "lift": 0,
+      "borderTop": 0, "borderBottom": 0, "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0, "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0
+    },
+    "button": {
+      "lift": 0,
+      "borderTop": 0, "borderBottom": 0, "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0, "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0
+    },
+    "pill": {
+      "lift": 0,
+      "borderTop": 0, "borderBottom": 0, "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0, "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0
+    }
+  },
+  "type": {
+    "font": "Inter",
+    "display":  { "weight": 750, "tracking": -0.035, "scale": 1.5 },
+    "headline": { "weight": 700, "tracking": -0.03, "scale": 1.45 },
+    "body":     { "weight": 600, "tracking": 0, "scale": 1 },
+    "label":    { "weight": 600, "tracking": 0, "scale": 1, "uppercase": true },
+    "textAlpha": { "display": 1, "headline": 1, "body": 1, "label": 1 },
+    "onAccent": "#FFFFFF"
+  },
+  "motion": {
+    "transition": "cut",
+    "bloom": 0,
+    "cameraDrift": 0
+  },
+  "evidence": [
+    "R6 t=0.5/1.5/4.0/6.5/9.0/11.5/22.8/28.5 bg median #010101 over the darkest 30 % of pixels (encoder black floor) -> bg #000000; bg luminance 1/255 in every 92x69 cell of a text-free grid at t=0.5, 4.0, 6.5, 11.5, 22.8 -> vignette 0, field glow 0 (flat)",
+    "R6 t=13.3/14.0/15.0/21.0 inverse polarity: bg median #FFFFFF-#FDFCFF over the lightest 30 %; slab ink sampled 8x8 at (300,200),(360,200),(425,200) t=21.0 = #1E2022/#1E1F23/#1E1F24 -> surface #1E2022 (white-polarity ink); recorded as the inverse look, not the primary bg",
+    "R6 t=0.5/1.5 text: brightest 2 % median #FFFFFF; bg stays 1/255 up to the glyph edge (row y=200 x170-192 at t=0.5, col x=200 above the M) -> text #FFFFFF, textAlpha 1, bloom 0",
+    "R6 t=2.5 gradient wordmark 'Made by Google': horizontal gradient, left end top-saturation median #4E83F3 (x 271-285), right end #D65F81 (x 452-466), midpoint #A481D8 -> accent #4E83F3 (blue), accent2 #D65F81 (pink); same pair on the slabs (t=11.5 I3 top #E54949, V bottom #3E5D98; t=22.8 right slab top #5A84F1, left slab bottom #C76BA5)",
+    "R6 t=10.5 only non-flat black frame: brightest slab-free 16 px block at (0.45,0.41) mean lum 18.8 = intensity 0.074, colour #0E1323 = #6388FF normalised (blurred slab reflection, beat-level) -> tokens.glow / glowColor #6388FF with field.glow 0",
+    "R6 t=13.3 white-section light field (Gaussian r=6, slabs masked L>150 & chroma<110): left edge strip mean #D9E7FF (L 230) = white + 0.20 x #4187FF, right edge strip #F5E4F0 (L 232) = white + 0.17 x #C460A7, centre #FCFCFE (L 252); lum along y=0.08 H: 227 at x=0.02 -> 250 at x=0.26 -> 227 at x=0.98; lobes centred off-frame left/right, full frame height -> glows[0]/[1]. Intensity here = tint mix weight over white (luminance drop 0.09-0.11), not added luminance; white polarity only",
+    "R6 t=21.0 (brief said t~22.5, which is a black frame with 'II'): same field drifted — pink top edge #F1DEEE / TL #E8DBF4, blue bottom-right #D6E0FE / bottom edge #DDE7FE, centre-top #FAECF1; t=20.8 blue peak #C3DBFF at (0.86,0.79), pink #F4D2E1 at (0.07,0.52). The lobes move every beat; the JSON profile is the t=13.3 layout",
+    "R6 grain: high-pass (img - Gaussian r=3) std over text-free bands = 0.00-0.01 levels on black (t=0.5, 4.0, 6.5, 11.5, 28.5) and 0.10-0.30 levels on white (t=14.0, 21.0) -> grain 0 (max 0.0012)",
+    "R6 surfaces derived from the slab faces (no cards, buttons or pills in the clip): t=22.8 row y=200 bg 1 -> 11 -> 118 -> 138 across the slab edge (1-2 px antialias, no border, no under-glow); t=14.0 row y=200 and col x=440 white 255 immediately outside the slab (no shadow); t=22.8 left slab bbox x311-344 y121-301 fully lit from row 122 (square corners, radius 0); slab fills are hue gradients (t=11.5 I1 top #B189E4 -> bottom #9086ED dL -0.009; t=22.8 left top #A583E4 -> bottom #C76BA5 dL +0.105, right dL -0.084) with no consistent lightness lift -> lift 0",
+    "R6 type weights, area-based stem width / cap height: t=0.5 'Made by' M 10.58, d 12.22, b 11.96 px over cap 70 = 0.151/0.175/0.171; t=1.5 'Google' l 12.40 / 85 = 0.146; t=6.5 'Google Pixel' l/i/l/P 0.151/0.145/0.143/0.170 over cap 42; t=5.5 'Android' i/d 0.152/0.172 over cap 41; t=4.2 'Gemini' i/i 0.141/0.131 -> display 750, headline 700, body/label 600 (lightest measured; body and label roles are not present in the clip)",
+    "R6 tracking: inter-glyph gaps at threshold 128 — t=6.5 'Google Pixel' 1-4 px at em 57.8 (0.017-0.069 em, o-o 0.017), t=1.5 'Google' o-o 1 px at em 117 (0.009 em), t=0.5 'Made by' 3-4 px at em 96 (0.031-0.042 em) vs Inter Bold defaults ~0.05-0.06 em -> tracking -0.035 display, -0.03 headline",
+    "R6 type scale: hero cap heights 70 px (t=0.5 'Made by') and 85 px (t=1.5 'Google') = em 0.233 H / 0.28 H vs the display role's 0.16 H -> scale 1.5; 'Gemini'/'Android'/'Google Pixel' cap 41-43 px = em 0.14 H vs headline 0.095 H -> scale 1.45",
+    "R6 onAccent not present (no text sits on an accent fill; slabs carry no text) -> #FFFFFF; muted not present (no secondary text) -> #B3B3B3 = 70 % white; label uppercase not present (no all-caps copy) -> schema default true",
+    "R6 cuts: frame-difference spikes — t=21.85 single-frame cut white -> black (diff 238); text beats swap with diffs < 20 (fade + rise, no crossfade of two texts); polarity flips at 12.68-13.05 and 16.08-16.35 are slab-driven wipes over ~0.3-0.4 s -> transition cut (the flips would be a curtain in the inverse bg colour)",
+    "R6 cameraDrift: 'Gemini' hold t=3.6-4.4 bbox width 172-174 px constant, cap 43 constant; 'Android' t=4.9-5.7 width 193-194 constant; 'Google' t=1.1-1.7 width 356-355, first-glyph height 84-87; 'Made by' t=0.3-0.8 cap 70 constant (left edge 187 -> 194 = tracking settle, not scale). Text rises ~2-3 px per 100 ms (cy 222 -> 195 over 0.8 s) while fading -> zoom delta 0, cameraDrift 0"
+  ]
+}

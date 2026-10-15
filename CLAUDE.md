@@ -315,7 +315,30 @@ the spec's text and judged by "tests pass". The look layer is what the reference
   Not part of the showcase (which stays the catalogue) and excluded from the default render-check.
 - **Reference gate (H)**: docs/reference-segments.md lists the clip + time range for every macro and holds the per-macro
   SSIM table. Only R3 has a number so far; every other macro still needs its segment fixture and its compare run.
-- tools/render-local.mjs `--times a,b,c` renders single frames to a directory (the look loop: render, look, adjust).
+- tools/render-local.mjs `--times a,b,c` renders single frames to a directory (the look loop: render, look, adjust);
+  `--pack <name>` renders any graph in a style pack (drops the graph's tokens except font and its field overrides).
+
+## Style packs (2026-10-15, five looks measured from the clips in parallel)
+`packages/graph/packs/<name>.json` (schema `StylePack` in packages/graph/src/stylepack.ts; registry `STYLE_PACKS`),
+each with a `docs/packs/<name>.md` of what was measured and what the schema cannot yet express. Selected by
+`graph.style.pack`. Resolution order everywhere: explicit graph / node value > pack > built-in default:
+tokens (`tokensOf`: pack tokens under the graph's), field (`beat.field` > `graph.style.field` > pack > default;
+`graph.style.field` is now optional), surfaces (`env.pack.surfaces[kind]`, with `borderColor` / `shadowColor` /
+`radius` per spec), type roles (pack weight / tracking / scale / textAlpha per role; `resolveTextStyle(..., pack.type)`),
+bloom multiplier (`pack.motion.bloom`), a blueprint grid (`pack.field.grid`), and explicit `pack.field.glows`.
+Light backgrounds: glows draw with `multiply` (tinting toward the colour) instead of `lighter`, decided per beat from
+the background's luminance — the dark path is unchanged (R3 pixel-identical).
+| pack | sources | one line |
+|---|---|---|
+| dark-neon | R3, R8, R9 | near-black, deep brand glow field, bloom on type, glass cards with light rims |
+| light-blueprint | R4 | white, faint grid, flat primary blue, blue-grey shadows, no glow / no bloom |
+| warm-editorial | R7 | cream + deep green, yellow accent with halos on objects only, curtain transitions |
+| typographic-bw | R6 | black / white polarity flips, tight heavy type at 1.5x, gradient accents, flat slabs |
+| glass-brand | R10, R11 | black, emissive blue light, heavy grain, bloom x2, glass panels, grid |
+Known gaps the packs expose (next): scenes still hard-code some hex colours (hover fills, pill bands, text on
+accent) — the planner must emit `tokens.*` and `pack.type.onAccent`; a pack-level text-on-surface colour (warm-editorial's
+muted text is unreadable on its green cards); signed camera drift (R9 pulls back); R4's corner hazes are tints
+(multiply) and read strong — tune per pack after a full render; R7's stepped halo and R8's neon rims need phase 6.
 - Known: grain at 0.025 does not fully hide 8-bit banding in the deepened glows on very dark backgrounds (visible as
   faint rings at 100 %); the real fix is phase 6's linear-light, dithered glow pipeline. Shadows + grain make
   render-local ~3x slower.

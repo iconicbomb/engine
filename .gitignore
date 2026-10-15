@@ -3,3 +3,5 @@ out/
 apps/render/out/
 *.log
 .env
+fixtures/refs/R[0-9]*.mp4
+!fixtures/refs/R3.mp4

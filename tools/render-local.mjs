@@ -3,6 +3,8 @@
 //        [--aspect 16:9|9:16]  render at this aspect whatever the graph says
 //        [--no-frames]         pipe PNGs straight into ffmpeg (no out/frames-local; for long graphs like the showcase)
 //        [--times 1.2,3.4]     render only these seconds as PNGs (<outPath> is then a directory) — the look-layer loop
+//        [--pack name]         render the graph in a style pack: sets style.pack, drops the graph's own tokens (except
+//                              font) and field overrides so the pack's measured look applies (look comparisons)
 import { chromium } from "playwright";
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { execSync, spawn } from "node:child_process";
@@ -27,6 +29,12 @@ const graph = JSON.parse(readFileSync(graphPath, "utf8"));
 const aspect = arg("--aspect", undefined);
 if (aspect) { if (aspect !== "16:9" && aspect !== "9:16") throw new Error(`--aspect must be 16:9 or 9:16, got ${aspect}`); graph.canvas = { ...graph.canvas, aspect }; }
 const times = arg("--times", undefined)?.split(",").map(Number);
+const pack = arg("--pack", undefined);
+if (pack) {
+  graph.style = { pack };
+  graph.tokens = { font: graph.tokens?.font ?? "Inter" };
+  for (const b of graph.beats) { delete b.field; if (b.background && !b.background.startsWith("tokens.")) b.background = "tokens.bg"; }
+}
 const keepFrames = !process.argv.includes("--no-frames") && !times;
 const fps = graph.canvas?.fps ?? 30;
 const last = graph.beats[graph.beats.length - 1];
@@ -78,7 +86,7 @@ if (times) {
       window.__rt.renderFrame(window.__graph, tSec, { width, height, ctx: window.__ctx });
       return c.toDataURL("image/png");
     }, { tSec, width, height });
-    writeFileSync(path.join(outPath, `${stem}-${graph.canvas.aspect.replace(":", "x")}-${tSec.toFixed(2)}.png`), Buffer.from(dataUrl.split(",")[1], "base64"));
+    writeFileSync(path.join(outPath, `${stem}${pack ? "-" + pack : ""}-${graph.canvas.aspect.replace(":", "x")}-${tSec.toFixed(2)}.png`), Buffer.from(dataUrl.split(",")[1], "base64"));
   }
   await browser.close();
   console.log(`rendered ${times.length} frames to ${outPath}`);

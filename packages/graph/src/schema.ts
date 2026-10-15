@@ -194,15 +194,18 @@ export const ROLE_SPECS: Record<TextRole, { size: number; weight: number; tracki
 };
 export function roleBase(w: number, h: number): number { return Math.min(h, 1.25 * w); }
 // the numbers the renderer uses for a style on a canvas of w x h graph units
-export function resolveTextStyle(style: { role?: TextRole; size?: number; weight?: number; tracking?: number; color?: string }, w: number, h: number) {
+export type PackType = { display: RoleOverride; headline: RoleOverride; body: RoleOverride; label: RoleOverride & { uppercase?: boolean }; textAlpha: Record<TextRole, number> };
+type RoleOverride = { weight: number; tracking: number; scale?: number };
+export function resolveTextStyle(style: { role?: TextRole; size?: number; weight?: number; tracking?: number; color?: string }, w: number, h: number, pack?: PackType) {
   const r = style.role ? ROLE_SPECS[style.role] : null;
+  const pr = style.role && pack ? pack[style.role] : undefined;
   return {
-    size: style.size ?? (r ? r.size * roleBase(w, h) : 48),
-    weight: style.weight ?? r?.weight ?? 500,
-    tracking: style.tracking ?? r?.tracking ?? 0,
+    size: style.size ?? (r ? r.size * (pr?.scale ?? 1) * roleBase(w, h) : 48),
+    weight: style.weight ?? pr?.weight ?? r?.weight ?? 500,
+    tracking: style.tracking ?? pr?.tracking ?? r?.tracking ?? 0,
     color: style.color ?? "tokens.text",
-    alpha: style.color || !r ? 1 : r.alpha,
-    uppercase: r?.uppercase ?? false,
+    alpha: style.color || !r ? 1 : (pack && style.role ? pack.textAlpha[style.role] : r.alpha),
+    uppercase: style.role === "label" && pack ? (pack.label.uppercase ?? true) : (r?.uppercase ?? false),
   };
 }
 
@@ -385,7 +388,8 @@ export const Field = z.object({
   grain: z.number().min(0).max(0.2).default(0.025),
 });
 export type Field = z.infer<typeof Field>;
-export const Style = z.object({ field: Field.default({}) });
+// field: explicit per-graph field; when omitted the pack's field (or the built-in default) applies
+export const Style = z.object({ pack: z.string().regex(/^[a-z0-9-]+$/).optional(), field: Field.optional() });
 
 export const Beat = z.object({
   id: z.string().regex(/^b[0-9]+$/),

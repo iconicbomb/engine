@@ -1,0 +1,85 @@
+{
+  "name": "warm-editorial",
+  "sources": ["R7"],
+  "summary": "Warm cream editorial field with a soft beige vignette, near-black geometric type, deep-green hover cards and full-bleed sections, and a butter-yellow mascot/toggle halo that lives on objects, not on the field.",
+  "tokens": {
+    "bg": "#F6F1EC",
+    "text": "#000000",
+    "accent": "#F0C92F",
+    "muted": "#3D3834",
+    "surface": "#174C43",
+    "glow": "#F5D21A",
+    "accent2": "#CF6006"
+  },
+  "field": {
+    "mode": "auto",
+    "glow": 0,
+    "glowColor": "#F5D21A",
+    "vignette": 0.10,
+    "grain": 0
+  },
+  "surfaces": {
+    "card": {
+      "lift": 0.005,
+      "borderTop": 1, "borderBottom": 1,
+      "borderColor": "#FCF2CC",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0.015
+    },
+    "button": {
+      "lift": 0,
+      "borderTop": 0.6, "borderBottom": 0.6,
+      "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0, "glowBlur": 0,
+      "radius": 0.14
+    },
+    "pill": {
+      "lift": 0,
+      "borderTop": 0.26, "borderBottom": 0.26,
+      "borderColor": "#F0C92F",
+      "highlight": 0,
+      "shadowAlpha": 0, "shadowBlur": 0, "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0.24, "glowBlur": 120,
+      "radius": 0.5
+    }
+  },
+  "type": {
+    "font": "Inter",
+    "display":  { "weight": 700, "tracking": -0.02, "scale": 0.7 },
+    "headline": { "weight": 700, "tracking": -0.02, "scale": 0.8 },
+    "body":     { "weight": 500, "tracking": 0,     "scale": 1.4 },
+    "label":    { "weight": 600, "tracking": 0.02,  "scale": 1.2, "uppercase": true },
+    "textAlpha": { "display": 1, "headline": 1, "body": 1, "label": 0.8 },
+    "onAccent": "#000000"
+  },
+  "motion": {
+    "transition": "curtain",
+    "curtainColor": "#003B31",
+    "bloom": 0,
+    "cameraDrift": 0.02
+  },
+  "evidence": [
+    "R7 t=6,9,11,22,33,34,100,110 bg: median of the lightest 30 % per frame = #F9F5F1/#F9F5F1/#F6F2EE/#F5F3EF/#F4EDE5/#F3ECE5/#F6F0EA/#F4EFE8, median #F6F1EC; frames with white doc cards (t=26,28) excluded",
+    "R7 t=36,38.5,120 full-bleed section = flat #003B31 (darkest 30 % and all four 20x20 corners identical); curtainColor measured on the wipe panel at t=35.7-35.8 corners (10,10)/(700,10) = #003B31",
+    "R7 t=6 'Rising freight costs' and t=26 'Managing in-house' and t=110 'Customer experience': darkest 25 % of ink = #000000, ink median #010000-#0F0700 (pure black cores; a crushed-black encode cannot be ruled out)",
+    "R7 t=6 '+$ 2.596' / '+$ 1.246' secondary labels: ink median #3D3834-#3F3A36 (2 px strokes at 414p, core likely darker); t=11 day labels Wed/Thu read lighter, #626B60 median",
+    "R7 t=37,38.5,45,110,120 mascot / logo-dot yellow (r>200,g>140,b<110 mask): medians #EFC92F/#F0CA33/#EFC92B/#F0C935/#F1CD2A -> accent #F0C92F; body is a vertical gradient #FADE60 (top 10 %) -> #E9BD0D (bottom 10 %)",
+    "R7 t=37 halo on green, 72-sample radial medians from mascot centre (369,229): r=78 #E1BE21, r=102 #8D9625, r=138 #48692B, r=192 #144A31, r=198 bg; alpha-blend fit of one colour over #003B31 -> #F0D21E, alpha 0.92 at the body edge, 0.50 at +42 px, 0.10 at +100 px, hard ring edge at r~195 px (0.47 H); stepped concentric bands, not a Gaussian",
+    "R7 t=33 knob halo on cream, radial medians from knob centre (425,205): r=72 #F1E6B0, r=96 #F2E9CB, r=132 #EEE4D5; fit over bg #F0EBE4 -> #FAD20A, alpha 0.235 at the knob edge, 0.11 at +36 px, 0.07 at +66 px (414p) -> pill glowAlpha 0.24, blur ~120 px at 1080; glow token #F5D21A = mean of both fits",
+    "R7 t=9,11,33,100,110 open cream field has no yellow chroma (lightest-30 % B within 8 levels of R); the yellow is only within ~200 px of the mascot/knob and moves with them (t=45 left, t=110 right, t=120 centre) -> field.glow 0, no explicit field glows, the halo is a surface/beat glow; only the green sections carry a field glow: t=50/45 (360,10) #5C8C3A vs base #003B31 = +79 luminance (0.31) top-centre, corners #004E40-#025E4C, bottom (360,400) #003028 -> a beat-level glow, see docs",
+    "R7 vignette: bg-only luminance (L>170, sat<60) by radial band centre->corner: t=33 242.9->211.2 (13 %), t=9 243.6->222.8 (8.5 %), t=11 242.9->220.6 (9 %), t=100 241.2->227.2 (6 %), t=110 235.4->219.0 (7 %) -> 0.10; the darkening is asymmetric (right edge darkest, a blurred warm photo)",
+    "R7 grain: high-pass (minus 2 px Gaussian) std on flat patches t=33 (40,320,100x60) 0.33 levels, t=34 0.30, t=22 0.18, t=36 green 0.00 -> 0.001, written as 0; no grid lines in the field",
+    "R7 t=13,14,15 green card: fill median #174C43 (top band #184D44, bottom #164B42 -> lift +0.005), 2 px solid pale-yellow hairline #FCF2CC (median of 10 edge samples) on all sides, corner radius 3-4 px of 371 px (0.01-0.015), no shadow (luminance 1-21 px below the card flat at 210.4-211.7, right side flat 235.6)",
+    "R7 t=26 white document cards: fill #FFFFFF, no border; DOC card edge over the white PDF card at row 360: 236 at 1 px, 243 at 10 px, 250 at 20 px, 255 at 30 px -> soft shadow ~0.14 alpha, ~70 px blur at 1080, y +8 (above the top edge only 252->246); top-left radius 14 px -> ~0.06 of a 150-290 px card",
+    "R7 t=33 toggle pill: bbox x184-551 y124-279 (fully round, radius 0.5), fill #F6F1DB over bg #F0EBE4 (pale translucent yellow), 2 px border #F4F2B5/#E8E6A9 = accent at alpha 0.26 over cream; knob #FFFFFF with the halo above; t=120 'Book a demo' button: no fill, 1 px white border #9AC1BB/#88B4AD over #003B31 = 0.6 alpha, radius 5 of 36 px (0.14); t=28 'Calling to - Carrier' chip is flat white, radius ~0.15, no border",
+    "R7 type at 414p: 'Rising freight costs' R cap 25 px / stem 4 px = 0.16 (700); 'Outsourcing' O cap 23 / 4 = 0.17 (700); 'Introducing Pi' I cap 16 / 2 = 0.125-0.18 (500); 'In-house' knob I 13 / 2 = 0.15 (500-600); 'SILOED TECH' cap 11 / 2 = 0.18 (600, uppercase, set in the deep green, #142C1A darkest 25 %); 'Pros' on the green card #C0E4DF = white at ~0.8 over #174C43 -> label alpha 0.8; sizes: hero caps 25-44 px of 414 (0.083-0.146 H font) -> display 0.7, section titles 15-30 px -> headline 0.8, body/caption caps 13-16 px (0.043-0.053 H) -> 1.4, eyebrow caps 10-11 px -> 1.2; tracking estimated by eye at 414p (geometric sans, slightly tight), not measured",
+    "R7 motion: section switches at 16.75/19/41.75/43.75/46.25/48.75/52.5/66.25/68/116.25 s are hard cuts; the one curtain is a #003B31 panel sweeping top->bottom with a convex curved leading edge between t=35.5 and 35.9 (covers 15 % at 35.6, 45 % at 35.7, 75 % at 35.8) and stays as the next section's background; no text glow anywhere (bloom 0); 'Rising freight costs' bbox width 317 px at t=6.0 and 6.5, 339 at 7.5 and 8.0 (static hold); 'Complex operations' 203->197->192 px over t=8.5-9.5 (a slow 2.5 %/0.5 s pull-out) -> cameraDrift 0.02, sign not expressible"
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "name": "dark-neon",
+  "sources": [
+    "R3",
+    "R8",
+    "R9"
+  ],
+  "summary": "Near-black field with a deep royal-blue glow rising from the bottom edge, white type that blooms as it lands, and dark blue glass cards with faint white borders (R8 shows the same family in neon green).",
+  "tokens": {
+    "bg": "#010519",
+    "text": "#FFFFFF",
+    "accent": "#8FBBFF",
+    "muted": "#7785C1",
+    "surface": "#212A5E",
+    "glow": "#0A2EDC",
+    "accent2": "#4AC8FA"
+  },
+  "field": {
+    "mode": "auto",
+    "glow": 1,
+    "glowColor": "#0A2EDC",
+    "glows": [
+      {
+        "x": 0.5,
+        "y": 1.03,
+        "rx": 0.72,
+        "ry": 0.9,
+        "color": "#0A2EDC",
+        "intensity": 0.39
+      },
+      {
+        "x": 0.5,
+        "y": -0.03,
+        "rx": 0.6,
+        "ry": 0.65,
+        "color": "#0A2EDC",
+        "intensity": 0.2
+      }
+    ],
+    "vignette": 0.1,
+    "grain": 0.004
+  },
+  "surfaces": {
+    "card": {
+      "lift": 0.08,
+      "borderTop": 0.15,
+      "borderBottom": 0.08,
+      "borderColor": "#FFFFFF",
+      "highlight": 0.1,
+      "shadowAlpha": 0,
+      "shadowBlur": 0,
+      "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0.1,
+      "glowBlur": 64,
+      "radius": 0.06
+    },
+    "button": {
+      "lift": -0.02,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderColor": "#FFFFFF",
+      "highlight": 0,
+      "shadowAlpha": 0,
+      "shadowBlur": 0,
+      "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0.1,
+      "glowBlur": 64,
+      "radius": 0.5
+    },
+    "pill": {
+      "lift": 0.08,
+      "borderTop": 0.15,
+      "borderBottom": 0.08,
+      "borderColor": "#FFFFFF",
+      "highlight": 0.1,
+      "shadowAlpha": 0,
+      "shadowBlur": 0,
+      "shadowY": 0,
+      "shadowColor": "#000000",
+      "glowAlpha": 0.1,
+      "glowBlur": 64,
+      "radius": 0.5
+    }
+  },
+  "type": {
+    "font": "Inter",
+    "display": {
+      "weight": 500,
+      "tracking": 0.02,
+      "scale": 0.85
+    },
+    "headline": {
+      "weight": 600,
+      "tracking": 0.02,
+      "scale": 0.7
+    },
+    "body": {
+      "weight": 500,
+      "tracking": 0,
+      "scale": 1
+    },
+    "label": {
+      "weight": 500,
+      "tracking": 0.04,
+      "scale": 1,
+      "uppercase": true
+    },
+    "textAlpha": {
+      "display": 0.9,
+      "headline": 0.95,
+      "body": 0.7,
+      "label": 0.5
+    },
+    "onAccent": "#010519"
+  },
+  "motion": {
+    "transition": "smear",
+    "bloom": 1,
+    "cameraDrift": 0
+  },
+  "evidence": [
+    "R3 t=2.0/3.0/3.5 bg median #010519 over the darkest 30 % of pixels (t=1.0 #010415, t=1.5 #010516); corner patch #010415; R8 bg #0C0F1A, R9 #020307-#03040D (R3 preferred for the field)",
+    "R3 t=3.5 bottom-edge glow peak #051665 at (0.50, 0.98) and top-edge peak #050F3F at (0.50, 0.01) = 0.39 x and 0.20 x #0A2EDC over #010519, which reproduces the engine's baseline two-glow profile; peak hue 229 deg; R9 t=0.5 halo peak #2942CD hue 231 deg (same family), R8 t=7.0 glow peak #168165 hue 164 deg (green variant)",
+    "R3 t=0.55 typing bloom peak #779EE8 (hue 220 deg) sampled 10x4 at (500,210), i.e. accent #8FBBFF (hue 221 deg) at ~85 % over the field; R9 t=0.5 'NeuraFlow' bloom tint #BADCFC. accent2 #4AC8FA = R9 t=2.5 'Ask AI' button fill median at (462-470,270-281), hue 196 deg, matching R9's '#AFE9FF' sub-headline",
+    "text: R3 t=2.0 question line top-3 % #E5EBFD (max #FFFFFF), R9 t=2.5 'Hello, Mark' top-3 % #FFFFFF; R3 t=3.0 'AI Agent?' top-3 % #D3D5E5 (glyphs carry a white-to-lavender vertical gradient, bottom ~#8790BA)",
+    "muted #7785C1 = mean of the brightest pixels of three secondary texts: R9 t=2.5 'Welcome back,' #7383C5, R9 'From all projects' #6D7EBD, R3 t=2.0 bracket #858EC0 (hue 225-230 deg); R8 placeholder text is grey #687278",
+    "surface #212A5E = R9 t=5.5 'Costs' card fill median 40x25 at (300,265), std 3-5; R9 sidebar #201D57, 'Analytics' card #212D62; R8 t=7.0 card fill #202020 flat (std 0.2) over its #0C0F1A bg",
+    "vignette: R3 t=2.0 edge columns flat 4.6-5.6 L (corner 1 level darker than mid-edge, ~0.18 of 5.6), R8 t=5.5 edge columns 14.2-15.9 L (~0.1), R9 corners brighter than mid-edges (blurred backdrop); no vignette beyond the glow falloff, set 0.1. grain: high-pass (9 px box) std of flat background patches: R3 t=2.0 (20,20)-(140,120) 0.09 levels = 0.0003, R3 t=3.5 0.24 = 0.001, R8 t=5.5 (20,300)-(120,400) 1.07 = 0.004, R9 t=0.5 (20,120)-(120,250) 1.23 = 0.005, R9 t=5.5 1.78 = 0.007; set 0.004",
+    "grid not written: R3 has none; R8 t=5.5/7.0 has a faint white grid (vertical lines at x=12,101,190,...,546,634,723 = 89 px, horizontal at y=16,143,270,334,398 = 64 px at 414 tall, i.e. 232 x 167 px at 1080, line integrated excess 4-9 levels = alpha ~0.06-0.10 white); R9 t=0.5 grid lines at x=604,686 (82 px = 214 px at 1080)",
+    "card: R8 t=7.0 answer card fill #202020 at top fading to bg #0C0F1A at bottom (HSL L 0.125 -> 0.075, lift +0.05); R9 t=2.5 side card interior #656CB2 top -> #3E4BA1 bottom (L 0.547 -> 0.437, lift +0.11); set 0.08",
+    "card borders: R9 t=2.5 side card top edge #86AFF0 over interior #6A94CE (+27 levels, ~0.25 apparent over a 2 px band = borderTop 0.15 + highlight 0.10), left edge #5761AD over #4A519E (~0.1 apparent), bottom edge #5064B3 over #4C5EAE (~0.03 apparent -> 0.08); R8 t=7.0 borders are accent-tinted #60A591 with a 2-3 px outer glow (not expressible: noted in docs)",
+    "shadows not present: R8 t=4.0 search-bar bottom edge rows 205-223 flat #04181D, R9 t=2.5 side card and R9 t=5.5 dashboard show no dark halo outside their edges; under-glow from R8 t=4.0 'Ask AI' ring: L ramps 25 -> 41 over 25 px (65 px at 1080) in accent at ~0.1 alpha; R9 t=2.5 'Ask AI' button has none (outside flat L 93). radius: R8 t=7.0 answer card corner spans 12 px of a >=190 px card (0.06), R9 t=2.5 side card 7 px of 109 px (0.065); R9 'Ask AI' button 17 px tall fully round (0.5), R8 'Ask AI' ring and search bar fully round (0.5); R8 message bubbles are 0.14 (noted in docs); pills derived from the card at radius 0.5",
+    "weights by stroke/cap calibrated against Inter-Variable rendered at the same cap height (metric: 400=0.12, 500=0.15, 600=0.17, 700=0.20): R3 t=3.0 'AI Agent?' 0.130 and R9 t=0.5 'NeuraFlow' 0.155 -> display 500; R9 t=2.5 'Smart Control' 0.201 (700), 'Hello, Mark' 0.186, R8 t=7.0 'Steps to implement' 0.142 (500) -> headline 600; R8 pill text 0.158, R3 question line 0.137 -> body 500; label unmeasurable (R9 'PREFERENCE' cap 4 px) -> engine defaults 500 / 0.04 em, uppercase seen in R9 sidebar",
+    "tracking vs Inter natural width at the measured cap: R3 'AI Agent?' +0.020 em, R3 question line +0.012 em, R9 'Smart Control' +0.054 em, 'NeuraFlow' +0.061 em (different typeface) -> 0.02 display/headline, 0 body. Sizes: R3 'AI Agent?' cap 40 px = 0.139 H, R9 'NeuraFlow' cap 41 px = 0.136 H -> display scale 0.85; R9 'Smart Control' cap 18 px = 0.060 H, R3 fitted question line 0.066 H -> headline scale 0.7; R8 'Steps' cap 11 px = 0.037 H -> body 1",
+    "textAlpha: R3 t=2.0 line #E5EBFD (0.92) and 'AI Agent?' gradient mean ~0.84 -> display 0.9; R9 'Hello, Mark' #FFFFFF, 'Smart Control' #DAF7FF -> headline 0.95; R8 t=7.0 'Steps' #BCBCBC (0.74), body '1. Install' #9E9DA0 (0.62) -> body 0.7; R8 t=3.0 placeholder #687278 over #04181D (~0.4 apparent at 10 px cap) -> label 0.5. onAccent: R8 t=3.0 text on its bright green header is near-black accent-hued (#002700 min on #2DF39A) -> tokens.bg; R9 uses white on its cyan button",
+    "transitions by consecutive-frame difference: R3 one hard cut at t=3.77 (mean abs diff 233, dark -> white section); R8 cuts at t=1.20, 3.37, 4.57, 5.37 each followed by 1-2 frames of vertical motion blur (smear); R9 none (continuous moves over ~0.3 s at t=1.0-1.2 and 3.9-4.1) -> smear. bloom 1 by definition (R3 is the engine's bloom baseline; R8 'AI chatbot' title and R9 'NeuraFlow' glow comparably). cameraDrift: R9 dashboard tracked 2.5->3.5 s at scale 0.97, 5.0->6.0 s at 0.96 (a 3-4 %/s pull-back); R8 pill 5.5->7.0 s scale 1.00 (static); the schema only models a push, so 0 and noted in docs"
+  ]
+}

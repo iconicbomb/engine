@@ -1,7 +1,8 @@
 // @engine/runtime — Canvas 2D implementation of `Runtime`. renderFrame(graph, t) is a pure function of its inputs:
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat, Field } from "@engine/graph";
-import { glyphTime, glyphHideTime, typewriterEnd, formatCount, transitionParams, resolveTextStyle } from "@engine/graph";
+import { glyphTime, glyphHideTime, typewriterEnd, formatCount, transitionParams, resolveTextStyle, stylePack, Field as FieldSchema } from "@engine/graph";
+import type { StylePack, SurfaceSpec } from "@engine/graph";
 import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, dirVec, pathLength, pathBounds, anchorPoint, wirePath, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
@@ -68,7 +69,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     beat.nodes.forEach(index);
     const memo = new Map<number, Map<string, Box>>();
     const env: Env = {
-      ctx: ctx as CanvasRenderingContext2D, tokens: graph.tokens, tl, fps: graph.canvas.fps, aspect, w, h, k, extents: new Map(), byId,
+      ctx: ctx as CanvasRenderingContext2D, tokens: tokensOf(graph), pack: packOf(graph), tl, fps: graph.canvas.fps, aspect, w, h, k, extents: new Map(), byId,
       boxesAt: (t: number) => { let b = memo.get(t); if (!b) { b = measureBoxes(beat, { ...env, tl: t }); memo.set(t, b); } return b; },
     };
     return { env, beat };
@@ -120,7 +121,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       into(e < 0.5 ? out : inc, ctx);                 // the panel covers the whole frame at the midpoint
       const along = -1 + 2 * e;                        // panel offset in frame units: -1 (off, behind) -> +1 (off, ahead)
       ctx.setTransform(k, 0, 0, k, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
-      ctx.fillStyle = color(tp.color, graph.tokens);
+      ctx.fillStyle = color(tp.color, tokensOf(graph));
       ctx.fillRect(dv.x * along * w, dv.y * along * h, w, h);
       return;
     }
@@ -159,7 +160,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const { w, h } = canvasSize(aspect, graph.canvas.refHeight);
     const k = target.height / h;                       // graph units -> device px
     const { env, beat } = frameEnv(graph, tSec, ctx, k, forBeat);
-    const tl = env.tl, tokens = graph.tokens;
+    const tl = env.tl, tokens = env.tokens;
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over"; ctx.filter = "none";
@@ -167,10 +168,13 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     else { ctx.fillStyle = color(beat.background, tokens); ctx.fillRect(0, 0, target.width, target.height); }
     ctx.setTransform(k, 0, 0, k, 0, 0);
 
-    const field = fieldOf(graph, beat);
+    const field = fieldOf(graph, beat), pk = packOf(graph);
+    const light = lightBg(color(beat.background, tokens));
     if (layer !== "content") {
-      if (field.mode === "auto" && beat.glows.length === 0 && field.glow > 0) drawGlows(derivedGlows(field, tokens), ctx, tokens, tl, w, h);
-      else drawGlows(beat.glows, ctx, tokens, tl, w, h);
+      const grid = field.mode === "auto" ? pk?.field.grid : undefined;
+      if (grid) drawGrid(ctx, w, h, grid);
+      if (field.mode === "auto" && beat.glows.length === 0 && field.glow > 0) drawGlows(derivedGlows(field, tokens, pk), ctx, tokens, tl, w, h, light);
+      else drawGlows(beat.glows, ctx, tokens, tl, w, h, light);
       if (field.mode === "auto" && field.vignette > 0) drawVignette(ctx, w, h, field.vignette);
     }
     if (layer === "background") return;
@@ -246,9 +250,25 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   }
 
   // ---------- background field (look layer) ----------
-  function fieldOf(graph: Graph, beat: Beat): Field { return beat.field ?? graph.style.field; }
+  // the beat's field: beat override, else the graph's, else the pack's, else the built-in default
+  function fieldOf(graph: Graph, beat: Beat): Field {
+    if (beat.field) return beat.field;
+    if (graph.style.field) return graph.style.field;
+    const pk = stylePack(graph.style.pack);
+    if (pk) return FieldSchema.parse({ mode: pk.field.mode, glow: pk.field.glow, glowColor: pk.field.glowColor, vignette: pk.field.vignette, grain: pk.field.grain });
+    return FieldSchema.parse({});
+  }
+  function packOf(graph: Graph): StylePack | undefined { return stylePack(graph.style.pack); }
+  // tokens: the pack's, overridden by the graph's own
+  function tokensOf(graph: Graph): Record<string, string> {
+    const pk = packOf(graph);
+    return pk ? { ...pk.tokens, ...graph.tokens } : graph.tokens;
+  }
+  // is the background light? (glows then multiply toward the colour instead of adding light)
+  function lightBg(bgHex: string): boolean { const [r, g, b] = hexToRgb(bgHex); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 > 0.5; }
   // the R3-measured two-glow profile, tinted from tokens.glow (else the accent), scaled by the field's glow
-  function derivedGlows(field: Field, tokens: Record<string, string>): Beat["glows"] {
+  function derivedGlows(field: Field, tokens: Record<string, string>, pk?: StylePack): Beat["glows"] {
+    if (pk?.field.glows && !field.glowColor) return pk.field.glows.map((g) => ({ ...g, intensity: Math.min(1, g.intensity * field.glow), tracks: [] }));
     const c = field.glowColor ? color(field.glowColor, tokens) : tokens.glow ? tokens.glow : deepen(resolveToken("tokens.accent", tokens));
     return [
       { x: 0.5, y: 1.03, rx: 0.72, ry: 0.9, color: c, intensity: Math.min(1, 0.39 * field.glow), tracks: [] },
@@ -265,6 +285,17 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     g.addColorStop(1, `rgba(0,0,0,${amount.toFixed(3)})`);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
+  // blueprint grid (R4, R10): thin lines every `spacing` px at refHeight, centred on the canvas
+  function drawGrid(ctx: CanvasRenderingContext2D, w: number, h: number, grid: { color: string; alpha: number; spacing: number }) {
+    ctx.save();
+    ctx.globalAlpha = grid.alpha; ctx.strokeStyle = grid.color; ctx.lineWidth = 1;
+    ctx.beginPath();
+    const sp = grid.spacing;
+    for (let x = (w / 2) % sp; x <= w; x += sp) { ctx.moveTo(Math.round(x) + 0.5, 0); ctx.lineTo(Math.round(x) + 0.5, h); }
+    for (let y = (h / 2) % sp; y <= h; y += sp) { ctx.moveTo(0, Math.round(y) + 0.5); ctx.lineTo(w, Math.round(y) + 0.5); }
+    ctx.stroke();
     ctx.restore();
   }
   // grain: a 256 px tile of deterministic noise (xorshift from a fixed seed), drawn over the finished frame at `amount`
@@ -301,19 +332,21 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   }
 
   // Background glows: additive elliptical radial gradients with a gaussian-like falloff that reaches zero.
-  function drawGlows(glows: Beat["glows"], ctx: CanvasRenderingContext2D, tokens: Record<string, string>, tl: number, w: number, h: number) {
+  // On a light background an additive glow only whitens: the same falloff is drawn with `multiply` instead, so the
+  // page tints toward the glow colour (R4's corner hazes). The dark path is unchanged (R3 pixel-identical).
+  function drawGlows(glows: Beat["glows"], ctx: CanvasRenderingContext2D, tokens: Record<string, string>, tl: number, w: number, h: number, light = false) {
     for (const g of glows) {
       let intensity = g.intensity;
       for (const tr of g.tracks) if (tr.mode === "tween" && tr.prop === "intensity") intensity = tweenValue(tr, tl, 0, intensity);
       if (intensity <= 0) continue;
       const [r, gg, b] = hexToRgb(color(g.color, tokens));
       ctx.save();
-      ctx.globalCompositeOperation = "lighter";
+      ctx.globalCompositeOperation = light ? "multiply" : "lighter";
       ctx.translate(g.x * w, g.y * h);
       ctx.scale(g.rx * w, g.ry * h);
       const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
       const stops: [number, number][] = [[0, 1], [0.2, 0.78], [0.4, 0.42], [0.6, 0.17], [0.8, 0.045], [1, 0]];
-      for (const [p, a] of stops) grad.addColorStop(p, `rgba(${r},${gg},${b},${(a * intensity).toFixed(3)})`);
+      for (const [p, a] of stops) grad.addColorStop(p, `rgba(${r},${gg},${b},${(a * intensity * (light ? 0.6 : 1)).toFixed(3)})`);
       ctx.fillStyle = grad;
       ctx.fillRect(-1, -1, 2, 2);
       ctx.restore();
@@ -323,7 +356,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   // extents: per group, parent space (brackets / follows). boxesAt(t): the measure pass, every node's box in world
   // space (moveTo / camera targets). byId: every node of the beat (onHover finds its cursor).
   type Env = {
-    ctx: CanvasRenderingContext2D; tokens: Record<string, string>; tl: number; fps: number; aspect: Aspect; w: number; h: number; k: number;
+    ctx: CanvasRenderingContext2D; tokens: Record<string, string>; pack?: StylePack; tl: number; fps: number; aspect: Aspect; w: number; h: number; k: number;
     extents: Map<string, Extents>; byId: Map<string, Node>; boxesAt: (t: number) => Map<string, Box>;
     slots?: Map<string, Slot>;      // set while drawing / measuring the children of a laid-out group
   };
@@ -423,7 +456,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   // drawText paints from it; sizeToContent measures with it without painting.
   function layoutText(node: TextNode, env: Env) {
     const { tokens, tl, fps } = env;
-    const rs = resolveTextStyle(node.style, env.w, env.h);   // role -> size / weight / tracking / alpha
+    const rs = resolveTextStyle(node.style, env.w, env.h, env.pack?.type);   // role -> size / weight / tracking / alpha (pack-aware)
     const style = { ...node.style, size: rs.size, weight: rs.weight, tracking: rs.tracking, color: rs.color };
     const fontName = resolveToken(style.font, tokens);
     const size = style.size;
@@ -610,7 +643,8 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       }
     }
     // pass 2: bloom on fresh glyphs (phase-0 stand-in: blurred additive redraw; real multi-radius bloom is phase 6)
-    if (tw && tw.bloom.radius > 0 && tw.bloom.intensity > 0) {
+    const bloomMul = env.pack ? env.pack.motion.bloom : 1;
+    if (tw && tw.bloom.radius > 0 && tw.bloom.intensity * bloomMul > 0) {
       glyphs.forEach((g, gi) => {
         const st = states[g.cluster];
         if (!st?.visible || st.freshness <= 0) return;
@@ -618,7 +652,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
         for (const [r, wgt] of [[tw.bloom.radius, 0.7], [tw.bloom.radius * 2.5, 0.45]] as const) {   // tight + wide layers
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
-          ctx.globalAlpha *= clamp01(st.freshness * tw.bloom.intensity * wgt);
+          ctx.globalAlpha *= clamp01(st.freshness * tw.bloom.intensity * bloomMul * wgt);
           ctx.filter = `blur(${r}px)`;
           ctx.translate(positions[gi] + g.xOffset, baseline + gpos[gi].y + g.yOffset);
           ctx.fillStyle = tailColor;
@@ -698,7 +732,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const { ctx, tokens, tl } = env;
     const ext = env.extents.get(node.follows);
     if (!ext) return;
-    const bs = resolveTextStyle(node.style, env.w, env.h);
+    const bs = resolveTextStyle(node.style, env.w, env.h, env.pack?.type);
     const fontName = resolveToken(node.style.font, tokens);
     const size = bs.size * ext.scale;                  // brackets follow the text's fit scale
     const axes = { wght: bs.weight, ...node.style.axes };
@@ -1044,14 +1078,16 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       return;
     }
     // ---- surface (look layer): shadow, under-glow, gradient fill, 1 px light border, top highlight ----
-    const S = SURFACES[surface];
+    const S: SurfaceSpec = env.pack ? env.pack.surfaces[surface] : SURFACES[surface];
     const m = ctx.getTransform(), dev = Math.hypot(m.a, m.b);   // canvas shadows ignore the transform: scale to device px
     const accent = isAccent(fill!, tokens);
     // the path is current (built above); shadows are drawn by filling it with shadow set
     ctx.save();
-    ctx.shadowColor = `rgba(0,0,0,${S.shadowAlpha})`; ctx.shadowBlur = S.shadowBlur * dev; ctx.shadowOffsetY = S.shadowY * dev;
-    ctx.fillStyle = fill!; ctx.fill();
-    if (accent) { ctx.shadowColor = withAlpha(fill!, S.glowAlpha); ctx.shadowBlur = S.glowBlur * dev; ctx.shadowOffsetY = 0; ctx.fill(); }
+    if (S.shadowAlpha > 0) {
+      ctx.shadowColor = withAlpha(S.shadowColor, S.shadowAlpha); ctx.shadowBlur = S.shadowBlur * dev; ctx.shadowOffsetY = S.shadowY * dev;
+      ctx.fillStyle = fill!; ctx.fill();
+    }
+    if (accent && S.glowAlpha > 0) { ctx.shadowColor = withAlpha(fill!, S.glowAlpha); ctx.shadowBlur = S.glowBlur * dev; ctx.shadowOffsetY = 0; ctx.fillStyle = fill!; ctx.fill(); }
     ctx.restore();
     const g = ctx.createLinearGradient(0, y, 0, y + h);
     g.addColorStop(0, lighten(fill!, S.lift)); g.addColorStop(1, fill!);
@@ -1059,8 +1095,9 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     // border, inset so a 1 px line stays inside the rounded shape
     ctx.save();
     ctx.clip();
+    const [br, bgc, bb] = hexToRgb(S.borderColor);
     const b = ctx.createLinearGradient(0, y, 0, y + h);
-    b.addColorStop(0, `rgba(255,255,255,${S.borderTop})`); b.addColorStop(1, `rgba(255,255,255,${S.borderBottom})`);
+    b.addColorStop(0, `rgba(${br},${bgc},${bb},${S.borderTop})`); b.addColorStop(1, `rgba(${br},${bgc},${bb},${S.borderBottom})`);
     ctx.strokeStyle = b; ctx.lineWidth = 2; ctx.stroke();        // clipped: 1 px visible inside the edge
     // top highlight: a 1 px light line just under the top edge, fading at the corners
     const hl = ctx.createLinearGradient(x, 0, x + w, 0);
@@ -1140,11 +1177,11 @@ function mix(a: string, b: string, t: number): string {
 }
 
 // ---------- surface specs (look layer) ----------
-const SURFACES = {
-  card:   { lift: 0.06, borderTop: 0.14, borderBottom: 0.04, highlight: 0.08, shadowAlpha: 0.45, shadowBlur: 40, shadowY: 12, glowAlpha: 0.35, glowBlur: 60 },
-  button: { lift: 0.05, borderTop: 0.12, borderBottom: 0.04, highlight: 0.08, shadowAlpha: 0.35, shadowBlur: 24, shadowY: 6,  glowAlpha: 0.40, glowBlur: 40 },
-  pill:   { lift: 0.04, borderTop: 0.10, borderBottom: 0.03, highlight: 0.06, shadowAlpha: 0.30, shadowBlur: 16, shadowY: 4,  glowAlpha: 0.35, glowBlur: 28 },
-} as const;
+const SURFACES: Record<"card" | "button" | "pill", SurfaceSpec> = {
+  card:   { lift: 0.06, borderTop: 0.14, borderBottom: 0.04, borderColor: "#FFFFFF", highlight: 0.08, shadowAlpha: 0.45, shadowBlur: 40, shadowY: 12, shadowColor: "#000000", glowAlpha: 0.35, glowBlur: 60, radius: 0.1 },
+  button: { lift: 0.05, borderTop: 0.12, borderBottom: 0.04, borderColor: "#FFFFFF", highlight: 0.08, shadowAlpha: 0.35, shadowBlur: 24, shadowY: 6,  shadowColor: "#000000", glowAlpha: 0.40, glowBlur: 40, radius: 0.5 },
+  pill:   { lift: 0.04, borderTop: 0.10, borderBottom: 0.03, borderColor: "#FFFFFF", highlight: 0.06, shadowAlpha: 0.30, shadowBlur: 16, shadowY: 4,  shadowColor: "#000000", glowAlpha: 0.35, glowBlur: 28, radius: 0.5 },
+};
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   r /= 255; g /= 255; b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
