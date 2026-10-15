@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, S3–S6 in (phase 2); `pnpm test` 85 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, S3–S6, S9 in (phase 2); `pnpm test` 87 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -93,8 +93,10 @@ S5 cursorClick + giantCursor (move 500 ms, pause 150 ms, press 80 ms; target onH
 dip across the press; fixture s5-cursor-click); S4 jumpCuts + pressTimes (camera frame tracks, cut on the cursor's
 press times; fixture s4-jump-cut: wide -> 300 ms push to a close-up on a card -> hard cut back to wide);
 S6 tickerList (clip window of `visible` slots; list steps up one slot per 330 ms step, exiting item fades;
-primitives only).
-NEXT (phase 2 per the spec): S8, S9, S13, S14, S16;
+primitives only); S9 pillMarquee (pills sized to their labels, centre-out pop cascade within 600 ms, rows scroll
+linearly at 40 px/s in alternating directions; pill positions use an estimated label width, ~0.58 em/char, since
+there is no row/flex layout yet; rows repeat to cover canvas + travel).
+NEXT (phase 2 per the spec): S8, S13, S14, S16;
 jump-cut coverage.
 
 ## Cursor system (designed with Niloy, 2026-10-15)

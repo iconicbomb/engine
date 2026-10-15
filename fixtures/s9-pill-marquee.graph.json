@@ -1,0 +1,1450 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.8,
+      "script": "Connects to everything",
+      "nodes": [
+        {
+          "id": "b1-pills",
+          "type": "group",
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-pills-row-1",
+              "type": "group",
+              "y": -104,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0.8,
+                  "ms": 2400,
+                  "from": 0,
+                  "to": -96,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-pills-row-1-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -1159,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-1-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -952,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.4975,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-2-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -732,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.42875,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-3-label",
+                      "type": "text",
+                      "text": "GitHub",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -513,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.360313,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-4-label",
+                      "type": "text",
+                      "text": "Linear",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -306,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.295625,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-5-label",
+                      "type": "text",
+                      "text": "Figma",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -110,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.234375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-6-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 98,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.230625,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-7-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 317,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.299063,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-8-label",
+                      "type": "text",
+                      "text": "GitHub",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-9",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 536,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.3675,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-9-label",
+                      "type": "text",
+                      "text": "Linear",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-10",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 744,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.4325,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-10-label",
+                      "type": "text",
+                      "text": "Figma",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-11",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 940,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.49375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-11-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-1-pill-12",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 1148,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-1-pill-12-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-pills-row-2",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0.8,
+                  "ms": 2400,
+                  "from": 0,
+                  "to": 96,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-pills-row-2-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -1264,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-1-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -1033,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-2-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -790,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.446875,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-3-label",
+                      "type": "text",
+                      "text": "Zendesk",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -536,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.3675,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-4-label",
+                      "type": "text",
+                      "text": "Airtable",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -317,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.299063,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-5-label",
+                      "type": "text",
+                      "text": "Jira",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -121,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.237813,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-6-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 110,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.234375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-7-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 352,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.31,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-8-label",
+                      "type": "text",
+                      "text": "Zendesk",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-9",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 606,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.389375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-9-label",
+                      "type": "text",
+                      "text": "Airtable",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-10",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 825,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.457813,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-10-label",
+                      "type": "text",
+                      "text": "Jira",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-11",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 1021,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-11-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-2-pill-12",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 1252,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-2-pill-12-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-pills-row-3",
+              "type": "group",
+              "y": 104,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "x",
+                  "at": 0.8,
+                  "ms": 2400,
+                  "from": 0,
+                  "to": -96,
+                  "ease": "linear"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-pills-row-3-pill-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -1212,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-1-label",
+                      "type": "text",
+                      "text": "Gmail",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -958,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.499375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-2-label",
+                      "type": "text",
+                      "text": "Salesforce",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -669,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.409063,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-3-label",
+                      "type": "text",
+                      "text": "Intercom",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -438,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.336875,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-4-label",
+                      "type": "text",
+                      "text": "Asana",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": -219,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.268438,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-5-label",
+                      "type": "text",
+                      "text": "Dropbox",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-6",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.2,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-6-label",
+                      "type": "text",
+                      "text": "Gmail",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-7",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 254,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.279375,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-7-label",
+                      "type": "text",
+                      "text": "Salesforce",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-8",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 543,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.369688,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-8-label",
+                      "type": "text",
+                      "text": "Intercom",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-9",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 774,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.441875,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-9-label",
+                      "type": "text",
+                      "text": "Asana",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-10",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 993,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-10-label",
+                      "type": "text",
+                      "text": "Dropbox",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pills-row-3-pill-11",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 28,
+                    "padY": 14
+                  },
+                  "x": 1212,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 0.5,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "bounce"
+                    }
+                  ],
+                  "children": [
+                    {
+                      "id": "b1-pills-row-3-pill-11-label",
+                      "type": "text",
+                      "text": "Gmail",
+                      "style": {
+                        "size": 40,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

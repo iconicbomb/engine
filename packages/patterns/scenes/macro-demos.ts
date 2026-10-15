@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -87,4 +87,17 @@ export function buildS6Demo() {
     anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
   });
   return demo("Every tool you use", 2.6, ticker.nodes, [ticker]);
+}
+
+export function buildS9Demo() {
+  const marquee = pillMarquee({
+    id: "b1-pills", at: 0.2, scrollMs: 2400, style: { size: 40, weight: 600 },
+    fill: "#1A1D26", stroke: { color: "#2C3140", width: 2 },
+    rows: [
+      ["Slack", "Notion", "GitHub", "Linear", "Figma"],
+      ["Stripe", "HubSpot", "Zendesk", "Airtable", "Jira"],
+      ["Gmail", "Salesforce", "Intercom", "Asana", "Dropbox"],
+    ],
+  });
+  return demo("Connects to everything", 2.8, marquee.nodes, [marquee]);
 }

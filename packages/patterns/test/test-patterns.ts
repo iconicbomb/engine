@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pressTimes, tickerList, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -137,6 +137,17 @@ assert(s6.clip.h === 3 * ih && s6list.tracks.length === 2 && s6list.tracks[0].fr
 assert(s6list.children[0].tracks[0].to === 0 && s6list.children[1].tracks[0].at === 1.23 && s6list.children[2].tracks.length === 0
   && throws(() => tickerList({ id: "b1-t", items: ["a"], style: { size: 50 }, at: 0 })),
   "S6: item n fades as it leaves on step n; too few items rejected");
+
+// S9: all pills popped within 600 ms; rows scroll linearly in alternating directions at 40 px/s; rows cover the travel
+const s9: any = pillMarquee({ id: "b1-m", at: 0.2, scrollMs: 2000, style: { size: 40 }, rows: [["a", "bb"], ["ccc"], ["dd", "e"]] }).nodes[0];
+const pops = s9.children.flatMap((r: any) => r.children.map((c: any) => c.tracks[0]));
+const lastPopEnd = Math.max(...pops.map((t: any) => t.at + t.ms / 1000));
+const scrolls = s9.children.map((r: any) => r.tracks[0]);
+const span = (r: any) => { const xs = r.children.map((c: any) => c.x ?? 0); return Math.max(...xs) - Math.min(...xs); };
+const centre = s9.children[0].children.reduce((a: any, c: any) => (Math.abs(c.x ?? 0) < Math.abs(a.x ?? 0) ? c : a));
+assert(lastPopEnd <= 0.8 + 1e-9 && Math.abs(lastPopEnd - 0.8) < 1e-9 && centre.tracks[0].at < 0.25 && pops.every((t: any) => t.ease === "bounce" && t.from === 0)
+  && scrolls.map((t: any) => Math.sign(t.to)).join() === "-1,1,-1" && scrolls.every((t: any) => t.ease === "linear" && Math.abs(t.to) === 80 && t.at === 0.8)
+  && s9.children.every((r: any) => span(r) > 1920 + 160), "S9: pop-in cascades from the centre, done in 600 ms; rows alternate, 40 px/s linear from 0.8 s; each row spans canvas + travel");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {
