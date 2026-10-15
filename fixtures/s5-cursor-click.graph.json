@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "surface": "#1A1D26",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.6,
+      "script": "Connect Slack",
+      "nodes": [
+        {
+          "id": "b1-panel",
+          "type": "rect",
+          "w": 760,
+          "h": 380,
+          "radius": 32,
+          "fill": "tokens.surface",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.45,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.45,
+                "scale": 0.72
+              }
+            }
+          },
+          "children": [
+            {
+              "id": "b1-panel-title",
+              "type": "text",
+              "text": "Slack workspace",
+              "style": {
+                "size": 44,
+                "weight": 600
+              },
+              "y": -90
+            },
+            {
+              "id": "b1-panel-connect",
+              "type": "rect",
+              "w": 120,
+              "h": 72,
+              "radius": 18,
+              "fill": "#2A2F3D",
+              "sizeToContent": {
+                "padX": 36,
+                "padY": 16
+              },
+              "x": -150,
+              "y": 90,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-cursor",
+                  "prop": "fill",
+                  "to": "#3A4152",
+                  "ms": 100,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 0.95,
+                  "ms": 40,
+                  "from": 1,
+                  "to": 0.96,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 0.99,
+                  "ms": 40,
+                  "from": 0.96,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-panel-connect-label",
+                  "type": "text",
+                  "text": "Connect",
+                  "style": {
+                    "size": 34,
+                    "weight": 600
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b1-panel-apply",
+              "type": "rect",
+              "w": 120,
+              "h": 72,
+              "radius": 18,
+              "fill": "#2A2F3D",
+              "sizeToContent": {
+                "padX": 36,
+                "padY": 16
+              },
+              "x": 160,
+              "y": 90,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-cursor",
+                  "prop": "fill",
+                  "to": "tokens.accent",
+                  "ms": 100,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 1.85,
+                  "ms": 40,
+                  "from": 1,
+                  "to": 0.96,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 1.89,
+                  "ms": 40,
+                  "from": 0.96,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-panel-apply-label",
+                  "type": "text",
+                  "text": "Apply",
+                  "style": {
+                    "size": 34,
+                    "weight": 600
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b1-cursor",
+          "type": "cursor",
+          "style": "arrow",
+          "anchor": {
+            "x": 0.8,
+            "y": 0.88,
+            "overrides": {
+              "9:16": {
+                "x": 0.75,
+                "y": 0.8,
+                "scale": 0.72
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b1-panel-connect",
+              "at": 0.3,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "press",
+              "at": 0.95,
+              "ms": 80
+            },
+            {
+              "mode": "moveTo",
+              "target": "b1-panel-apply",
+              "at": 1.2,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "press",
+              "at": 1.85,
+              "ms": 80
+            }
+          ],
+          "size": 2
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

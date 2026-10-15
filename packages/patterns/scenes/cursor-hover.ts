@@ -1,7 +1,7 @@
 // Cursor system fixture: a giant arrow travels to card 1 (hover fill), on to card 2 (card 1 reverts, card 2 fills),
 // pauses 150 ms and presses; card 2 dips to 0.96 with the press; each card's rows wipe in left -> right via clip.w.
 // Spec timing: move 400–600 ms (500), pause 150 ms before press, press 80 ms, fill 130 ms, rows 300 ms / 40 ms stagger.
-import { applyEdits, group, hoverFillCard, sec, type NodeIn, type TrackIn } from "../src/index";
+import { applyEdits, cursorClick, giantCursor, group, hoverFillCard, sec, type NodeIn, type TrackIn } from "../src/index";
 
 const TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", surface: "#1A1D26", font: "Inter" };
 
@@ -58,5 +58,31 @@ export function buildS3Demo() {
     canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
     tokens: TOKENS,
     beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Pros and cons", nodes: applyEdits([stack, avatar], [pros, cons]), glows: [] }],
+  };
+}
+
+// S5 demo: a settings panel; the giant cursor clicks "Connect", then "Apply" — hover background, pause, press dip
+export function buildS5Demo() {
+  const button = (id: string, label: string, x: number, fill: string): NodeIn => ({
+    id, type: "rect", w: 120, h: 72, radius: 18, fill, x, y: 90, sizeToContent: { padX: 36, padY: 16 },
+    children: [{ id: `${id}-label`, type: "text", text: label, style: { size: 34, weight: 600 } }],
+  });
+  const panel: NodeIn = {
+    id: "b1-panel", type: "rect", w: 760, h: 380, radius: 32, fill: "tokens.surface",
+    anchor: { x: 0.5, y: 0.45, overrides: { "9:16": { x: 0.5, y: 0.45, scale: 0.72 } } },
+    children: [
+      { id: "b1-panel-title", type: "text", text: "Slack workspace", style: { size: 44, weight: 600 }, y: -90 },
+      button("b1-panel-connect", "Connect", -150, "#2A2F3D"),
+      button("b1-panel-apply", "Apply", 160, "#2A2F3D"),
+    ],
+  };
+  const cursor = giantCursor({ id: "b1-cursor", anchor: { x: 0.8, y: 0.88, overrides: { "9:16": { x: 0.75, y: 0.8, scale: 0.72 } } } });
+  const connect = cursorClick({ cursor: "b1-cursor", target: "b1-panel-connect", at: 0.3, hover: { to: "#3A4152" } });
+  const apply = cursorClick({ cursor: "b1-cursor", target: "b1-panel-apply", at: 1.2, hover: { to: "tokens.accent" } });
+  return {
+    version: 1,
+    canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
+    tokens: TOKENS,
+    beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Connect Slack", nodes: applyEdits([panel, cursor], [connect, apply]), glows: [] }],
   };
 }

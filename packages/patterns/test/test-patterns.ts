@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, hoverFillCard, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -113,6 +113,14 @@ const wipes = s3card.children.slice(1).map((r: any) => r.tracks[0]);
 assert(s3card.tracks[0].mode === "onHover" && s3card.tracks[0].ms === 130 && wipes.map((w: any) => w.at).join() === "0.8,0.84,0.88"
   && wipes.every((w: any) => w.prop === "clip.w" && w.ms === 220) && wipes[2].at + wipes[2].ms / 1000 === 1.1,
   "S3: 130 ms hover fill; rows wipe from arrival (0.8 s), 40 ms apart, all done 300 ms later");
+
+// S5: move 500 ms, pause 150 ms, press 80 ms; target hover background (100 ms) and a 0.96 dip with the press
+const s5 = cursorClick({ cursor: "b1-cur", target: "b1-btn", at: 0.3, hover: { to: "#3A4152" } }).tracks;
+const s5press: any = s5[1].track, s5hover: any = s5[2].track, s5dip: any[] = s5.slice(3).map((t) => t.track);
+assert(s5[0].track.mode === "moveTo" && (s5[0].track as any).ms === 500 && s5press.mode === "press" && s5press.at === 0.95 && s5press.ms === 80,
+  "S5: cursor moves 500 ms, pauses 150 ms, presses for 80 ms at 0.95 s");
+assert(s5[2].target === "b1-btn" && s5hover.mode === "onHover" && s5hover.ms === 100 && s5dip[0].to === 0.96 && s5dip[0].at === 0.95 && s5dip[1].at === 0.99 && s5dip[1].to === 1,
+  "S5: target hover background over 100 ms; dips to 0.96 and back across the press");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

@@ -29,7 +29,7 @@ export function applyEdits(nodes: NodeIn[], results: MacroResult[]): NodeIn[] {
   const walk = (n: NodeIn): NodeIn => {
     let out: any = n;
     for (const e of edits) if (e.target === n.id) { out = e.apply(out); hit.add(e.target); }
-    if (out.type === "group") out = { ...out, children: out.children.map(walk) };
+    if (Array.isArray(out.children)) out = { ...out, children: out.children.map(walk) };   // groups and rects
     return ordered(out);
   };
   const tree = nodes.map(walk);
