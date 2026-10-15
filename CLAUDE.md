@@ -1,9 +1,10 @@
 # engine — script-to-SaaS-video engine (phase 0)
 
 ## What this is
-A renderer for motion-graphics videos driven by a JSON scene graph. The full spec (pattern library, measured
-timings, scene grammar, glow pipeline, architecture, build order) lives in the Claude Doc "Script-to-SaaS-Video
-Engine Spec"; its "Phase 0 brief" tab is the source for everything in this repo.
+A renderer for motion-graphics videos driven by a JSON scene graph. The full spec (pattern library T1–T14 / S1–S16,
+measured timings and easing, scene grammar, glow pipeline, architecture, build order) is in `docs/spec.md` — read
+the relevant section before implementing any pattern; the measured numbers there are the acceptance targets.
+The editable original is the Claude Doc "Script-to-SaaS-Video Engine Spec".
 
 ## Non-negotiable rules
 1. The scene graph (`packages/graph/src/schema.ts`) is the single source of truth. Animation lives in DATA
