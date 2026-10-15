@@ -31,6 +31,9 @@
       ],
       "@engine/runtime/layout": [
         "./packages/runtime/src/layout.ts"
+      ],
+      "@engine/patterns": [
+        "./packages/patterns/src/index.ts"
       ]
     }
   },

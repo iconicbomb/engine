@@ -3,13 +3,14 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
-    "test": "tsx packages/graph/test/validate.ts fixtures/r3-hook.graph.json && tsx packages/runtime/test/test-core.ts",
+    "test": "tsx packages/graph/test/validate.ts fixtures/r3-hook.graph.json && tsx packages/runtime/test/test-core.ts && tsx packages/patterns/test/test-patterns.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "preview": "pnpm --filter @app/render preview",
     "render": "pnpm --filter @app/render render",
     "compare": "python tools/compare_frames.py fixtures/refs/R3.mp4 apps/render/out/r3.mp4 --dur 3.2 --out out/compare_strip.png",
     "render:local": "node tools/render-local.mjs fixtures/r3-hook.graph.json out/r3-local.mp4",
-    "compare:local": "python tools/compare_frames.py fixtures/refs/R3.mp4 out/r3-local.mp4 --dur 3.2 --out out/compare_strip_local.png"
+    "compare:local": "python tools/compare_frames.py fixtures/refs/R3.mp4 out/r3-local.mp4 --dur 3.2 --out out/compare_strip_local.png",
+    "gen:r3": "tsx tools/gen-r3.ts"
   },
   "devDependencies": {
     "@fontsource-variable/inter": "5.1.0",

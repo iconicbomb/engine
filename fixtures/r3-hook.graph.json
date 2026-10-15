@@ -23,7 +23,7 @@
   "dials": {
     "luminance": 0.1,
     "glow": 0.6,
-    "kineticText": 1.0,
+    "kineticText": 1,
     "playfulness": 0.3,
     "tempo": 0.7,
     "density": 0.1
@@ -55,7 +55,7 @@
             {
               "mode": "tween",
               "prop": "scale",
-              "at": 2.0,
+              "at": 2,
               "ms": 350,
               "from": 1,
               "to": 0.45,
@@ -95,7 +95,7 @@
                   "prop": "glyph.opacity",
                   "at": 0.33,
                   "ms": 1071,
-                  "cps": 8.0,
+                  "cps": 8,
                   "scramble": {
                     "frames": 1,
                     "symbols": "#%*@!<"
@@ -114,7 +114,7 @@
                   },
                   "bloom": {
                     "radius": 60,
-                    "intensity": 1.0
+                    "intensity": 1
                   },
                   "ramp": 8.5,
                   "wordPauseMs": 0
@@ -188,7 +188,7 @@
               "at": 2.4,
               "ms": 260,
               "from": 1.7,
-              "to": 1.0,
+              "to": 1,
               "ease": "emphasis"
             },
             {
@@ -216,7 +216,7 @@
             {
               "mode": "tween",
               "prop": "intensity",
-              "at": 1.0,
+              "at": 1,
               "ms": 450,
               "from": 0,
               "to": 0.39,

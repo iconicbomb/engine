@@ -61,6 +61,18 @@ importers:
         specifier: 3.23.8
         version: 3.23.8
 
+  packages/patterns:
+    dependencies:
+      '@engine/graph':
+        specifier: workspace:*
+        version: link:../graph
+      '@engine/runtime':
+        specifier: workspace:*
+        version: link:../runtime
+      zod:
+        specifier: 3.23.8
+        version: 3.23.8
+
   packages/runtime:
     dependencies:
       '@engine/graph':
