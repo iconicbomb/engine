@@ -16,3 +16,4 @@ export { trackingContraction, type TrackingContractionParams } from "./t11-track
 export { hoverFillCard, type HoverFillCardParams } from "./s3-hover-fill-card";
 export { cursorClick, giantCursor, type CursorClickParams } from "./s5-cursor-click";
 export { jumpCuts, pressTimes, type Shot } from "./s4-jump-cut";
+export { tickerList, type TickerListParams } from "./s6-ticker-list";

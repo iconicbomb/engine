@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.6,
+      "script": "Every tool you use",
+      "nodes": [
+        {
+          "id": "b1-ticker",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.8
+              }
+            }
+          },
+          "clip": {
+            "x": -600,
+            "y": -192,
+            "w": 1200,
+            "h": 384
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-ticker-list",
+              "type": "group",
+              "y": -128,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 330,
+                  "from": -128,
+                  "to": -256,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 1.23,
+                  "ms": 330,
+                  "from": -256,
+                  "to": -384,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 2.06,
+                  "ms": 330,
+                  "from": -384,
+                  "to": -512,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-ticker-item-1",
+                  "type": "text",
+                  "text": "Salesforce",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.4,
+                      "ms": 330,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-ticker-item-2",
+                  "type": "text",
+                  "text": "HubSpot",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "y": 128,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.23,
+                      "ms": 330,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-ticker-item-3",
+                  "type": "text",
+                  "text": "Notion",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "y": 256,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 2.06,
+                      "ms": 330,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-ticker-item-4",
+                  "type": "text",
+                  "text": "Linear",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "y": 384,
+                  "tracks": []
+                },
+                {
+                  "id": "b1-ticker-item-5",
+                  "type": "text",
+                  "text": "Stripe",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "y": 512,
+                  "tracks": []
+                },
+                {
+                  "id": "b1-ticker-item-6",
+                  "type": "text",
+                  "text": "Zendesk",
+                  "style": {
+                    "size": 80,
+                    "weight": 600
+                  },
+                  "y": 640,
+                  "tracks": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

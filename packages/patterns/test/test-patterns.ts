@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pressTimes, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pressTimes, tickerList, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -127,6 +127,16 @@ const s4 = jumpCuts({ shots: [{ at: 0, target: "b1-a", size: "wide" }, { at: 0.9
 const clicks = [cursorClick({ cursor: "b1-cur", target: "b1-a", at: 1.2 }), cursorClick({ cursor: "b1-cur", target: "b1-b", at: 0.3 })];
 assert(s4.camera.length === 2 && s4.camera[0].mode === "frame" && s4.camera[0].ms === 0 && s4.camera[1].ms === 300 && s4.camera[1].size === "close"
   && pressTimes(clicks, "b1-cur").join() === "0.95,1.85", "S4: frame tracks (hard cut default, one 300 ms push); press times sorted for cut on action");
+
+// S6: a clipped 3-slot window; the list steps up one slot per step (330 ms), the exiting item fading
+const s6: any = tickerList({ id: "b1-t", items: ["a", "b", "c", "d", "e"], style: { size: 50 }, at: 0.4, steps: 2 }).nodes[0];
+const s6list = s6.children[0], ih = 80;
+assert(s6.clip.h === 3 * ih && s6list.tracks.length === 2 && s6list.tracks[0].from === -ih && s6list.tracks[0].to === -2 * ih
+  && s6list.tracks[1].at === 1.23 && s6list.tracks.every((t: any) => t.ms === 330),
+  "S6: 3-slot clip window; list steps up one 80 px slot per step, 330 ms each, 500 ms hold between");
+assert(s6list.children[0].tracks[0].to === 0 && s6list.children[1].tracks[0].at === 1.23 && s6list.children[2].tracks.length === 0
+  && throws(() => tickerList({ id: "b1-t", items: ["a"], style: { size: 50 }, at: 0 })),
+  "S6: item n fades as it leaves on step n; too few items rejected");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

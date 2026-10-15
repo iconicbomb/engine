@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -78,4 +78,13 @@ export function buildT10Demo() {
 export function buildT11Demo() {
   const label = trackingContraction({ id: "b1-label", text: "INTEGRATIONS", style: { size: 110, weight: 600 }, at: 0.3 });
   return demo("Integrations", 1.6, label.nodes, [label]);
+}
+
+export function buildS6Demo() {
+  const ticker = tickerList({
+    id: "b1-ticker", items: ["Salesforce", "HubSpot", "Notion", "Linear", "Stripe", "Zendesk"],
+    style: { size: 80, weight: 600 }, at: 0.4, steps: 3, visible: 3,
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
+  });
+  return demo("Every tool you use", 2.6, ticker.nodes, [ticker]);
 }
