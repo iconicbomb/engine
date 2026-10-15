@@ -2,7 +2,7 @@
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
 import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
-import { trackProgress, typewriterGlyphs, spring, lerpColor, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
+import { trackProgress, typewriterGlyphs, spring, lerpColor, resolveTracks, tweenValue, pressFactor, cursorPosition, hoverIntervals, hoverAmount, cameraState, frameView } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState, CameraState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
 import { EASES } from "./runtime-core";
@@ -223,12 +223,9 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   // ---------- properties ----------
   // Several tracks may animate one property: the latest started one wins; before any has started, the earliest
   // one's `from` holds (so a node can sit at one value and later pulse from another).
+  // (velocity carry across a handoff: see resolveTracks in runtime-core)
   function resolve(key: string, base: number, tl: number, cands: { tr: TweenTrack; start: number }[]): number {
-    const own = cands.filter((c) => c.tr.prop === key);
-    if (!own.length) return base;
-    const started = own.filter((c) => c.start <= tl);
-    const pick = started.length ? started.reduce((x, y) => (y.start >= x.start ? y : x)) : own.reduce((x, y) => (y.start < x.start ? y : x));
-    return tweenValue(pick.tr, tl, 0, base, pick.start);
+    return resolveTracks(key, base, tl, cands);
   }
   function numericProps(node: Node, tl: number): NumericProps {
     const cands = (node.tracks as Track[])
@@ -237,14 +234,6 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const base: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: node.x, y: node.y };
     for (const k of NUMERIC) base[k as keyof NumericProps] = resolve(k as keyof NumericProps, base[k as keyof NumericProps], tl, cands);
     return base;
-  }
-  // `start` overrides the track's own start (stagger / reveal offsets); progress is measured from it
-  function tweenValue(tr: TweenTrack, tl: number, index: number, base: number, start?: number): number {
-    const from = typeof tr.from === "number" ? tr.from : base;
-    const to = typeof tr.to === "number" ? tr.to : base;
-    const prog = start === undefined ? trackProgress(tr, tl, index) : trackProgress({ ...tr, at: start, staggerMs: 0 }, tl, 0);
-    if (prog === null) return from;
-    return from + (to - from) * prog;
   }
   // per-glyph offsets: staggered tween tracks by glyph index; relativeTo "reveal" tracks start when the glyph is typed
   function glyphProps(node: TextNode, tl: number, index: number, revealAt: number): NumericProps {

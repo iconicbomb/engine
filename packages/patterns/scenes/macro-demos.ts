@@ -128,3 +128,21 @@ export function buildLayoutDemo() {
   ]);
   return demo("Works with your stack", 2.4, [root], []);
 }
+
+// Velocity-preserving retargeting: three dots fly right (emphasis), each retargeted mid-flight at 0.8 s back to the
+// left — a tween that inherits the velocity (80 ms blend), a spring that takes it as initial velocity, and a tween
+// with carryVelocity: false (visible kink) for comparison.
+export function buildRetargetDemo() {
+  const dot = (n: number, y: number, label: string, retarget: object): NodeIn => ({
+    id: `b1-dots-${n}`, type: "group", y, children: [
+      { id: `b1-dots-${n}-label`, type: "text", text: label, style: { size: 30, weight: 600, align: "left", color: "#8A90A0" }, x: -780 },
+      { id: `b1-dots-${n}-dot`, type: "rect", w: 48, h: 48, radius: 24, fill: "tokens.accent", x: -560,
+        tracks: [{ mode: "tween", prop: "x", at: 0.2, ms: 1200, from: -560, to: 640, ease: "emphasis" }, { mode: "tween", prop: "x", at: 0.8, ...retarget }] },
+    ] } as NodeIn);
+  const root = group({ id: "b1-dots", anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.36 } } } }, [
+    dot(1, -160, "carry", { ms: 500, to: -300, ease: "settle" }),
+    dot(2, 0, "spring", { ms: 500, to: -300, ease: "bounce" }),
+    dot(3, 160, "no carry", { ms: 500, to: -300, ease: "settle", carryVelocity: false }),
+  ]);
+  return demo("Retargeting keeps momentum", 2.0, [root], []);
+}

@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2,
+      "script": "Retargeting keeps momentum",
+      "nodes": [
+        {
+          "id": "b1-dots",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.36
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-dots-1",
+              "type": "group",
+              "y": -160,
+              "children": [
+                {
+                  "id": "b1-dots-1-label",
+                  "type": "text",
+                  "text": "carry",
+                  "style": {
+                    "size": 30,
+                    "weight": 600,
+                    "align": "left",
+                    "color": "#8A90A0"
+                  },
+                  "x": -780
+                },
+                {
+                  "id": "b1-dots-1-dot",
+                  "type": "rect",
+                  "w": 48,
+                  "h": 48,
+                  "radius": 24,
+                  "fill": "tokens.accent",
+                  "x": -560,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.2,
+                      "ms": 1200,
+                      "from": -560,
+                      "to": 640,
+                      "ease": "emphasis"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.8,
+                      "ms": 500,
+                      "to": -300,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-dots-2",
+              "type": "group",
+              "y": 0,
+              "children": [
+                {
+                  "id": "b1-dots-2-label",
+                  "type": "text",
+                  "text": "spring",
+                  "style": {
+                    "size": 30,
+                    "weight": 600,
+                    "align": "left",
+                    "color": "#8A90A0"
+                  },
+                  "x": -780
+                },
+                {
+                  "id": "b1-dots-2-dot",
+                  "type": "rect",
+                  "w": 48,
+                  "h": 48,
+                  "radius": 24,
+                  "fill": "tokens.accent",
+                  "x": -560,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.2,
+                      "ms": 1200,
+                      "from": -560,
+                      "to": 640,
+                      "ease": "emphasis"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.8,
+                      "ms": 500,
+                      "to": -300,
+                      "ease": "bounce"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-dots-3",
+              "type": "group",
+              "y": 160,
+              "children": [
+                {
+                  "id": "b1-dots-3-label",
+                  "type": "text",
+                  "text": "no carry",
+                  "style": {
+                    "size": 30,
+                    "weight": 600,
+                    "align": "left",
+                    "color": "#8A90A0"
+                  },
+                  "x": -780
+                },
+                {
+                  "id": "b1-dots-3-dot",
+                  "type": "rect",
+                  "w": 48,
+                  "h": 48,
+                  "radius": 24,
+                  "fill": "tokens.accent",
+                  "x": -560,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.2,
+                      "ms": 1200,
+                      "from": -560,
+                      "to": 640,
+                      "ease": "emphasis"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "x",
+                      "at": 0.8,
+                      "ms": 500,
+                      "to": -300,
+                      "ease": "settle",
+                      "carryVelocity": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

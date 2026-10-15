@@ -31,6 +31,9 @@ export const TweenTrack = TrackBase.extend({
   staggerMs: z.number().min(0).default(0), // per-child / per-glyph offset
   // "reveal": per-glyph, each glyph's tween starts `at` seconds after the node's typewriter reveals it (T4 word pop)
   relativeTo: z.enum(["beat", "reveal"]).default("beat"),
+  // starting while an earlier track on the same prop is still moving: inherit its velocity (springs as initial
+  // velocity from the current value; tweens blend from the old motion over 80 ms). false = jump onto this track.
+  carryVelocity: z.boolean().default(true),
 });
 
 // Typewriter: reveals glyphs in order; everything about "freshness" lives here.

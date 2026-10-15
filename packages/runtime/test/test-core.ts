@@ -1,4 +1,4 @@
-import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition, frameView, clampView, cameraState } from "../src/runtime-core";
+import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier, lerpColor, pressFactor, hoverIntervals, hoverAmount, cursorPosition, frameView, clampView, cameraState, resolveTracks, tweenValue } from "../src/runtime-core";
 import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount, Track, OnHoverTrack, FrameTrack } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
@@ -146,3 +146,25 @@ void (async () => {
   const t0 = at(tr, 0);
   assert(t0.get("b1-r1")!.top === 550 && t0.get("b1-r2")!.left === 885 && t0.get("b1-r2")!.top === 510, "layout: a child's track applies after layout and doesn't move its neighbours");
 })();
+// velocity-preserving retargeting (pure): a track starting mid-motion inherits the velocity; from rest it is exact
+{
+  const tw = (o: object) => ({ tr: Track.parse({ mode: "tween", prop: "x", ...o }) as any, start: (o as any).at as number });
+  const A = tw({ at: 0, ms: 1000, from: 0, to: 1000, ease: "linear" });             // 1000 px/s
+  const B = tw({ at: 0.5, ms: 400, to: -200, ease: "settle" });                       // retarget mid-motion, from = current
+  const f = (t: number, cs = [A, B]) => resolveTracks("x", 0, t, cs);
+  const h = 1e-4, v0 = (f(0.5) - f(0.5 - h)) / h, v1 = (f(0.5 + h) - f(0.5)) / h;
+  const plainB = (t: number) => resolveTracks("x", 0, t, [A, { ...B, tr: { ...B.tr, carryVelocity: false } }]);
+  assert(Math.abs(f(0.5) - 500) < 1e-9 && Math.abs(v0 - 1000) < 1e-3 && Math.abs(v1 - 1000) < 5 && f(0.58) === plainB(0.58) && f(0.7) === plainB(0.7),
+    `retarget tween: continuous at the handoff (x 500, velocity ${v0.toFixed(0)} -> ${v1.toFixed(0)} px/s), on its own curve from +80 ms`);
+  assert(Math.abs(plainB(0.5) - 500) < 1e-9 && Math.abs((plainB(0.5 + h) - plainB(0.5)) / h) > 1e4,
+    "carryVelocity false: starts at the current value but with its own (very different) velocity");
+  const S = tw({ at: 0.5, ms: 400, to: -200, ease: "bounce" });
+  const g = (t: number) => resolveTracks("x", 0, t, [A, S]);
+  const sv = (g(0.5 + h) - g(0.5)) / h;
+  assert(Math.abs(g(0.5) - 500) < 1e-9 && Math.abs(sv - 1000) < 60 && Math.abs(g(3) + 200) < 1e-3, `retarget spring: starts at 500 moving ${sv.toFixed(0)} px/s, settles at -200`);
+  const R = tw({ at: 1.2, ms: 400, from: 1000, to: 0, ease: "settle" });               // A ended at 1.0: from rest
+  const plainR = (t: number) => resolveTracks("x", 0, t, [A, { ...R, tr: { ...R.tr, carryVelocity: false } }]);
+  assert([1.2, 1.25, 1.3, 1.5].every((t) => resolveTracks("x", 0, t, [A, R]) === plainR(t)), "from rest: exactly the plain track value");
+  const E = tw({ at: 1.0, ms: 400, from: 1000, to: 0, ease: "settle" });               // starts exactly as A ends
+  assert([1.0, 1.05, 1.2].every((t) => resolveTracks("x", 0, t, [A, E]) === tweenValue(E.tr, t, 0, 0, 1.0)), "handoff exactly at the previous end counts as rest");
+}

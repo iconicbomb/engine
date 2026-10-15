@@ -57,6 +57,65 @@ export function trackProgress(track: Track, t: number, index = 0): number | null
 
 export function lerp(a: number, b: number, p: number) { return a + (b - a) * p; }
 
+// ---------- property resolution ----------
+type Tween = Extract<Track, { mode: "tween" }>;
+export type TrackCand = { tr: Tween; start: number };
+// a tween's value at t; `start` overrides its own start (stagger / reveal offsets) and progress is measured from it
+export function tweenValue(tr: Tween, tl: number, index: number, base: number, start?: number): number {
+  const from = typeof tr.from === "number" ? tr.from : base;
+  const to = typeof tr.to === "number" ? tr.to : base;
+  const prog = start === undefined ? trackProgress(tr, tl, index) : trackProgress({ ...tr, at: start, staggerMs: 0 }, tl, 0);
+  if (prog === null) return from;
+  return from + (to - from) * prog;
+}
+const CARRY_BLEND_S = 0.08;   // tweens blend from the inherited motion into their own curve over 80 ms
+const DERIV_H = 1e-3;         // backward difference for the handoff velocity
+const smoothstep = (x: number) => (x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x));
+// Several tracks may animate one property: the latest started one wins; before any has started, the earliest one's
+// `from` holds. Velocity-preserving retargeting: if the winning track starts while an earlier track on the property
+// is still moving, it inherits that motion's velocity — a spring (`bounce`) starts from the current value with it as
+// initial velocity; a tween blends from the extrapolated old motion into its own curve over 80 ms (smoothstep, so
+// position and velocity stay continuous). From rest (the earlier track finished or never moved) the value is exactly
+// the plain track value. `carryVelocity: false` opts a track out.
+export function resolveTracks(key: string, base: number, tl: number, cands: TrackCand[]): number {
+  const own = cands.filter((c) => c.tr.prop === key);
+  if (!own.length) return base;
+  const started = own.filter((c) => c.start <= tl);
+  const pick = started.length ? started.reduce((x, y) => (y.start >= x.start ? y : x)) : own.reduce((x, y) => (y.start < x.start ? y : x));
+  const t0 = pick.start;
+  const prev = started.length ? own.filter((c) => c !== pick && c.start < t0) : [];
+  // an omitted `from` means the current value: with earlier tracks, the value they hand over at t0
+  const x0 = prev.length ? resolveTracks(key, base, t0, prev) : base;
+  const plain = tweenValue(pick.tr, tl, 0, typeof pick.tr.from === "number" ? base : x0, pick.start);
+  if (!prev.length || pick.tr.carryVelocity === false) return plain;
+  const v = handoffVelocity(key, base, t0, prev);
+  if (v === 0) return plain;
+  const dt = tl - t0;
+  if (pick.tr.ease === "bounce") {
+    const to = typeof pick.tr.to === "number" ? pick.tr.to : base;
+    const sp = pick.tr.spring ?? { stiffness: 700, damping: 18, mass: 1 };
+    return to + springOffset(dt, x0 - to, v, sp.stiffness, sp.damping, sp.mass);
+  }
+  if (dt >= CARRY_BLEND_S) return plain;
+  const w = smoothstep(dt / CARRY_BLEND_S);
+  return (x0 + v * dt) * (1 - w) + plain * w;
+}
+// velocity of the earlier tracks' motion at t0; exactly 0 when the track winning at t0 has finished (from rest)
+function handoffVelocity(key: string, base: number, t0: number, prev: TrackCand[]): number {
+  const win = prev.reduce((x, y) => (y.start >= x.start ? y : x));
+  // (1 µs tolerance: timings are authored to the µs, and 1.85 + 0.04 = 1.8900000000000001 must count as "ended at 1.89")
+  if (win.tr.ease !== "bounce" && t0 >= win.start + win.tr.ms / 1000 - 1e-6) return 0;
+  const v = (resolveTracks(key, base, t0, prev) - resolveTracks(key, base, t0 - DERIV_H, prev)) / DERIV_H;
+  return Math.abs(v) < 1e-9 ? 0 : v;
+}
+// displacement from rest of a damped spring with initial displacement d0 and velocity v0, after t seconds
+export function springOffset(t: number, d0: number, v0: number, stiffness = 700, damping = 18, mass = 1): number {
+  const w0 = Math.sqrt(stiffness / mass), zeta = damping / (2 * Math.sqrt(stiffness * mass));
+  if (zeta >= 1) return (d0 + (v0 + w0 * d0) * t) * Math.exp(-w0 * t);
+  const wd = w0 * Math.sqrt(1 - zeta * zeta);
+  return Math.exp(-zeta * w0 * t) * (d0 * Math.cos(wd * t) + ((v0 + zeta * w0 * d0) / wd) * Math.sin(wd * t));
+}
+
 // ---------- colour (fill tweens, onHover fill) ----------
 // sRGB lerp of #RRGGBB / #RRGGBBAA, returned as #RRGGBBAA. Perceptual (OKLab) interpolation is a later improvement.
 export function lerpColor(a: string, b: string, p: number): string {

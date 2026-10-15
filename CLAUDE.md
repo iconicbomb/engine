@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, S3–S6, S9 in (phase 2); `pnpm test` 94 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, S3–S6, S9 in (phase 2); `pnpm test` 100 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -98,7 +98,7 @@ group, centre-out pop cascade within 600 ms, rows scroll linearly at 40 px/s in 
 to cover canvas + travel — repeat count and cascade timing use an estimated label width, ~0.58 em/char).
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
-A row/column layout (done) -> velocity-preserving retargeting -> B path + wire nodes -> S8 -> C beat transitions ->
+A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes -> S8 -> C beat transitions ->
 S13, S14 -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
@@ -116,6 +116,23 @@ shape could reasonably go two ways, or the spec contradicts itself.
   origin. With `wrap`, a line breaks when the next child would pass `maxWidth` (main-axis length, also for columns).
 - One pure `layoutSlots` feeds the draw pass, the measure pass and sizeToContent. Fixture: layout-row-column.
 - S1 uses `layout: column` for its card stack (byte-identical to the explicit y offsets it replaced).
+
+## Velocity-preserving retargeting
+No fuller written spec existed in the repo; implemented from Niloy's summary ("same-prop tracks inherit instantaneous
+velocity, springs as initial velocity, tweens blend over 80 ms, carryVelocity:false opt-out, from-rest tracks
+byte-identical") — review this reading:
+- Applies wherever tween tracks are resolved (`resolveTracks` in runtime-core: node props, per-glyph props, clip,
+  tracking, camera zoom/x/y). Not to fill colour tweens.
+- When the winning track starts at t0 while the track that was winning just before is still moving, its velocity
+  at t0 (backward difference, 1 ms) is inherited. Springs (`bounce`) start from the current value with it as initial
+  velocity (closed-form damped spring with v0, `springOffset`). Tweens blend from the extrapolated old motion
+  (x0 + v·dt) into their own curve over 80 ms with a smoothstep weight, so position and velocity stay continuous.
+- From rest — the earlier track has finished (within 1 µs: authored timings are µs-rounded, and float sums like
+  1.85 + 0.04 overshoot) or never moved — the value is exactly the plain track value: every pre-existing fixture is
+  byte-identical. `carryVelocity: false` opts a track out.
+- An omitted `from` now means the current value as documented (the value handed over at t0) when earlier tracks
+  exist; previously the runtime used the node's base value. No existing fixture omits `from`.
+- Fixture retarget-velocity: carry / spring / opt-out dots retargeted mid-flight.
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base
