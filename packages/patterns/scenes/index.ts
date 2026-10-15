@@ -1,6 +1,6 @@
 // Every generated fixture: fixtures/<name>.graph.json is exactly SCENES[name]() serialised.
 import { buildR3Hook } from "./r3-hook";
-import { buildCursorHover } from "./cursor-hover";
+import { buildCursorHover, buildS3Demo } from "./cursor-hover";
 import { buildS15Demo, buildS1Demo, buildS2Demo, buildT10Demo, buildT11Demo, buildT13Demo, buildT2Demo, buildT4Demo, buildT6Demo } from "./macro-demos";
 
 export const SCENES: Record<string, () => unknown> = {
@@ -8,6 +8,7 @@ export const SCENES: Record<string, () => unknown> = {
   "cursor-hover": buildCursorHover,
   "s1-card-rise": buildS1Demo,
   "s2-ripple-pill": buildS2Demo,
+  "s3-hover-fill-card": buildS3Demo,
   "s15-ambient-glow": buildS15Demo,
   "t2-tail-typewriter": buildT2Demo,
   "t4-word-append": buildT4Demo,

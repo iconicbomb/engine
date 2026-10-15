@@ -13,3 +13,4 @@ export { cardRise, type CardRiseParams, type CardSpec } from "./s1-card-rise";
 export { ripplePill, type RipplePillParams } from "./s2-ripple-pill";
 export { echoTrail, type EchoTrailParams } from "./t10-echo-trail";
 export { trackingContraction, type TrackingContractionParams } from "./t11-tracking-contraction";
+export { hoverFillCard, type HoverFillCardParams } from "./s3-hover-fill-card";

@@ -1,0 +1,299 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "surface": "#1A1D26",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.6,
+      "script": "Pros and cons",
+      "nodes": [
+        {
+          "id": "b1-cards",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.45,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.45,
+                "scale": 0.52
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-pros",
+              "type": "rect",
+              "w": 520,
+              "h": 360,
+              "radius": 28,
+              "fill": "tokens.surface",
+              "x": -290,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-avatar",
+                  "prop": "fill",
+                  "to": "tokens.accent",
+                  "ms": 130,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-pros-title",
+                  "type": "text",
+                  "text": "Pros",
+                  "style": {
+                    "size": 44,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": -106
+                },
+                {
+                  "id": "b1-pros-row-1",
+                  "type": "text",
+                  "text": "Ships in a day",
+                  "style": {
+                    "size": 30,
+                    "weight": 500,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": -21.400000000000006,
+                  "clip": {
+                    "x": 0,
+                    "y": -30,
+                    "w": 0,
+                    "h": 60
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.8,
+                      "ms": 220,
+                      "from": 0,
+                      "to": 416,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pros-row-2",
+                  "type": "text",
+                  "text": "No-code editor",
+                  "style": {
+                    "size": 30,
+                    "weight": 500,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": 23.599999999999994,
+                  "clip": {
+                    "x": 0,
+                    "y": -30,
+                    "w": 0,
+                    "h": 60
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.84,
+                      "ms": 220,
+                      "from": 0,
+                      "to": 416,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-pros-row-3",
+                  "type": "text",
+                  "text": "Native exports",
+                  "style": {
+                    "size": 30,
+                    "weight": 500,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": 68.6,
+                  "clip": {
+                    "x": 0,
+                    "y": -30,
+                    "w": 0,
+                    "h": 60
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 0.88,
+                      "ms": 220,
+                      "from": 0,
+                      "to": 416,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-cons",
+              "type": "rect",
+              "w": 520,
+              "h": 360,
+              "radius": 28,
+              "fill": "tokens.surface",
+              "x": 290,
+              "tracks": [
+                {
+                  "mode": "onHover",
+                  "cursor": "b1-avatar",
+                  "prop": "fill",
+                  "to": "#E5484D",
+                  "ms": 130,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-cons-title",
+                  "type": "text",
+                  "text": "Cons",
+                  "style": {
+                    "size": 44,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": -106
+                },
+                {
+                  "id": "b1-cons-row-1",
+                  "type": "text",
+                  "text": "Fewer templates",
+                  "style": {
+                    "size": 30,
+                    "weight": 500,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": -21.400000000000006,
+                  "clip": {
+                    "x": 0,
+                    "y": -30,
+                    "w": 0,
+                    "h": 60
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 1.8,
+                      "ms": 260,
+                      "from": 0,
+                      "to": 416,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-cons-row-2",
+                  "type": "text",
+                  "text": "Beta API",
+                  "style": {
+                    "size": 30,
+                    "weight": 500,
+                    "align": "left"
+                  },
+                  "x": -208,
+                  "y": 23.599999999999994,
+                  "clip": {
+                    "x": 0,
+                    "y": -30,
+                    "w": 0,
+                    "h": 60
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "clip.w",
+                      "at": 1.84,
+                      "ms": 260,
+                      "from": 0,
+                      "to": 416,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "b1-avatar",
+          "type": "cursor",
+          "style": "avatar",
+          "anchor": {
+            "x": 0.85,
+            "y": 0.88,
+            "overrides": {
+              "9:16": {
+                "x": 0.8,
+                "y": 0.85,
+                "scale": 0.6
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "moveTo",
+              "target": "b1-pros",
+              "anchor": "bottom",
+              "offset": {
+                "x": 114,
+                "y": -43
+              },
+              "at": 0.3,
+              "ms": 500,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "moveTo",
+              "target": "b1-cons",
+              "anchor": "bottom",
+              "offset": {
+                "x": 114,
+                "y": -43
+              },
+              "at": 1.3,
+              "ms": 500,
+              "ease": "emphasis"
+            }
+          ],
+          "size": 1.6
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

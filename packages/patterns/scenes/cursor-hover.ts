@@ -1,7 +1,7 @@
 // Cursor system fixture: a giant arrow travels to card 1 (hover fill), on to card 2 (card 1 reverts, card 2 fills),
 // pauses 150 ms and presses; card 2 dips to 0.96 with the press; each card's rows wipe in left -> right via clip.w.
 // Spec timing: move 400–600 ms (500), pause 150 ms before press, press 80 ms, fill 130 ms, rows 300 ms / 40 ms stagger.
-import { applyEdits, group, sec, type NodeIn, type TrackIn } from "../src/index";
+import { applyEdits, group, hoverFillCard, sec, type NodeIn, type TrackIn } from "../src/index";
 
 const TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", surface: "#1A1D26", font: "Inter" };
 
@@ -40,5 +40,23 @@ export function buildCursorHover() {
     canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
     tokens: TOKENS,
     beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Pick a plan", nodes: applyEdits([stack, cursor], []), glows: [] }],
+  };
+}
+
+// S3 demo: an avatar cursor visits a Pros card, then a Cons card; each fills on hover and wipes its rows in
+export function buildS3Demo() {
+  const pros = hoverFillCard({ id: "b1-pros", cursor: "b1-avatar", enterAt: 0.3, w: 520, h: 360, x: -290,
+    title: "Pros", rows: ["Ships in a day", "No-code editor", "Native exports"] });
+  const cons = hoverFillCard({ id: "b1-cons", cursor: "b1-avatar", enterAt: 1.3, w: 520, h: 360, x: 290,
+    title: "Cons", rows: ["Fewer templates", "Beta API"], hoverFill: "#E5484D" });
+  const stack = group({ id: "b1-cards", anchor: { x: 0.5, y: 0.45, overrides: { "9:16": { x: 0.5, y: 0.45, scale: 0.52 } } } },
+    [...pros.nodes, ...cons.nodes]);
+  const avatar: NodeIn = { id: "b1-avatar", type: "cursor", style: "avatar", size: 1.6,
+    anchor: { x: 0.85, y: 0.88, overrides: { "9:16": { x: 0.8, y: 0.85, scale: 0.6 } } } };   // match the cards' portrait scale
+  return {
+    version: 1,
+    canvas: { aspect: "16:9", refHeight: 1080, fps: 30 },
+    tokens: TOKENS,
+    beats: [{ id: "b1", type: "feature", start: 0, duration: 2.6, script: "Pros and cons", nodes: applyEdits([stack, avatar], [pros, cons]), glows: [] }],
   };
 }

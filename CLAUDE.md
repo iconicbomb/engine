@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system in (phase 2 groundwork); `pnpm test` 67 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system + S3 in (phase 2); `pnpm test` 70 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -87,7 +87,9 @@ Not modelled yet: T13's mark split/widen and R7's wordmark wipe; S15's god-rays,
 fit (text + mark) — T13 and S1/S2 demos scale down at 9:16 via anchor overrides instead; S1's 3D perspective
 (phase-6 plane layer); S2's pill *width* spring (it slides instead). S2's pulse ring wraps an invisible copy of the
 counter, since a rect can only size to its own children.
-NEXT (phase 2 per the spec): S3 and S5 as macros on the cursor system below, then S4, S6, S8, S9, S13, S14, S16;
+DONE (phase 2): S3 hover-fill card (emits the cursor's moveTo onto the card; 130 ms onHover fill; rows wipe in via
+clip.w from the arrival, 40 ms apart, done in 300 ms; fixture s3-hover-fill-card with an avatar cursor).
+NEXT (phase 2 per the spec): S4, S5, S6, S8, S9, S13, S14, S16;
 jump-cut coverage.
 
 ## Cursor system (designed with Niloy, 2026-10-15)
@@ -105,6 +107,9 @@ jump-cut coverage.
 - `clip { x, y, w, h }` on any node, local space after its transform, animatable as clip.x/y/w/h (S3 row wipe via
   clip.w; S13 curtain wipe later).
 - Fixture: `cursor-hover` (two cards, hover fill in/out, press dip, clip-wipe rows) at both aspects.
+- The avatar placeholder is neutral grey (#C9CED6) with a white ring so it reads on brand-filled cards.
+- moveTo offsets are canvas px and don't scale with the target's group; S3 keeps them small (bottom anchor) so the
+  cursor stays on the card at 9:16. Scale a cursor for portrait with its anchor override `scale`.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 

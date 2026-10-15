@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, hoverFillCard, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -103,6 +103,16 @@ assert(t10.tracks[0].to === 0.6 && t10.tracks[1].to === -100 && ech[0].tracks[2]
 const t11: any = trackingContraction({ id: "b1-l", text: "LABEL", style: { size: 100, tracking: 0.02 }, at: 0.3 }).nodes[0];
 assert(t11.tracks[0].prop === "tracking" && t11.tracks[0].from === 0.6 && t11.tracks[0].to === 0.02 && t11.tracks[0].ms === 500 && t11.tracks[0].ease === "settle"
   && t11.tracks[1].prop === "opacity", "T11: tracking +0.6 em -> style tracking over 500 ms ease-out, with a fade-in");
+
+// S3: the macro moves the cursor onto the card; fill on hover (130 ms); rows wipe from arrival, 40 ms apart, done in 300 ms
+const s3 = hoverFillCard({ id: "b1-c", cursor: "b1-cur", enterAt: 0.3, w: 500, h: 300, title: "Pros", rows: ["a", "b", "c"] });
+const s3card: any = s3.nodes[0], mv: any = s3.tracks[0];
+assert(mv.target === "b1-cur" && mv.track.mode === "moveTo" && mv.track.target === "b1-c" && mv.track.at === 0.3 && mv.track.ms === 500,
+  "S3: emits the cursor's moveTo onto the card (500 ms)");
+const wipes = s3card.children.slice(1).map((r: any) => r.tracks[0]);
+assert(s3card.tracks[0].mode === "onHover" && s3card.tracks[0].ms === 130 && wipes.map((w: any) => w.at).join() === "0.8,0.84,0.88"
+  && wipes.every((w: any) => w.prop === "clip.w" && w.ms === 220) && wipes[2].at + wipes[2].ms / 1000 === 1.1,
+  "S3: 130 ms hover fill; rows wipe from arrival (0.8 s), 40 ms apart, all done 300 ms later");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

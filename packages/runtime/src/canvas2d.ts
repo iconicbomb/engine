@@ -480,9 +480,12 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.globalAlpha *= clamp01(props.opacity);
     ctx.lineJoin = "round";
     if (node.style === "avatar") {
+      // photo placeholder: neutral so it reads on any fill it hovers (brand-filled cards included)
       ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2);
-      ctx.fillStyle = color("tokens.accent", env.tokens); ctx.fill();
+      ctx.fillStyle = "#C9CED6"; ctx.fill();
       ctx.lineWidth = 3; ctx.strokeStyle = "#FFFFFF"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(0, 0, 19.5, 0, Math.PI * 2);
+      ctx.lineWidth = 1; ctx.strokeStyle = "rgba(0,0,0,0.35)"; ctx.stroke();
     } else {
       ctx.fillStyle = "#FFFFFF"; ctx.strokeStyle = "#111111"; ctx.lineWidth = 1.5;
       const pth = path2d(node.style === "hand" ? HAND_PATH : ARROW_PATH);
