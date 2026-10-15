@@ -9,3 +9,5 @@ export { tailTypewriter, type TailTypewriterParams } from "./t2-tail-typewriter"
 export { wordAppend, type WordAppendParams } from "./t4-word-append";
 export { colourSweep, type ColourSweepParams } from "./t6-colour-sweep";
 export { logoTypewriter, type LogoTypewriterParams } from "./t13-logo-typewriter";
+export { cardRise, type CardRiseParams, type CardSpec } from "./s1-card-rise";
+export { ripplePill, type RipplePillParams } from "./s2-ripple-pill";

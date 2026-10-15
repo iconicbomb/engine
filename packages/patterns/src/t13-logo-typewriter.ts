@@ -2,7 +2,7 @@
 // by un-typing from the right back into the mark. Measured: type 400 ms, un-type 270 ms.
 // Emits a group (the lockup) holding the wordmark and a rounded-rect mark standing in for a logo (image/path nodes
 // arrive with media slots in phase 2); the mark follows the wordmark's left edge (runtime: rect `follows`, added for
-// this device). The wordmark sits offset by half the mark + gap so the finished lockup is centred, and the lockup
+// this device). The wordmark's base x is offset by half the mark + gap so the finished lockup is centred, and the lockup
 // scales down at 9:16 so the mark stays on canvas. Not modelled yet: the mark "splitting/widening" as the wordmark
 // leaves it, and R7's 130 ms wordmark wipe.
 import { group } from "./assemble";
@@ -35,11 +35,9 @@ export function logoTypewriter(p: LogoTypewriterParams): MacroResult {
     caret: { style: "none" },
     ...(p.untype ? { out: { at: p.untype.at, ms: p.untype.ms ?? 270 } } : {}),
   };
-  const offset = (size + gap) / 2;   // a constant x offset, written as a 0 ms tween (nodes have no static x)
   const lockup = group({ id: p.id, anchor: p.anchor ?? { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } } }, [
     // the wordmark is drawn first so the mark can read its extents
-    { id: `${p.id}-wordmark`, type: "text", text: p.text, style: p.style,
-      tracks: [withTypingMs(track, p.text), { mode: "tween", prop: "x", at: 0, ms: 0, from: offset, to: offset, ease: "linear" }] },
+    { id: `${p.id}-wordmark`, type: "text", text: p.text, style: p.style, x: (size + gap) / 2, tracks: [withTypingMs(track, p.text)] },
     { id: `${p.id}-mark`, type: "rect", w: size, h: size, radius: p.mark?.radius ?? Math.round(size * 0.28),
       fill: p.mark?.color ?? "tokens.accent",
       follows: { node: `${p.id}-wordmark`, edge: "left", gap },

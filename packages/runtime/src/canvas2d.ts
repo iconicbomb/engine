@@ -1,7 +1,7 @@
 // @engine/runtime — Canvas 2D implementation of `Runtime`. renderFrame(graph, t) is a pure function of its inputs:
 // every value is derived from t by replaying the graph's tracks, so any frame can be rendered in isolation.
 import type { Graph, Node, Track, Beat } from "@engine/graph";
-import { glyphTime, typewriterEnd } from "@engine/graph";
+import { glyphTime, glyphHideTime, typewriterEnd, formatCount } from "@engine/graph";
 import { trackProgress, typewriterGlyphs, spring } from "./runtime-core";
 import type { Runtime, Shaper, ShapedGlyph, RenderTarget, GlyphState } from "./runtime-core";
 import { resolveAnchor, smoothedSteps, fitScale, canvasSize } from "./layout";
@@ -15,6 +15,7 @@ type BracketNode = Extract<Node, { type: "bracket" }>;
 type TweenTrack = Extract<Track, { mode: "tween" }>;
 type TypewriterTrack = Extract<Track, { mode: "typewriter" }>;
 type SweepTrack = Extract<Track, { mode: "sweep" }>;
+type CountTrack = Extract<Track, { mode: "count" }>;
 
 // What a drawn text node leaves behind for siblings (brackets) in the parent's coordinate space.
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
@@ -114,31 +115,38 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   }
 
   // ---------- properties ----------
-  function numericProps(node: Node, tl: number): NumericProps {
-    const p: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: 0, y: 0 };
-    for (const tr of node.tracks) {
-      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop) || tr.staggerMs > 0 || tr.relativeTo === "reveal") continue;
-      const key = tr.prop as keyof NumericProps;
-      p[key] = tweenValue(tr, tl, 0, p[key]);
-    }
-    return p;
+  // Several tracks may animate one property: the latest started one wins; before any has started, the earliest
+  // one's `from` holds (so a node can sit at one value and later pulse from another).
+  function resolve(key: keyof NumericProps, base: number, tl: number, cands: { tr: TweenTrack; start: number }[]): number {
+    const own = cands.filter((c) => c.tr.prop === key);
+    if (!own.length) return base;
+    const started = own.filter((c) => c.start <= tl);
+    const pick = started.length ? started.reduce((x, y) => (y.start >= x.start ? y : x)) : own.reduce((x, y) => (y.start < x.start ? y : x));
+    return tweenValue(pick.tr, tl, 0, base, pick.start);
   }
-  function tweenValue(tr: TweenTrack, tl: number, index: number, base: number): number {
+  function numericProps(node: Node, tl: number): NumericProps {
+    const cands = (node.tracks as Track[])
+      .filter((tr): tr is TweenTrack => tr.mode === "tween" && NUMERIC.has(tr.prop) && tr.staggerMs === 0 && tr.relativeTo !== "reveal")
+      .map((tr) => ({ tr, start: tr.at }));
+    const base: NumericProps = { opacity: node.opacity, scale: node.scale, rotation: node.rotation, x: node.x, y: node.y };
+    for (const k of NUMERIC) base[k as keyof NumericProps] = resolve(k as keyof NumericProps, base[k as keyof NumericProps], tl, cands);
+    return base;
+  }
+  // `start` overrides the track's own start (stagger / reveal offsets); progress is measured from it
+  function tweenValue(tr: TweenTrack, tl: number, index: number, base: number, start?: number): number {
     const from = typeof tr.from === "number" ? tr.from : base;
     const to = typeof tr.to === "number" ? tr.to : base;
-    const prog = trackProgress(tr, tl, index);
+    const prog = start === undefined ? trackProgress(tr, tl, index) : trackProgress({ ...tr, at: start, staggerMs: 0 }, tl, 0);
     if (prog === null) return from;
     return from + (to - from) * prog;
   }
   // per-glyph offsets: staggered tween tracks by glyph index; relativeTo "reveal" tracks start when the glyph is typed
   function glyphProps(node: TextNode, tl: number, index: number, revealAt: number): NumericProps {
+    const cands = (node.tracks as Track[])
+      .filter((tr): tr is TweenTrack => tr.mode === "tween" && NUMERIC.has(tr.prop) && (tr.staggerMs > 0 || tr.relativeTo === "reveal"))
+      .map((tr) => ({ tr, start: tr.relativeTo === "reveal" ? revealAt + tr.at : tr.at + tr.staggerMs * index / 1000 }));
     const p: NumericProps = { opacity: 1, scale: 1, rotation: 0, x: 0, y: 0 };
-    for (const tr of node.tracks) {
-      if (tr.mode !== "tween" || !NUMERIC.has(tr.prop)) continue;
-      const key = tr.prop as keyof NumericProps;
-      if (tr.relativeTo === "reveal") p[key] = tweenValue({ ...tr, at: revealAt + tr.at }, tl, index, p[key]);
-      else if (tr.staggerMs > 0) p[key] = tweenValue(tr, tl, index, p[key]);
-    }
+    for (const k of NUMERIC) p[k as keyof NumericProps] = resolve(k as keyof NumericProps, p[k as keyof NumericProps], tl, cands);
     return p;
   }
   // colour-sweep weight of glyph `index` (0..1): flat-topped window with one-glyph soft edges; the latest started sweep wins
@@ -159,9 +167,10 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const fontName = resolveToken(style.font, tokens);
     const size = style.size;
     const axes = { wght: style.weight, ...style.axes };
-    const glyphs = shaper.shape(node.text, fontName, size, axes);
+    const text = countText(node, tl) ?? node.text;
+    const glyphs = shaper.shape(text, fontName, size, axes);
     const metrics = shaper.metrics(fontName);
-    const chars = [...node.text];
+    const chars = [...text];
     const tw = node.tracks.find((t: Track): t is TypewriterTrack => t.mode === "typewriter");
     const states: GlyphState[] = tw ? typewriterGlyphs(tw, chars, tl, fps) : chars.map(() => ({ visible: true, scrambled: null, freshness: 0 }));
 
@@ -192,7 +201,9 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       }
     }
     // run origin (centre of the visible run on the anchor when recentering)
-    const runW = fit?.recenter === false ? fullWidth : visibleWidth;
+    const runW = fit?.recenter === false ? fullWidth
+      : tw && node.recenterEaseMs > 0 ? smoothedSteps(runSteps(tw, chars, widthUpTo), tl, node.recenterEaseMs, 0)
+      : visibleWidth;
     const x0 = style.align === "left" ? 0 : style.align === "right" ? -runW : -runW / 2;
     const baseline = metrics.capHeight * size / 2;     // caps vertically centred on the anchor
 
@@ -284,6 +295,22 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       steps[i].right = xr * scale;                     // approximate: uses the current scale for all steps
     }
     return { left: x0 * scale, right: (x0 + visibleWidth) * scale, top: top * scale, bottom: bottom * scale, scale, steps };
+  }
+
+  // visible-run width as a step function of time: grows as glyphs are typed, shrinks as they are un-typed
+  function runSteps(tw: TypewriterTrack, chars: string[], widthUpTo: (n: number) => number): { t: number; value: number }[] {
+    const steps = chars.map((_, i) => ({ t: glyphTime(tw, chars, i), value: widthUpTo(i + 1) }));
+    if (tw.out) for (let i = chars.length - 1; i >= 0; i--) steps.push({ t: glyphHideTime(tw, chars, i), value: widthUpTo(i) });
+    return steps;
+  }
+  // a count track replaces the node's text with the formatted value at time tl (latest started track wins)
+  function countText(node: TextNode, tl: number): string | null {
+    const counts = (node.tracks as Track[]).filter((t): t is CountTrack => t.mode === "count");
+    if (!counts.length) return null;
+    const started = counts.filter((t) => t.at <= tl);
+    const hit = started.length ? started.reduce((x, y) => (y.at >= x.at ? y : x)) : counts.reduce((x, y) => (y.at < x.at ? y : x));
+    const prog = trackProgress(hit, tl);
+    return formatCount(hit, prog === null ? hit.from : hit.from + (hit.to - hit.from) * prog);
   }
 
   const scrambleCache = new Map<string, string>();

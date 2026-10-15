@@ -40,3 +40,10 @@ export function glyphHideTime(track: TypewriterTrack, glyphs: string[], i: numbe
   const n = Math.max(1, glyphs.length);
   return track.out.at + ((n - i) / n) * (track.out.ms / 1000);
 }
+
+// Display string of a count track at a given value (thousands separator, fixed decimals, prefix/suffix).
+export function formatCount(track: Extract<Track, { mode: "count" }>, value: number): string {
+  const [int, frac] = Math.abs(value).toFixed(track.decimals).split(".");
+  const grouped = int.replace(/\B(?=(\d{3})+(?!\d))/g, track.separator);
+  return `${track.prefix}${value < 0 ? "-" : ""}${grouped}${frac ? "." + frac : ""}${track.suffix}`;
+}

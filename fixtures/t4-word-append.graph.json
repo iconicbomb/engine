@@ -27,6 +27,7 @@
             "size": 110,
             "weight": 600
           },
+          "recenterEaseMs": 76,
           "tracks": [
             {
               "mode": "typewriter",

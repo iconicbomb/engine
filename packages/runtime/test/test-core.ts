@@ -1,5 +1,5 @@
 import { EASES, spring, springSettleTime, trackProgress, typewriterGlyphs, cubicBezier } from "../src/runtime-core";
-import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack } from "@engine/graph";
+import { parseGraph, glyphTime, typewriterEnd, TypewriterTrack, SweepTrack, CountTrack, formatCount } from "@engine/graph";
 import { readFileSync } from "node:fs";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 // endpoints + monotonic
@@ -46,3 +46,7 @@ assert(vis(0.99) === "11111" && vis(1.07) === "11110" && vis(1.25) === "10000" &
 // sweep tracks ease like tweens and hold at the end
 const sw = SweepTrack.parse({ mode: "sweep", prop: "glyph.color", at: 1, ms: 400, from: -2, to: 10 });
 assert(trackProgress(sw, 0.9) === null && trackProgress(sw, 1.4) === 1 && trackProgress(sw, 1.2)! > 0.5, "sweep: null before, settle-eased, 1 at the end");
+// count tracks (S2): grouping, decimals, prefix/suffix, negatives
+const ct = (o: object) => CountTrack.parse({ mode: "count", prop: "text", from: 0, to: 1, ...o });
+assert(formatCount(ct({ suffix: "+" }), 17000) === "17,000+" && formatCount(ct({ decimals: 1, prefix: "$" }), 1234567.25) === "$1,234,567.3"
+  && formatCount(ct({ separator: " " }), -4200) === "-4 200" && formatCount(ct({}), 999.4) === "999", "formatCount: 17,000+ / $1,234,567.3 / -4 200 / 999");

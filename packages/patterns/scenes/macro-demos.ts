@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, colourSweep, logoTypewriter, tailTypewriter, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, colourSweep, logoTypewriter, ripplePill, tailTypewriter, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -40,4 +40,29 @@ export function buildT6Demo() {
 export function buildT13Demo() {
   const logo = logoTypewriter({ id: "b1-logo", text: "Lumen", style: { size: 140, weight: 700 }, at: 0.2, untype: { at: 1.6 } });
   return demo("Lumen", 2.3, logo.nodes, [logo]);
+}
+
+export function buildS1Demo() {
+  const rows = [["Ingest", 380], ["Plan", 300], ["Render", 340]] as const;
+  const stack = cardRise({
+    id: "b1-stack", at: 0.2,
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.72 } } },
+    cards: rows.map(([label, bar], i) => ({
+      id: `b1-stack-card-${i + 1}`, w: 760, h: 150, y: (i - 1) * 190, fill: "#1A1D26", radius: 28,
+      children: [
+        { id: `b1-stack-card-${i + 1}-icon`, type: "rect", w: 72, h: 72, radius: 36, fill: "tokens.accent", x: -300 },
+        { id: `b1-stack-card-${i + 1}-label`, type: "text", text: label, style: { size: 40, weight: 600, align: "left" }, x: -230, y: -22 },
+        { id: `b1-stack-card-${i + 1}-bar`, type: "rect", w: bar, h: 18, radius: 9, fill: "#2C3140", x: -230 + bar / 2, y: 30 },
+      ],
+    })),
+  });
+  return demo("Ingest, plan, render", 2.4, stack.nodes, [stack]);
+}
+
+export function buildS2Demo() {
+  const pill = ripplePill({
+    id: "b1-models", at: 0.2, to: 17000, suffix: "+", style: { size: 90, weight: 700 },
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
+  });
+  return demo("17,000+ models", 2.4, pill.nodes, [pill]);
 }

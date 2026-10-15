@@ -1,0 +1,421 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "Ingest, plan, render",
+      "nodes": [
+        {
+          "id": "b1-stack",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.72
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-stack-card-1",
+              "type": "group",
+              "y": -190,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.2,
+                  "ms": 600,
+                  "from": -110,
+                  "to": -190,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.2,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-stack-card-1-panel",
+                  "type": "rect",
+                  "w": 760,
+                  "h": 150,
+                  "radius": 28,
+                  "fill": "#1A1D26"
+                },
+                {
+                  "id": "b1-stack-card-1-icon",
+                  "type": "rect",
+                  "w": 72,
+                  "h": 72,
+                  "radius": 36,
+                  "fill": "tokens.accent",
+                  "x": -300,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.65,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.65,
+                      "ms": 300,
+                      "from": 12,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-1-label",
+                  "type": "text",
+                  "text": "Ingest",
+                  "style": {
+                    "size": 40,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "x": -230,
+                  "y": -22,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": -10,
+                      "to": -22,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-1-bar",
+                  "type": "rect",
+                  "w": 380,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#2C3140",
+                  "x": -40,
+                  "y": 30,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 42,
+                      "to": 30,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-stack-card-2",
+              "type": "group",
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.27,
+                  "ms": 600,
+                  "from": 80,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.27,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-stack-card-2-panel",
+                  "type": "rect",
+                  "w": 760,
+                  "h": 150,
+                  "radius": 28,
+                  "fill": "#1A1D26"
+                },
+                {
+                  "id": "b1-stack-card-2-icon",
+                  "type": "rect",
+                  "w": 72,
+                  "h": 72,
+                  "radius": 36,
+                  "fill": "tokens.accent",
+                  "x": -300,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.72,
+                      "ms": 300,
+                      "from": 12,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-2-label",
+                  "type": "text",
+                  "text": "Plan",
+                  "style": {
+                    "size": 40,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "x": -230,
+                  "y": -22,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": -10,
+                      "to": -22,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-2-bar",
+                  "type": "rect",
+                  "w": 300,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#2C3140",
+                  "x": -80,
+                  "y": 30,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.86,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.86,
+                      "ms": 300,
+                      "from": 42,
+                      "to": 30,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-stack-card-3",
+              "type": "group",
+              "y": 190,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.34,
+                  "ms": 600,
+                  "from": 270,
+                  "to": 190,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.34,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-stack-card-3-panel",
+                  "type": "rect",
+                  "w": 760,
+                  "h": 150,
+                  "radius": 28,
+                  "fill": "#1A1D26"
+                },
+                {
+                  "id": "b1-stack-card-3-icon",
+                  "type": "rect",
+                  "w": 72,
+                  "h": 72,
+                  "radius": 36,
+                  "fill": "tokens.accent",
+                  "x": -300,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.79,
+                      "ms": 300,
+                      "from": 12,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-3-label",
+                  "type": "text",
+                  "text": "Render",
+                  "style": {
+                    "size": 40,
+                    "weight": 600,
+                    "align": "left"
+                  },
+                  "x": -230,
+                  "y": -22,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.86,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.86,
+                      "ms": 300,
+                      "from": -10,
+                      "to": -22,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-stack-card-3-bar",
+                  "type": "rect",
+                  "w": 340,
+                  "h": 18,
+                  "radius": 9,
+                  "fill": "#2C3140",
+                  "x": -60,
+                  "y": 30,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.93,
+                      "ms": 300,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "y",
+                      "at": 0.93,
+                      "ms": 300,
+                      "from": 42,
+                      "to": 30,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

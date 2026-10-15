@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.4,
+      "script": "17,000+ models",
+      "nodes": [
+        {
+          "id": "b1-models",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "x",
+              "at": 0.2,
+              "ms": 400,
+              "from": -160,
+              "to": 0,
+              "ease": "bounce"
+            },
+            {
+              "mode": "tween",
+              "prop": "opacity",
+              "at": 0.2,
+              "ms": 100,
+              "from": 0,
+              "to": 1,
+              "ease": "linear"
+            }
+          ],
+          "children": [
+            {
+              "id": "b1-models-band-5",
+              "type": "rect",
+              "w": 677,
+              "h": 304,
+              "radius": 152,
+              "fill": "tokens.accent",
+              "opacity": 0.06
+            },
+            {
+              "id": "b1-models-band-4",
+              "type": "rect",
+              "w": 645,
+              "h": 272,
+              "radius": 136,
+              "fill": "tokens.accent",
+              "opacity": 0.12
+            },
+            {
+              "id": "b1-models-band-3",
+              "type": "rect",
+              "w": 613,
+              "h": 240,
+              "radius": 120,
+              "fill": "tokens.accent",
+              "opacity": 0.18
+            },
+            {
+              "id": "b1-models-band-2",
+              "type": "rect",
+              "w": 581,
+              "h": 208,
+              "radius": 104,
+              "fill": "tokens.accent",
+              "opacity": 0.24
+            },
+            {
+              "id": "b1-models-band-1",
+              "type": "rect",
+              "w": 549,
+              "h": 176,
+              "radius": 88,
+              "fill": "tokens.accent",
+              "opacity": 0.3
+            },
+            {
+              "id": "b1-models-pill",
+              "type": "rect",
+              "w": 517,
+              "h": 144,
+              "radius": 72,
+              "fill": "tokens.accent"
+            },
+            {
+              "id": "b1-models-value",
+              "type": "text",
+              "text": "17,000+",
+              "style": {
+                "size": 90,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "count",
+                  "prop": "text",
+                  "at": 0.53,
+                  "ms": 1070,
+                  "from": 0,
+                  "to": 17000,
+                  "ease": "linear",
+                  "decimals": 0,
+                  "separator": ",",
+                  "prefix": "",
+                  "suffix": "+"
+                }
+              ]
+            },
+            {
+              "id": "b1-models-pulse",
+              "type": "rect",
+              "w": 517,
+              "h": 144,
+              "radius": 72,
+              "stroke": {
+                "color": "#FFFFFF",
+                "width": 4
+              },
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0,
+                  "ms": 0,
+                  "from": 0,
+                  "to": 0,
+                  "ease": "linear"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.6,
+                  "ms": 400,
+                  "from": 1,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "scale",
+                  "at": 1.6,
+                  "ms": 400,
+                  "from": 1,
+                  "to": 1.5,
+                  "ease": "settle"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

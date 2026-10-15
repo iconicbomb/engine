@@ -14,7 +14,8 @@ export const Spring = z.object({
 
 export const Color = z.string().regex(/^#([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$|^tokens\.[a-zA-Z0-9_.-]+$/, "hex or tokens.<name>");
 
-// A track animates ONE property of its node. `at` is seconds relative to the beat start.
+// A track animates ONE property of its node. `at` is seconds relative to the beat start. When several tween tracks
+// animate the same property, the latest started one wins; before any has started, the earliest one's `from` holds.
 const TrackBase = z.object({
   prop: z.string().min(1),           // e.g. "opacity", "x", "scale", "glyph.opacity", "glyph.subst"
   at: z.number().min(0).default(0),  // start, seconds from beat start
@@ -72,7 +73,20 @@ export const SweepTrack = TrackBase.extend({
   ease: z.enum(["linear", "settle", "emphasis"]).default("settle"),
 });
 
-export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack]);
+// Counter: the text node shows a number counting from `from` to `to` (formatted) instead of its `text`, which
+// holds the final string for editors and exports (S2).
+export const CountTrack = TrackBase.extend({
+  mode: z.literal("count"),
+  from: z.number(),
+  to: z.number(),
+  ease: z.enum(["linear", "settle", "emphasis"]).default("linear"),   // counters read as mechanical: linear
+  decimals: z.number().int().min(0).max(6).default(0),
+  separator: z.string().default(","),
+  prefix: z.string().default(""),
+  suffix: z.string().default(""),
+});
+
+export const Track = z.discriminatedUnion("mode", [TweenTrack, TypewriterTrack, SweepTrack, CountTrack]);
 export type Track = z.infer<typeof Track>;
 
 // ---------- layout ----------
@@ -100,6 +114,9 @@ const NodeBase = z.object({
   opacity: z.number().min(0).max(1).default(1),
   scale: z.number().positive().default(1),
   rotation: z.number().default(0),
+  // base offset from the anchor in px at refHeight (the units of x/y tracks); an x/y track replaces it while it runs
+  x: z.number().default(0),
+  y: z.number().default(0),
   tracks: z.array(Track).default([]),
 });
 
@@ -120,6 +137,8 @@ export const TextNode = NodeBase.extend({
   style: TextStyle,
   fit: Fit.optional(),
   shaping: z.enum(["harfbuzz", "browser"]).default("harfbuzz"),
+  // eased recentre: time constant (ms) with which the run's centre follows a typewriter's growth; 0 = jump (T4)
+  recenterEaseMs: z.number().min(0).default(0),
 });
 
 export const RectNode = NodeBase.extend({

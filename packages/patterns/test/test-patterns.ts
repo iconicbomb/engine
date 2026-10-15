@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, colourSweep, fitToWidth, logoTypewriter, reveal, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -38,6 +38,8 @@ const wordStarts = [...new Set(times)], gaps = wordStarts.slice(1).map((s, i) =>
 assert(wordStarts.length === 3 && gaps.every((g) => Math.abs(g - 230) < 1e-6) && times[7] === times[8] && times[6] === times[0],
   `T4: 3 words, ${gaps.map((g) => g.toFixed(0)).join(" / ")} ms apart; all glyphs of a word (and its leading space) share a reveal time`);
 assert(t4.nodes[0].tracks!.filter((t: any) => t.relativeTo === "reveal").length === 2, "T4: fade + slide timed from each glyph's reveal");
+const tau = (t4.nodes[0] as any).recenterEaseMs;
+assert(tau === 76 && 1 - Math.exp(-230 / tau) >= 0.95, `T4: eased recentre, tau ${tau} ms -> ${((1 - Math.exp(-230 / tau)) * 100).toFixed(1)} % settled within the 230 ms word cadence`);
 
 // T6: full sweep enters/leaves off the ends; keyword sweep stops on the word with a window of its width
 const text = "Ship faster with AI agents";
@@ -54,7 +56,31 @@ const t13 = logoTypewriter({ id: "b1-logo", text: "Lumen", style: { size: 140 },
 const [wm, mark]: any[] = (t13.nodes[0] as any).children;
 assert(wm.tracks[0].ms === 400 && wm.tracks[0].at === 0.4 && wm.tracks[0].out.ms === 270, "T13: types in 400 ms after a 200 ms mark lead, un-types in 270 ms");
 assert(mark.type === "rect" && mark.follows.node === "b1-logo-wordmark" && mark.follows.edge === "left", "T13: mark follows the wordmark's left edge");
-assert(wm.tracks[1].prop === "x" && wm.tracks[1].to === (112 + 28) / 2, "T13: wordmark offset by half the mark + gap so the finished lockup is centred");
+assert(wm.x === (112 + 28) / 2 && wm.tracks.length === 1, "T13: wordmark base x = half the mark + gap (finished lockup centred), no offset tween");
+
+// S1: cards rise 80 px over 600 ms expo-out, 70 ms apart; children start 150 ms after the card visibly lands
+const s1: any = cardRise({ id: "b1-s", at: 0.2, cards: [
+  { id: "b1-s-a", w: 100, h: 50, y: -60, children: [{ id: "b1-s-a-t", type: "text", text: "A", style: { size: 20 }, y: 5 }] },
+  { id: "b1-s-b", w: 100, h: 50, y: 60 },
+] }).nodes[0];
+const [ca, cb] = s1.children;
+assert(ca.tracks[0].from === 20 && ca.tracks[0].to === -60 && ca.tracks[0].ms === 600 && ca.tracks[0].ease === "settle" && cb.tracks[0].at === 0.27,
+  "S1: rise from y+80 to y (600 ms settle, no overshoot), 70 ms card stagger");
+const child = ca.children[1];
+assert(child.tracks[0].at === 0.65 && child.tracks[1].from === 17 && child.tracks[1].to === 5 && ca.children[0].type === "rect",
+  "S1: panel first; content fades in at land (300 ms) + 150 ms, drifting up 12 px to its base y");
+
+// S2: counter 1.07 s linear after the 330 ms spring settle; pulse fires on the final value; bands fade outward
+const s2: any = ripplePill({ id: "b1-p", at: 0.2, to: 17000, suffix: "+", style: { size: 90 } }).nodes[0];
+const byId = (id: string) => s2.children.find((c: any) => c.id === id);
+const count = byId("b1-p-value").tracks[0], pulse = byId("b1-p-pulse");
+assert(byId("b1-p-value").text === "17,000+" && count.mode === "count" && count.at === 0.53 && count.ms === 1070 && count.ease === "linear",
+  "S2: value node holds the final string; counts 0 -> 17,000 over 1.07 s linear from 0.53 s");
+assert(pulse.tracks[1].at === 1.6 && pulse.tracks[1].ms === 400 && pulse.tracks[0].at === 0 && pulse.tracks[0].to === 0,
+  "S2: pulse ring held hidden, then fires at count end (1.6 s) for 400 ms");
+const bandOps = [5, 4, 3, 2, 1].map((i) => byId(`b1-p-band-${i}`).opacity);
+assert(bandOps.every((o: number, i: number) => i === 0 || o > bandOps[i - 1]) && s2.tracks[0].ease === "bounce",
+  `S2: 5 bands, opacity rising inward (${bandOps.join(", ")}); spring slide-in`);
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

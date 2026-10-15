@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 in progress: T1–T4, T5, T6, T12, T13, S15 done (see below); `pnpm test` 41 ok, `pnpm typecheck` clean,
+Phase 1 in progress: T1–T6, T12, T13, S1, S2, S15 done (see below); `pnpm test` 50 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -62,18 +62,26 @@ of the text it replaces); `patches` set node fields where the schema models a pa
 (`glyphTime`, `typewriterEnd`, `glyphHideTime`) lives there in schedule.ts and the runtime imports it.
 DONE: T1 (scramble typewriter; `ms` derived from the glyph schedule), T3 (fit-to-width), T5 (brackets),
 T12 (reveal), S15 (ambient glows with fade-in), T2 (tail typewriter; "last N chars" = tint decaying over N/cps),
-T4 (word append), T6 (colour sweep / keyword hold), T13 (logo-anchored typewriter, emits a lockup group).
+T4 (word append, eased recentre settling within the 230 ms word cadence), T6 (colour sweep / keyword hold),
+T13 (logo-anchored typewriter, emits a lockup group), S1 (card/panel rise + child population),
+S2 (ripple pill: bands, spring slide-in, linear counter, completion pulse).
 The R3 fixture is generated from five calls (T1, T3, T5, T12, S15) and is byte-identical to the old hand-written
-JSON; each other macro has a demo fixture (`fixtures/{s15,t2,t4,t6,t13}-*.graph.json`). test-patterns.ts fails if
+JSON; each other macro has a demo fixture (`fixtures/{s1,s2,s15,t2,t4,t6,t13}-*.graph.json`). test-patterns.ts fails if
 any committed fixture drifts from its scene builder.
 Runtime/schema additions made for these devices (all optional or defaulting to the old behaviour):
 typewriter `tail.strength` (T2; was a hard-coded 0.35), `unit: "word"` (T4), `out` un-type (T13);
 tween `relativeTo: "reveal"` (T4 per-word pop); `sweep` track mode (T6); rect `follows` a text edge (T13 mark);
-nodes at scale 0 are skipped (followers divide by it).
-Not modelled yet: eased recentre on append (R4 — runtime recentres instantly); T13's mark split/widen and R7's
-wordmark wipe; S15's god-rays, sparkles and bokeh; a lockup-level fit (text + mark) — T13 scales 0.8 at 9:16 instead;
-nodes have no static x/y, so T13's centring offset is a 0 ms tween.
-NEXT: S1, S2, then T10, T11 per the spec's build order.
+nodes at scale 0 are skipped (followers divide by it); base `x`/`y` on every node (px, the units of x/y tracks;
+a running x/y track replaces it); text `recenterEaseMs` (T4: the run's centre follows growth via smoothedSteps);
+`count` track mode + `formatCount` (S2 counter).
+Track rule: when several tween tracks animate one property, the latest started wins; before any has started, the
+earliest one's `from` holds (S2's pulse ring: a 0 ms hold at 0, then a flash at count end). Pixel-neutral for every
+earlier fixture (all had one track per property).
+Not modelled yet: T13's mark split/widen and R7's wordmark wipe; S15's god-rays, sparkles and bokeh; a lockup-level
+fit (text + mark) — T13 and S1/S2 demos scale down at 9:16 via anchor overrides instead; S1's 3D perspective
+(phase-6 plane layer); S2's pill *width* spring (it slides instead) and tabular digits (no OpenType features in the
+shaper). Pill width is estimated from the final string (~0.6 em per digit) since macros can't measure text.
+NEXT: T10, T11 per the spec's build order.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 
