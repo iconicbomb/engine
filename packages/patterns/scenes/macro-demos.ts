@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, cardRise, group, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, group, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -165,4 +165,21 @@ export function buildPathsWiresDemo() {
     stroke: "tokens.accent", strokeWidth: 4, glow: { radius: 10, intensity: 0.6 }, trim: { start: 0, end: 0 },
     tracks: [{ mode: "tween", prop: "trim.end", at, ms: 400, from: 0, to: 1, ease: "settle" }] });
   return demo("Connect anything", 2.0, [wire("b1-wire-s", "s", 0.8, "right", "left"), wire("b1-wire-arc", "arc", 0.87, "bottom", "bottom"), art], []);
+}
+
+// S8 demo: a hub card fans wires out to five integrations on each side (columns laid out with layout: column)
+export function buildS8Demo() {
+  const pill = (id: string, t: string): NodeIn => ({ id, type: "rect", w: 1, h: 1, radius: 9999, fill: "#1A1D26", stroke: { color: "#2C3140", width: 2 },
+    sizeToContent: { padX: 24, padY: 12 }, children: [{ id: `${id}-label`, type: "text", text: t, style: { size: 34, weight: 600 } }] });
+  const L = ["Slack", "Gmail", "Notion", "Drive", "Jira"], R = ["Stripe", "HubSpot", "GitHub", "Linear", "Figma"];
+  const leftIds = L.map((_, i) => `b1-fan-l-${i + 1}`), rightIds = R.map((_, i) => `b1-fan-r-${i + 1}`);
+  const hub: NodeIn = { id: "b1-fan-hub", type: "rect", w: 300, h: 140, radius: 28, fill: "tokens.accent",
+    children: [{ id: "b1-fan-hub-label", type: "text", text: "Your app", style: { size: 44, weight: 700 } }] };
+  const scene = group({ id: "b1-fan", anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.42 } } } }, [
+    { ...group({ id: "b1-fan-left", layout: { type: "column", gap: 34 } }, L.map((t, i) => pill(leftIds[i], t))), x: -620 } as NodeIn,
+    hub,
+    { ...group({ id: "b1-fan-right", layout: { type: "column", gap: 34 } }, R.map((t, i) => pill(rightIds[i], t))), x: 620 } as NodeIn,
+  ]);
+  const fan = wireFan({ id: "b1-fan", hub: "b1-fan-hub", left: leftIds, right: rightIds, at: 0.3, glow: { radius: 8, intensity: 0.5 } });
+  return demo("Your app, connected", 2.0, [...fan.nodes, scene], []);
 }

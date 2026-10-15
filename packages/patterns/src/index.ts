@@ -18,3 +18,4 @@ export { cursorClick, giantCursor, type CursorClickParams } from "./s5-cursor-cl
 export { jumpCuts, pressTimes, type Shot } from "./s4-jump-cut";
 export { tickerList, type TickerListParams } from "./s6-ticker-list";
 export { pillMarquee, type PillMarqueeParams } from "./s9-pill-marquee";
+export { wireFan, type WireFanParams } from "./s8-wire-fan";

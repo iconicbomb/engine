@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, S3–S6, S9 in (phase 2); `pnpm test` 109 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, S3–S6, S8, S9 in (phase 2); `pnpm test` 111 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -98,7 +98,7 @@ group, centre-out pop cascade within 600 ms, rows scroll linearly at 40 px/s in 
 to cover canvas + travel — repeat count and cascade timing use an estimated label width, ~0.58 em/char).
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
-A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) + wire nodes -> S8 -> C beat transitions ->
+A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) -> S8 (done) -> C beat transitions ->
 S13, S14 -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
@@ -145,6 +145,10 @@ byte-identical") — review this reading:
 - Not modelled yet: SVG arc (A) segments are measured as straight chords (drawn exactly by the canvas, so trim /
   length are approximate on arcs).
 - Fixture paths-wires.
+- S8 wireFan: top-level wires from the hub's facing edge to each target (s-curves), drawing on over 400 ms with a
+  70 ms stagger, sides interleaved from the top. Fixture s8-wire-fan (targets in layout:column groups).
+  Not modelled yet: S8's travelling dots (1.5 px/frame) — open question: a wire `dots { count, speed, radius }`
+  field (recommended) vs follower nodes positioned along a path.
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

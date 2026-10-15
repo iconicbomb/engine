@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -149,6 +149,12 @@ assert(Math.abs(lastPopEnd - 0.8) < 1e-9 && firstPop < 0.25 && pops.every((t: an
   && scrolls.map((t: any) => Math.sign(t.to)).join() === "-1,1,-1" && scrolls.every((t: any) => t.ease === "linear" && Math.abs(t.to) === 80 && t.at === 0.8)
   && s9.layout.type === "column" && s9.children.every((r: any) => r.layout.type === "row" && estW(r) > 1920 + 160),
   "S9: pop-in cascades from the centre, done in 600 ms; rows alternate, 40 px/s linear from 0.8 s; row layouts cover canvas + travel");
+
+// S8: wires from the hub's facing edge to each target, drawing on over 400 ms, 70 ms apart, sides interleaved
+const s8: any[] = wireFan({ id: "b1-f", hub: "b1-h", left: ["b1-l1", "b1-l2"], right: ["b1-r1"], at: 0.3 }).nodes;
+assert(s8.map((w) => w.to.target).join() === "b1-l1,b1-r1,b1-l2" && s8[0].from.anchor === "left" && s8[0].to.anchor === "right" && s8[1].from.anchor === "right"
+  && s8.map((w) => w.tracks[0].at).join() === "0.3,0.37,0.44" && s8.every((w) => w.type === "wire" && w.tracks[0].prop === "trim.end" && w.tracks[0].ms === 400),
+  "S8: fan wires interleave sides, leave the hub's facing edge, draw on 400 ms with a 70 ms stagger");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

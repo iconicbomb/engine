@@ -1,0 +1,707 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2,
+      "script": "Your app, connected",
+      "nodes": [
+        {
+          "id": "b1-fan-wire-1",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b1-fan-l-1",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.3,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-2",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-fan-r-1",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.37,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-3",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b1-fan-l-2",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.44,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-4",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-fan-r-2",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.51,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-5",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b1-fan-l-3",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.58,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-6",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-fan-r-3",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.65,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-7",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b1-fan-l-4",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.72,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-8",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-fan-r-4",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.79,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-9",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "left"
+          },
+          "to": {
+            "target": "b1-fan-l-5",
+            "anchor": "right"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.86,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan-wire-10",
+          "type": "wire",
+          "from": {
+            "target": "b1-fan-hub",
+            "anchor": "right"
+          },
+          "to": {
+            "target": "b1-fan-r-5",
+            "anchor": "left"
+          },
+          "curve": "s",
+          "bend": 0.5,
+          "stroke": "tokens.accent",
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "trim.end",
+              "at": 0.93,
+              "ms": 400,
+              "from": 0,
+              "to": 1,
+              "ease": "settle"
+            }
+          ],
+          "strokeWidth": 3,
+          "glow": {
+            "radius": 8,
+            "intensity": 0.5
+          },
+          "trim": {
+            "start": 0,
+            "end": 0
+          }
+        },
+        {
+          "id": "b1-fan",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.42
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-fan-left",
+              "type": "group",
+              "layout": {
+                "type": "column",
+                "gap": 34
+              },
+              "x": -620,
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-fan-l-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-l-1-label",
+                      "type": "text",
+                      "text": "Slack",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-l-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-l-2-label",
+                      "type": "text",
+                      "text": "Gmail",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-l-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-l-3-label",
+                      "type": "text",
+                      "text": "Notion",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-l-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-l-4-label",
+                      "type": "text",
+                      "text": "Drive",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-l-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-l-5-label",
+                      "type": "text",
+                      "text": "Jira",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-fan-hub",
+              "type": "rect",
+              "w": 300,
+              "h": 140,
+              "radius": 28,
+              "fill": "tokens.accent",
+              "children": [
+                {
+                  "id": "b1-fan-hub-label",
+                  "type": "text",
+                  "text": "Your app",
+                  "style": {
+                    "size": 44,
+                    "weight": 700
+                  }
+                }
+              ]
+            },
+            {
+              "id": "b1-fan-right",
+              "type": "group",
+              "layout": {
+                "type": "column",
+                "gap": 34
+              },
+              "x": 620,
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-fan-r-1",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-r-1-label",
+                      "type": "text",
+                      "text": "Stripe",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-r-2",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-r-2-label",
+                      "type": "text",
+                      "text": "HubSpot",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-r-3",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-r-3-label",
+                      "type": "text",
+                      "text": "GitHub",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-r-4",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-r-4-label",
+                      "type": "text",
+                      "text": "Linear",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-fan-r-5",
+                  "type": "rect",
+                  "w": 1,
+                  "h": 1,
+                  "radius": 9999,
+                  "fill": "#1A1D26",
+                  "stroke": {
+                    "color": "#2C3140",
+                    "width": 2
+                  },
+                  "sizeToContent": {
+                    "padX": 24,
+                    "padY": 12
+                  },
+                  "children": [
+                    {
+                      "id": "b1-fan-r-5-label",
+                      "type": "text",
+                      "text": "Figma",
+                      "style": {
+                        "size": 34,
+                        "weight": 600
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}
