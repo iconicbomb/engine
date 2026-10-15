@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T8, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 134 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 136 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -218,6 +218,11 @@ byte-identical") — review this reading:
   real slnt axis would use it with no graph change. Enter: slnt -12 -> 0 over 270 ms (+ optional real wght move);
   swap: re-slant + fade 200 ms while the next word slants in. Fixture t8-slant-settle. Open question: vendor a font
   with a slnt / ital axis (or Inter Italic) for the true axis look.
+- T9 glyphAnchorMorph: each word a layout:row group of single-character text nodes (letters animate individually;
+  inter-letter kerning is lost); shared letters by case-insensitive LCS. Non-shared old letters fade left -> right
+  across 1.5 s; then the kept letters fade / grow out while the new word's letters fade / scale in (200 ms). Fixture
+  t9-glyph-anchor-morph (Pixel -> ix -> IX). Not modelled yet: the kept glyphs travelling into the new word's slots
+  (the morph solver) — the new word appears at its own centred position.
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 

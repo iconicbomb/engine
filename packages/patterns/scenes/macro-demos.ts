@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, gradientSettle, group, mascot, slabNumeral, slantSettle, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, glyphAnchorMorph, gradientSettle, group, mascot, slabNumeral, slantSettle, smearCut, strokeMorph, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -277,4 +277,11 @@ export function buildT8Demo() {
   const t = slantSettle({ id: "b1-line", text: "Made by", style: { size: 170, weight: 700 }, at: 0.2, weight: { from: 300, to: 700 },
     swap: { at: 1.4, text: "Lumen" } });
   return demo("Made by Lumen", 2.4, t.nodes, [t]);
+}
+
+// T9 demo: "Pixel" sweeps down to its shared glyphs "ix", which re-case into "IX"
+export function buildT9Demo() {
+  const m = glyphAnchorMorph({ id: "b1-word", from: "Pixel", to: "IX", style: { size: 220, weight: 700 }, at: 0.3,
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.7 } } } });
+  return demo("Pixel to IX", 2.6, m.nodes, [m]);
 }

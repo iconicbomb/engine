@@ -1,0 +1,260 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2.6,
+      "script": "Pixel to IX",
+      "nodes": [
+        {
+          "id": "b1-word",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.7
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-word-old",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 0
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-word-old-1",
+                  "type": "text",
+                  "text": "P",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.3,
+                      "ms": 300,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-word-old-2",
+                  "type": "text",
+                  "text": "i",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 1,
+                      "to": 1.25,
+                      "ease": "emphasis"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-word-old-3",
+                  "type": "text",
+                  "text": "x",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 1,
+                      "to": 1.25,
+                      "ease": "emphasis"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-word-old-4",
+                  "type": "text",
+                  "text": "e",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0.9,
+                      "ms": 300,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-word-old-5",
+                  "type": "text",
+                  "text": "l",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 300,
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "b1-word-new",
+              "type": "group",
+              "layout": {
+                "type": "row",
+                "gap": 0
+              },
+              "tracks": [],
+              "children": [
+                {
+                  "id": "b1-word-new-1",
+                  "type": "text",
+                  "text": "I",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 0.7,
+                      "to": 1,
+                      "ease": "emphasis"
+                    }
+                  ]
+                },
+                {
+                  "id": "b1-word-new-2",
+                  "type": "text",
+                  "text": "X",
+                  "style": {
+                    "size": 220,
+                    "weight": 700
+                  },
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "scale",
+                      "at": 1.8,
+                      "ms": 200,
+                      "from": 0.7,
+                      "to": 1,
+                      "ease": "emphasis"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

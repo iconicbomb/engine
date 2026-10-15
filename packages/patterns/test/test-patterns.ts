@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, glyphAnchorMorph, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -216,6 +216,13 @@ const sl = t8a.tracks.filter((t: any) => t.prop === "axis.slnt");
 assert(sl[0].from === -12 && sl[0].to === 0 && sl[0].ms === 270 && sl[1].at === 1.4 && sl[1].ms === 200 && sl[1].to === -12
   && t8a.tracks.some((t: any) => t.prop === "axis.wght" && t.to === 700) && t8b.tracks.find((t: any) => t.prop === "axis.slnt").at === 1.5,
   "T8: slnt -12 -> 0 (270 ms) with a wght move; swap re-shears in 200 ms; next word shears in at 1.5 s");
+
+// T9: case-insensitive shared glyphs; non-shared fade L -> R across 1.5 s; shared re-case / scale in over 200 ms
+const t9: any = glyphAnchorMorph({ id: "b1-w", from: "Pixel", to: "IX", style: { size: 100 }, at: 0.3 }).nodes[0];
+const [oldG, newG] = t9.children;
+const fades = oldG.children.map((c: any) => c.tracks.length === 1 ? c.tracks[0].at : null);
+assert(oldG.layout.type === "row" && fades[0] === 0.3 && fades[1] === null && fades[2] === null && fades[4] === 1.5 && fades[3] > 0.3 && fades[3] < 1.5
+  && newG.children.every((c: any) => c.tracks[1].at === 1.8 && c.tracks[1].ms === 200), "T9: P, e, l fade L -> R over 1.5 s (i, x kept); I, X morph in at 1.8 s over 200 ms");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {
