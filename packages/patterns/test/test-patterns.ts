@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, enterDelay, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -155,6 +155,10 @@ const s8: any[] = wireFan({ id: "b1-f", hub: "b1-h", left: ["b1-l1", "b1-l2"], r
 assert(s8.map((w) => w.to.target).join() === "b1-l1,b1-r1,b1-l2" && s8[0].from.anchor === "left" && s8[0].to.anchor === "right" && s8[1].from.anchor === "right"
   && s8.map((w) => w.tracks[0].at).join() === "0.3,0.37,0.44" && s8.every((w) => w.type === "wire" && w.tracks[0].prop === "trim.end" && w.tracks[0].ms === 400),
   "S8: fan wires interleave sides, leave the hub's facing edge, draw on 400 ms with a 70 ms stagger");
+
+// S13: a curtain transition with the measured 130 ms, sweeping up; enter tracks delayed by ms/2
+const s13t = curtainWipe().transition!;
+assert(s13t.type === "curtain" && s13t.ms === 130 && s13t.direction === "up" && enterDelay(s13t as never) === 0.065, "S13: curtain 130 ms up; enter delay 65 ms");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

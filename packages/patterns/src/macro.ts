@@ -2,7 +2,7 @@
 // pattern of the spec's library (T1–T14, S1–S16) into plain scene-graph data. The runtime never sees pattern ids;
 // it only sees the nodes and tracks emitted here (spec: "Engine architecture and scene-graph format").
 import type { z } from "zod";
-import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Layout, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, FrameTrack, PathNode, WireNode, Beat } from "@engine/graph";
+import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Layout, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, FrameTrack, PathNode, WireNode, Transition, Beat } from "@engine/graph";
 
 // Macros emit the graph's *input* form (defaults may be omitted), exactly what a hand-written fixture contains.
 export type TextNodeIn = z.input<typeof TextNode>;
@@ -26,6 +26,7 @@ export type PressTrackIn = z.input<typeof PressTrack>;
 export type OnHoverTrackIn = z.input<typeof OnHoverTrack>;
 export type TrackIn = TweenTrackIn | TypewriterTrackIn | SweepTrackIn | CountTrackIn | MoveToTrackIn | PressTrackIn | OnHoverTrackIn;
 export type FrameTrackIn = z.input<typeof FrameTrack>;
+export type TransitionIn = z.input<typeof Transition>;
 export type GlowIn = NonNullable<z.input<typeof Beat>["glows"]>[number];
 export type TextStyleIn = z.input<typeof TextStyle>;
 export type FitIn = z.input<typeof Fit>;
@@ -43,9 +44,11 @@ export interface MacroResult {
   glows: GlowIn[];
   /** Beat camera tracks (S4 frame tracks); the caller puts them on beat.camera.tracks. */
   camera: FrameTrackIn[];
+  /** The incoming beat's transition (S13, S14); the caller sets beat.transition and delays enter tracks by enterDelay. */
+  transition?: TransitionIn;
 }
 
-export const result = (r: Partial<MacroResult>): MacroResult => ({ nodes: r.nodes ?? [], tracks: r.tracks ?? [], patches: r.patches ?? [], glows: r.glows ?? [], camera: r.camera ?? [] });
+export const result = (r: Partial<MacroResult>): MacroResult => ({ nodes: r.nodes ?? [], tracks: r.tracks ?? [], patches: r.patches ?? [], glows: r.glows ?? [], camera: r.camera ?? [], ...(r.transition ? { transition: r.transition } : {}) });
 
 /** Beat-local seconds, rounded to the microsecond so `2.0 + 80ms` serialises as 2.08, not 2.0799999999999996. */
 export const sec = (s: number) => Math.round(s * 1e6) / 1e6;

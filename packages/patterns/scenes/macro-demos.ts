@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, group, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, curtainWipe, group, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -201,3 +201,15 @@ export function buildTransitionsDemo() {
   });
   return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats };
 }
+
+// two beats joined by a transition macro; the second beat's title enters after enterDelay (the macro rule)
+function twoBeat(a: [string, string], b: [string, string], tr: MacroResult) {
+  const beat = (id: string, start: number, [title, bg]: [string, string], transition?: object) => {
+    const at = Math.round((0.1 + enterDelay(transition as never)) * 1000) / 1000;
+    return { id, type: "feature", start, duration: 1.2, script: title, background: bg, ...(transition ? { transition } : {}), glows: [],
+      nodes: [{ id: `${id}-title`, type: "text", text: title, style: { size: 140, weight: 700 },
+        tracks: [{ mode: "tween", prop: "opacity", at, ms: 200, from: 0, to: 1, ease: "settle" }, { mode: "tween", prop: "y", at, ms: 400, from: 40, to: 0, ease: "settle" }] }] };
+  };
+  return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats: [beat("b1", 0, a), beat("b2", 1.2, b, tr.transition)] };
+}
+export function buildS13Demo() { return twoBeat(["Before", "#0B0D12"], ["After", "#10213A"], curtainWipe()); }
