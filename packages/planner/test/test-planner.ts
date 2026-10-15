@@ -115,11 +115,14 @@ void (async () => {
   g.beats.forEach((b: any) => b.nodes.forEach(walk));
   assert(g.beats.every((b: any) => b.nodes.every((n: any) => n.id.startsWith(b.id + "-"))), "assemble: every node id is prefixed with its beat id");
   const graphTypes = g.beats.map((b: any) => b.type).join(" ");
-  assert(graphTypes.startsWith("hook pain pain reveal feature") && graphTypes.endsWith("proof cta tag"), "assemble: planner beats map to graph types (problem -> pain, tag)");
-  const asset = ids.includes("b6-asset") && JSON.stringify(g.beats[5]).includes('"Board screenshot"') && JSON.stringify(g.beats[5]).includes('"src":null');
+  const MAP: Record<string, string> = { hook: "hook", problem: "pain", reveal: "reveal", feature: "feature", proof: "proof", cta: "cta", tag: "tag" };
+  assert(graphTypes === beats.map((b) => MAP[b.type]).join(" ") && graphTypes.includes("pain") && graphTypes.endsWith("cta tag"), "assemble: planner beats map to graph types (problem -> pain, tag)");
+  const ai = beats.findIndex((b) => b.assetRef === "board-shot"), aid = beats[ai].id;
+  const asset = ids.includes(`${aid}-asset`) && JSON.stringify(g.beats[ai]).includes('"Board screenshot"') && JSON.stringify(g.beats[ai]).includes('"src":null');
   assert(asset, "assemble: the asset placeholder is an image node with src null and the brief's label");
-  const stage: any = g.beats[4].nodes.find((n: any) => n.id === "b5-stage");
-  const visuals = stage.children.find((c: any) => c.id === "b5-visuals");
+  const li = beats.findIndex((b) => b.featureRef === "Inbox"), lid = beats[li].id;     // the list feature beat
+  const stage: any = g.beats[li].nodes.find((n: any) => n.id === `${lid}-stage`);
+  const visuals = stage.children.find((c: any) => c.id === `${lid}-visuals`);
   assert(stage.anchor.overrides["16:9"] && stage.anchor.overrides["9:16"] && visuals.layout.type === "row" && visuals.layout.wrap && visuals.layout.overrides["9:16"].maxWidth,
     "assemble: per-aspect anchors on every stage; feature rows are rows at 16:9 and wrap at 9:16");
   const moves = JSON.stringify(g).match(/"mode":"moveTo"[^}]*?/g) ?? [];

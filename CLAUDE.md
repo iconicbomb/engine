@@ -311,9 +311,10 @@ Claude when .env has a key (response recorded), else / on API failure the rule s
 --record writes its plan). Secrets: only cli.ts -> env.ts reads .env (dotenv; a lone `sk-ant-...` line counts as
 ANTHROPIC_API_KEY); PLANNER_MODEL overrides claude-sonnet-5-5; ANTHROPIC_WORKSPACE_ID is sent as the
 anthropic-workspace-id header (required for keys not scoped to a workspace). Never log or commit it.
-Golden: demo.plan.json is currently rule-segmented (the key in .env needs a workspace id); after adding
-ANTHROPIC_WORKSPACE_ID, `pnpm plan fixtures/briefs/demo.brief.json out/demo.graph.json --refresh` records Claude's
-plan, then `UPDATE_GOLDEN=1 pnpm test` rewrites fixtures/demo.graph.json and `pnpm make` re-renders.
+Golden: demo.plan.json is Claude's segmentation (claude-sonnet-5-5, 14 beats). To re-record after changing the brief
+or the prompt: `pnpm plan fixtures/briefs/demo.brief.json out/demo.graph.json --refresh`, then `UPDATE_GOLDEN=1 pnpm
+test` rewrites fixtures/demo.graph.json and `pnpm make fixtures/briefs/demo.brief.json` re-renders (copy the MP4s
+to fixtures/renders/). Planner tests read beat positions from the recorded plan, never fixed indices.
 Not modelled yet: wide visuals (S8 fan, S10 panel) shrink their whole stage at 9:16, titles included; T5 / T3 / T1 /
 T12 / T13 titles don't reflow (brackets follow a single text node; T3 fits its own box), so a long CTA is small at
 9:16; true multi-line text (titles are chunk nodes); per-beat camera moves; video assets (placeholder only).
