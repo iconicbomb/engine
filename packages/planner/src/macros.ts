@@ -33,7 +33,7 @@ export interface Built {
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
 const per = (c: Ctx, ms: number) => Math.round(ms * c.sel.perturb);   // referenceInfluence perturbation of a measured default
 const hex = (a: string, b: string, t: number) => "#" + [1, 3, 5].map((i) => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, "0")).join("");
-const titleStyle = (c: Ctx, scale = 1): TextStyleIn => ({ size: Math.round(c.titleSize * scale * 10) / 10, weight: 700, color: c.brief.tokens.fg });
+const titleStyle = (c: Ctx, scale = 1): TextStyleIn & { size: number } => ({ size: Math.round(c.titleSize * scale * 10) / 10, weight: 700, color: c.brief.tokens.fg });
 
 // ---------------- text macros: the beat's title device ----------------
 type TextOut = { nodes: NodeIn[]; results: MacroResult[]; typedAt: number; width?: { "16:9": number; "9:16": number } };

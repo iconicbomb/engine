@@ -9,7 +9,7 @@
 // (272 → 466 → 328 px) — the pill slides in instead.
 import { CountTrack, formatCount } from "@engine/graph";
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type CountTrackIn, type MacroResult, type NodeIn, type TextStyleIn } from "./macro";
+import { result, sec, type AnchorIn, type CountTrackIn, type MacroResult, type NodeIn, type TextStyleIn, sizeOf } from "./macro";
 
 export interface RipplePillParams {
   id: string;                     // lockup group; <id>-band-<n> > … > <id>-pill > <id>-value, and <id>-pulse
@@ -37,7 +37,7 @@ export function ripplePill(p: RipplePillParams): MacroResult {
   if (!/^#[0-9a-fA-F]{6}$/.test(p.color)) throw new Error(`S2: color must be #RRGGBB (bands add alpha), got ${p.color}`);
   const fmt = { decimals: p.decimals ?? 0, separator: p.separator ?? ",", prefix: p.prefix ?? "", suffix: p.suffix ?? "" };
   const final = formatCount(CountTrack.parse({ mode: "count", prop: "text", from: 0, to: p.to, ...fmt }), p.to);
-  const size = p.style.size;
+  const size = sizeOf(p.style);
   const minH = Math.round(size * 1.6);
   const pad = { padX: p.padX ?? Math.round(size * 0.45), padY: p.padY ?? Math.round(size * 0.2) };
   const bands = p.bands ?? 5, step = p.bandStep ?? 16;

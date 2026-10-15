@@ -56,11 +56,11 @@
           "children": [
             {
               "id": "b1-mascot-body",
-              "type": "image",
-              "src": "mascot.png",
-              "w": 260,
-              "h": 260,
-              "fit": "contain",
+              "type": "rect",
+              "w": 300,
+              "h": 300,
+              "radius": 96,
+              "fill": "tokens.accent",
               "tracks": [
                 {
                   "mode": "tween",
@@ -98,96 +98,274 @@
                   "to": 3,
                   "ease": "emphasis"
                 }
-              ]
-            },
-            {
-              "id": "b1-mascot-blink",
-              "type": "image",
-              "src": "mascot-blink.png",
-              "w": 260,
-              "h": 260,
-              "fit": "contain",
-              "tracks": [
+              ],
+              "children": [
                 {
-                  "mode": "tween",
-                  "prop": "opacity",
-                  "at": 0,
-                  "ms": 0,
-                  "from": 0,
-                  "to": 0,
-                  "ease": "linear"
+                  "id": "b1-mascot-eye-1",
+                  "type": "rect",
+                  "w": 51,
+                  "h": 66,
+                  "radius": 51,
+                  "fill": "#FFFFFF",
+                  "x": -60,
+                  "y": -24,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "opacity",
-                  "at": 1.4,
-                  "ms": 0,
-                  "from": 1,
-                  "to": 1,
-                  "ease": "linear"
+                  "id": "b1-mascot-pupil-1",
+                  "type": "rect",
+                  "w": 26,
+                  "h": 26,
+                  "radius": 26,
+                  "fill": "#14161C",
+                  "x": -54,
+                  "y": -17,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "opacity",
-                  "at": 1.5,
-                  "ms": 0,
-                  "from": 0,
-                  "to": 0,
-                  "ease": "linear"
+                  "id": "b1-mascot-lid-1",
+                  "type": "rect",
+                  "w": 51,
+                  "h": 8,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": -60,
+                  "y": -14,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "y",
-                  "at": 0.7,
-                  "ms": 600,
-                  "from": 0,
-                  "to": -3,
-                  "ease": "emphasis"
+                  "id": "b1-mascot-eye-2",
+                  "type": "rect",
+                  "w": 51,
+                  "h": 66,
+                  "radius": 51,
+                  "fill": "#FFFFFF",
+                  "x": 60,
+                  "y": -24,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "y",
-                  "at": 1.3,
-                  "ms": 600,
-                  "from": -3,
-                  "to": 3,
-                  "ease": "emphasis"
+                  "id": "b1-mascot-pupil-2",
+                  "type": "rect",
+                  "w": 26,
+                  "h": 26,
+                  "radius": 26,
+                  "fill": "#14161C",
+                  "x": 66,
+                  "y": -17,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "y",
-                  "at": 1.9,
-                  "ms": 600,
-                  "from": 3,
-                  "to": -3,
-                  "ease": "emphasis"
+                  "id": "b1-mascot-lid-2",
+                  "type": "rect",
+                  "w": 51,
+                  "h": 8,
+                  "radius": 4,
+                  "fill": "#14161C",
+                  "x": 60,
+                  "y": -14,
+                  "tracks": [
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 0,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.4,
+                      "ms": 0,
+                      "from": 1,
+                      "to": 1,
+                      "ease": "linear"
+                    },
+                    {
+                      "mode": "tween",
+                      "prop": "opacity",
+                      "at": 1.5,
+                      "ms": 0,
+                      "from": 0,
+                      "to": 0,
+                      "ease": "linear"
+                    }
+                  ],
+                  "surface": "flat"
                 },
                 {
-                  "mode": "tween",
-                  "prop": "y",
-                  "at": 2.5,
-                  "ms": 600,
-                  "from": -3,
-                  "to": 3,
-                  "ease": "emphasis"
+                  "id": "b1-mascot-mouth",
+                  "type": "path",
+                  "d": "M -36 0 Q 0 30 36 0",
+                  "stroke": "#14161C",
+                  "y": 66,
+                  "strokeWidth": 11
                 }
-              ]
+              ],
+              "surface": "card"
             },
             {
               "id": "b1-mascot-wordmark",
               "type": "text",
               "text": "Lumi",
               "style": {
-                "size": 150,
+                "size": 170,
                 "weight": 800,
                 "align": "left"
               },
-              "x": 190,
+              "x": 218,
               "clip": {
                 "x": 0,
-                "y": -150,
+                "y": -170,
                 "w": 0,
-                "h": 300
+                "h": 340
               },
               "tracks": [
                 {
@@ -196,7 +374,7 @@
                   "at": 0.65,
                   "ms": 300,
                   "from": 0,
-                  "to": 420,
+                  "to": 475.99999999999994,
                   "ease": "settle"
                 }
               ]

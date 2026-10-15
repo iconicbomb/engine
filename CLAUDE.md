@@ -45,6 +45,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
+Look layer (phase 1.5) in on branch look-layer: field, surfaces, type roles, wrap, extrusion, vector mascot, gates, promo.
 Phase 1 macros complete: T1–T14, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); showcase built; `pnpm test` 139 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Phase 5 planner in: packages/planner, golden brief fixtures/briefs/demo.brief.json -> fixtures/demo.graph.json,
@@ -353,6 +354,49 @@ T12 / T13 titles don't reflow (brackets follow a single text node; T3 fits its o
   (shaper + runtime, no canvas) to assert the framed card stays fully inside the canvas at 9:16 and 16:9.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
+
+## Look layer (phase 1.5, branch look-layer, 2026-10-15 — built by Claude in the cloud session with a visual loop)
+Why: the first showcase was a wireframe — only R3 had been compared to real footage; every other macro was built from
+the spec's text and judged by "tests pass". The look layer is what the references have around the motion.
+- **Background field** (`graph.style.field`, per-beat `beat.field`): `mode auto` (default) draws, when a beat has no
+  explicit glows, the R3-measured two-glow profile (bottom 0.39 / top 0.2 × `glow`) tinted from `tokens.glow` or a
+  deepened accent (same hue, S >= 0.85, L 0.26 — R3: accent #8FBBFF -> glow #0A2EDC), then a vignette (`vignette`,
+  default 0.18, radial from 55 % of the half-diagonal) over the background, and a deterministic grain (`grain`, default
+  0.025: a 256 px xorshift tile at a per-frame hashed offset) over the finished frame in `renderFrame` (both paths).
+  `mode none` = flat. R3 sets `style.field.mode: "none"` and keeps its explicit glows: pixel-identical (local baseline).
+- **Surfaces** (`rect.surface: auto | card | pill | button | flat`): card / pill / button = black shadow
+  (card 0/12/40 @ 45 %), an accent under-glow when the fill is the accent or a saturated mid-tone, a vertical gradient
+  (+6 % lightness at the top), a 1 px white border 14 % -> 4 %, a 1 px top highlight. `auto` picks by height (>= 120
+  card, <= 48 pill, between button; < 20 px or translucent / missing fill = flat). Canvas shadows ignore the transform,
+  so blur / offset are scaled by the live device scale. SURFACES in canvas2d.ts holds the numbers.
+- **Type roles** (`TextStyle.role: display | headline | body | label`; `size` is now optional — a style needs a size or
+  a role): sizes are fractions of `roleBase = min(H, 1.25 W)` (display 0.16, headline 0.095, body 0.034, label 0.026),
+  with the role's weight / tracking / text alpha (0.92 / 0.92 / 0.70 / 0.55) and uppercase labels; explicit
+  size / weight / tracking / color win. `resolveTextStyle` (@engine/graph) is the one resolver; macros use `sizeOf`
+  (role at 1920 x 1080) for their own layout maths.
+- **Word wrap** (`text.wrap { maxWidth, lineHeight (em, 1.15), overrides["9:16"].maxWidth }`): greedy breaks at
+  spaces, lines aligned by `style.align`, block centred on the anchor; fit measures the wrapped block; typewriter,
+  per-glyph tracks, bloom, caret (on the last visible line) and extrusion all follow the lines. One-line text is
+  bit-for-bit the old layout. This is what makes 9:16 work — portrait headlines wrap instead of shrinking to 30 px.
+- **Extrusion** (`TextStyle.extrude { depth, dx, dy, color }`, animatable `extrude.depth`): stacked outline copies
+  behind the face (S11 now uses real glyphs, not seven-segment slabs).
+- **Vector mascot** (S16 without `src`): rounded body (surface card -> under-glow), eyes + pupils, smile, blinks as a
+  dark lid line (0 ms holds). Image mascots still work with `src` / `blinkSrc`.
+- **Gates** (`pnpm gates`, tools/gates.mjs — needs a Chromium): per beat, at both aspects, at the hold time: fill
+  ratio of the top-level nodes' union box (gate >= 30 % for UI beats — rects >= 200 px / images / wires; text beats
+  are reported) and the accent share of lit non-background pixels (report; guide <= 35 % outside hover fills and
+  numerals — R7's hover fill and R6's numerals are intentionally above any budget). The first guesses (45 % / 15 %)
+  were measured against the promo and were wrong for text beats and for accent-tinted fields; see the file header.
+- **Promo** (`packages/patterns/scenes/promo.ts` -> fixtures/promo.graph.json, `pnpm render:promo` -> out/promo-16x9.mp4
+  + out/promo-9x16.mp4): the look-layer acceptance scene — a ~43 s film for an invented product ("Lumen"), ten beats
+  on the seven-beat grammar, every beat stacking >= 3 devices, real copy, roles, field, surfaces, transitions, camera.
+  Not part of the showcase (which stays the catalogue) and excluded from the default render-check.
+- **Reference gate (H)**: docs/reference-segments.md lists the clip + time range for every macro and holds the per-macro
+  SSIM table. Only R3 has a number so far; every other macro still needs its segment fixture and its compare run.
+- tools/render-local.mjs `--times a,b,c` renders single frames to a directory (the look loop: render, look, adjust).
+- Known: grain at 0.025 does not fully hide 8-bit banding in the deepened glows on very dark backgrounds (visible as
+  faint rings at 100 %); the real fix is phase 6's linear-light, dithered glow pipeline. Shadows + grain make
+  render-local ~3x slower.
 
 ## Conventions
 TypeScript strict everywhere; no default exports except the Remotion root; tests are plain tsx scripts that

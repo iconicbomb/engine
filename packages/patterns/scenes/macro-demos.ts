@@ -233,9 +233,9 @@ export function buildImageSlotsDemo() {
 
 // S16 demo: the mascot drops in, its wordmark wipes out of it, then it bobs and blinks
 export function buildS16Demo() {
-  const m = mascot({ id: "b1-mascot", src: "mascot.png", blinkSrc: "mascot-blink.png", w: 260, h: 260, at: 0.2, until: 3.4,
+  const m = mascot({ id: "b1-mascot", w: 300, h: 300, at: 0.2, until: 3.4,
     anchor: { x: 0.36, y: 0.5, overrides: { "9:16": { x: 0.22, y: 0.5, scale: 0.6 } } },
-    wordmark: { text: "Lumi", style: { size: 150, weight: 800 } } });
+    wordmark: { text: "Lumi", style: { size: 170, weight: 800 } } });
   return demo("Meet Lumi", 3.4, m.nodes, [m]);
 }
 
@@ -250,8 +250,8 @@ export function buildS7Demo() {
 
 // S11 demo: "3" assembles from slabs and scales up, the camera flies into a slab, a crossfade lands on "4"
 export function buildS11Demo() {
-  const three = slabNumeral({ id: "b1-num", value: "3", size: 520, at: 0.2, flyThrough: { at: 2.0 } });
-  const four = slabNumeral({ id: "b2-num", value: "4", size: 520, at: 0.15, face: "#3D5AFE", side: "#1C2A80" });
+  const three = slabNumeral({ id: "b1-num", value: "3", size: 760, at: 0.2, flyThrough: { at: 2.0 } });
+  const four = slabNumeral({ id: "b2-num", value: "4", size: 760, at: 0.15, face: "#3D5AFE", side: "#1C2A80" });
   return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats: [
     { id: "b1", type: "feature", start: 0, duration: 2.4, script: "Three", nodes: applyEdits(three.nodes, [three]), glows: [], camera: { tracks: three.camera } },
     { id: "b2", type: "feature", start: 2.4, duration: 1.4, script: "Four", background: "#10213A", transition: { type: "crossfade" }, nodes: applyEdits(four.nodes, [four]), glows: [] },

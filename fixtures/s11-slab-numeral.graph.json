@@ -40,239 +40,48 @@
           "children": [
             {
               "id": "b1-num-d1",
-              "type": "group",
-              "tracks": [],
-              "children": [
+              "type": "text",
+              "text": "3",
+              "style": {
+                "size": 760,
+                "weight": 800,
+                "color": "tokens.accent",
+                "tracking": 0,
+                "extrude": {
+                  "depth": 46,
+                  "dx": 0.55,
+                  "dy": 0.55
+                }
+              },
+              "rotY": 90,
+              "opacity": 0,
+              "tracks": [
                 {
-                  "id": "b1-num-d1-a",
-                  "type": "group",
-                  "y": -221,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.2,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.2,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b1-num-d1-a-side",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "#7A3E14",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b1-num-d1-a-face",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "tokens.accent"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "rotY",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 90,
+                  "to": 0,
+                  "ease": "settle"
                 },
                 {
-                  "id": "b1-num-d1-b",
-                  "type": "group",
-                  "x": 112,
-                  "y": -130,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.27,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.27,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b1-num-d1-b-side",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#7A3E14",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b1-num-d1-b-face",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "tokens.accent"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.2,
+                  "ms": 120,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "linear"
                 },
                 {
-                  "id": "b1-num-d1-g",
-                  "type": "group",
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.34,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.34,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b1-num-d1-g-side",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "#7A3E14",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b1-num-d1-g-face",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "tokens.accent"
-                    }
-                  ]
-                },
-                {
-                  "id": "b1-num-d1-c",
-                  "type": "group",
-                  "x": 112,
-                  "y": 130,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.41,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.41,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b1-num-d1-c-side",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#7A3E14",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b1-num-d1-c-face",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "tokens.accent"
-                    }
-                  ]
-                },
-                {
-                  "id": "b1-num-d1-d",
-                  "type": "group",
-                  "y": 221,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.48,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.48,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b1-num-d1-d-side",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "#7A3E14",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b1-num-d1-d-face",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "tokens.accent"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "extrude.depth",
+                  "at": 0.2,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 46,
+                  "ease": "settle"
                 }
               ]
             }
@@ -286,9 +95,13 @@
             "mode": "frame",
             "at": 2,
             "ms": 400,
-            "target": "b1-num-d1-g",
+            "target": "b1-num-d1",
             "size": 12,
-            "ease": "emphasis"
+            "ease": "emphasis",
+            "offset": {
+              "x": 0,
+              "y": 0.1
+            }
           }
         ]
       }
@@ -325,194 +138,49 @@
           "children": [
             {
               "id": "b2-num-d1",
-              "type": "group",
-              "tracks": [],
-              "children": [
+              "type": "text",
+              "text": "4",
+              "style": {
+                "size": 760,
+                "weight": 800,
+                "color": "#3D5AFE",
+                "tracking": 0,
+                "extrude": {
+                  "depth": 46,
+                  "dx": 0.55,
+                  "dy": 0.55,
+                  "color": "#1C2A80"
+                }
+              },
+              "rotY": 90,
+              "opacity": 0,
+              "tracks": [
                 {
-                  "id": "b2-num-d1-f",
-                  "type": "group",
-                  "x": -112,
-                  "y": -130,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.15,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.15,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b2-num-d1-f-side",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#1C2A80",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b2-num-d1-f-face",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#3D5AFE"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "rotY",
+                  "at": 0.15,
+                  "ms": 400,
+                  "from": 90,
+                  "to": 0,
+                  "ease": "settle"
                 },
                 {
-                  "id": "b2-num-d1-g",
-                  "type": "group",
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.22,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.22,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b2-num-d1-g-side",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "#1C2A80",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b2-num-d1-g-face",
-                      "type": "rect",
-                      "w": 276,
-                      "h": 78,
-                      "radius": 16,
-                      "fill": "#3D5AFE"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.15,
+                  "ms": 120,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "linear"
                 },
                 {
-                  "id": "b2-num-d1-b",
-                  "type": "group",
-                  "x": 112,
-                  "y": -130,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.29,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.29,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b2-num-d1-b-side",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#1C2A80",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b2-num-d1-b-face",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#3D5AFE"
-                    }
-                  ]
-                },
-                {
-                  "id": "b2-num-d1-c",
-                  "type": "group",
-                  "x": 112,
-                  "y": 130,
-                  "rotY": 90,
-                  "tracks": [
-                    {
-                      "mode": "tween",
-                      "prop": "rotY",
-                      "at": 0.36,
-                      "ms": 400,
-                      "from": 90,
-                      "to": 0,
-                      "ease": "settle"
-                    },
-                    {
-                      "mode": "tween",
-                      "prop": "opacity",
-                      "at": 0.36,
-                      "ms": 120,
-                      "from": 0,
-                      "to": 1,
-                      "ease": "linear"
-                    }
-                  ],
-                  "children": [
-                    {
-                      "id": "b2-num-d1-c-side",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#1C2A80",
-                      "x": 26,
-                      "y": 26
-                    },
-                    {
-                      "id": "b2-num-d1-c-face",
-                      "type": "rect",
-                      "w": 78,
-                      "h": 234,
-                      "radius": 16,
-                      "fill": "#3D5AFE"
-                    }
-                  ]
+                  "mode": "tween",
+                  "prop": "extrude.depth",
+                  "at": 0.15,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 46,
+                  "ease": "settle"
                 }
               ]
             }

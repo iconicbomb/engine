@@ -2,6 +2,7 @@
 // pattern of the spec's library (T1–T14, S1–S16) into plain scene-graph data. The runtime never sees pattern ids;
 // it only sees the nodes and tracks emitted here (spec: "Engine architecture and scene-graph format").
 import type { z } from "zod";
+import { resolveTextStyle } from "@engine/graph";
 import type { TextNode, RectNode, BracketNode, TextStyle, Fit, Anchor, Layout, Spring, TweenTrack, TypewriterTrack, SweepTrack, CountTrack, MoveToTrack, PressTrack, OnHoverTrack, CursorNode, FrameTrack, PathNode, WireNode, ImageNode, Transition, Beat } from "@engine/graph";
 
 // Macros emit the graph's *input* form (defaults may be omitted), exactly what a hand-written fixture contains.
@@ -53,3 +54,7 @@ export const result = (r: Partial<MacroResult>): MacroResult => ({ nodes: r.node
 
 /** Beat-local seconds, rounded to the microsecond so `2.0 + 80ms` serialises as 2.08, not 2.0799999999999996. */
 export const sec = (s: number) => Math.round(s * 1e6) / 1e6;
+
+/** The nominal px size of a style for a macro's own layout maths (label widths, gaps): the explicit size, else the
+ *  role's size at the 16:9 reference canvas (1920 x 1080). The runtime resolves the live size per aspect. */
+export const sizeOf = (style: TextStyleIn): number => resolveTextStyle(style, 1920, 1080).size;

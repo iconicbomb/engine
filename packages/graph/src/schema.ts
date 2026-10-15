@@ -183,12 +183,38 @@ const NodeBase = z.object({
   tracks: z.array(Track).default([]),
 });
 
+// Type roles (look layer): a role sets size, weight, tracking and text alpha from the canvas instead of raw numbers,
+// so one graph keeps its hierarchy at 16:9 and 9:16. Fractions are of roleBase = min(H, 1.25 W).
+// Explicit size / weight / tracking / color on the style always win over the role.
+export const TextRole = z.enum(["display", "headline", "body", "label"]);
+export type TextRole = z.infer<typeof TextRole>;
+export const ROLE_SPECS: Record<TextRole, { size: number; weight: number; tracking: number; alpha: number; uppercase: boolean }> = {
+  display:  { size: 0.16,  weight: 700, tracking: -0.03, alpha: 0.92, uppercase: false },
+  headline: { size: 0.095, weight: 650, tracking: -0.02, alpha: 0.92, uppercase: false },
+  body:     { size: 0.034, weight: 450, tracking: 0,     alpha: 0.70, uppercase: false },
+  label:    { size: 0.026, weight: 500, tracking: 0.04,  alpha: 0.55, uppercase: true },
+};
+export function roleBase(w: number, h: number): number { return Math.min(h, 1.25 * w); }
+// the numbers the renderer uses for a style on a canvas of w x h graph units
+export function resolveTextStyle(style: { role?: TextRole; size?: number; weight?: number; tracking?: number; color?: string }, w: number, h: number) {
+  const r = style.role ? ROLE_SPECS[style.role] : null;
+  return {
+    size: style.size ?? (r ? r.size * roleBase(w, h) : 48),
+    weight: style.weight ?? r?.weight ?? 500,
+    tracking: style.tracking ?? r?.tracking ?? 0,
+    color: style.color ?? "tokens.text",
+    alpha: style.color || !r ? 1 : r.alpha,
+    uppercase: r?.uppercase ?? false,
+  };
+}
+
 export const TextStyle = z.object({
   font: z.string().default("tokens.font"),
-  size: z.number().positive(),            // px at the canvas's reference height
-  weight: z.number().int().min(100).max(900).default(500),
-  tracking: z.number().default(0),        // em
-  color: Color.default("tokens.text"),
+  role: TextRole.optional(),
+  size: z.number().positive().optional(), // px at the canvas's reference height; required unless a role is set
+  weight: z.number().int().min(100).max(900).optional(),   // default 500, or the role's
+  tracking: z.number().optional(),        // em; default 0, or the role's
+  color: Color.optional(),                // default tokens.text (at the role's alpha when a role is set)
   align: z.enum(["left", "center", "right"]).default("center"),
   // variable-font axes, animatable as "axis.slnt" etc.
   axes: z.record(z.string(), z.number()).default({}),
@@ -197,7 +223,10 @@ export const TextStyle = z.object({
   // horizontal gradient across the run (from -> to), mixed over the body colour by `amount` (animatable as
   // "gradient.amount": 1 = full gradient, 0 = body colour; T7 gradient -> white settle). Hex colours or tokens.
   gradient: z.object({ from: Color, to: Color, amount: z.number().min(0).max(1).default(1) }).optional(),
-});
+  // 3D extrusion (S11 slab numerals, R6): `depth` copies of each glyph stacked along (dx, dy) px per unit depth behind
+  // the face in `color` (default: the body colour at -40 % lightness); animatable as "extrude.depth".
+  extrude: z.object({ depth: z.number().min(0).default(24), dx: z.number().default(0.6), dy: z.number().default(0.6), color: Color.optional() }).optional(),
+}).refine((s) => s.size !== undefined || s.role !== undefined, { message: "text style needs a size or a role" });
 
 export const TextNode = NodeBase.extend({
   type: z.literal("text"),
@@ -207,6 +236,14 @@ export const TextNode = NodeBase.extend({
   shaping: z.enum(["harfbuzz", "browser"]).default("harfbuzz"),
   // eased recentre: time constant (ms) with which the run's centre follows a typewriter's growth; 0 = jump (T4)
   recenterEaseMs: z.number().min(0).default(0),
+  // word wrap (look layer): lines break greedily at spaces so the block stays within maxWidth (px, graph units; also
+  // clamped to the 90 % safe width); lineHeight in em; maxWidth can be overridden per aspect (9:16 wraps narrower).
+  // The block is centred vertically on the anchor; each line is aligned by style.align. Omitted = one line (fit scales).
+  wrap: z.object({
+    maxWidth: z.number().positive(),
+    lineHeight: z.number().positive().default(1.15),
+    overrides: z.record(z.enum(["16:9", "9:16"]), z.object({ maxWidth: z.number().positive() })).optional(),
+  }).optional(),
 });
 
 export const RectNode = NodeBase.extend({
@@ -216,6 +253,10 @@ export const RectNode = NodeBase.extend({
   radius: z.number().min(0).default(0),
   fill: Color.optional(),
   stroke: z.object({ color: Color, width: z.number().positive() }).optional(),
+  // Surface treatment (look layer): card / pill / button = gradient fill, 1 px light border, top highlight, shadow,
+  // and an under-glow when the fill is the accent. auto picks by size (card >= 120 px tall, pill <= 48, button
+  // between, flat under 20 px or for translucent / missing fills). flat = the bare fill + stroke.
+  surface: z.enum(["auto", "card", "pill", "button", "flat"]).default("auto"),
   // sit beside an earlier sibling text node's edge, scaled with its fit (T13 logo mark); anchor is ignored
   follows: z.object({ node: z.string(), edge: z.enum(["left", "right"]), gap: z.number().default(0) }).optional(),
   // children draw on top of the rect, positioned relative to its centre (like a group's)
@@ -335,8 +376,22 @@ export const Transition = z.object({
 });
 export type Transition = z.infer<typeof Transition>;
 
+// Background field (look layer). auto: when a beat has no explicit glows, two radial glows derived from the glow
+// colour (tokens.glow, else tokens.accent) at the R3-measured profile (bottom 0.39, top 0.2, scaled by `glow`), then a
+// vignette (edge darkening) over the background and a deterministic grain over the finished frame. none: flat.
+export const Field = z.object({
+  mode: z.enum(["auto", "none"]).default("auto"),
+  glow: z.number().min(0).max(3).default(1),
+  glowColor: Color.optional(),
+  vignette: z.number().min(0).max(1).default(0.18),
+  grain: z.number().min(0).max(0.2).default(0.025),
+});
+export type Field = z.infer<typeof Field>;
+export const Style = z.object({ field: Field.default({}) });
+
 export const Beat = z.object({
   id: z.string().regex(/^b[0-9]+$/),
+  field: Field.optional(),                // overrides graph.style.field for this beat
   // the spec's seven beats plus "tag" (the closing tagline the planner's grammar ends on)
   type: z.enum(["hook", "pain", "reveal", "feature", "proof", "summary", "cta", "tag"]),
   start: z.number().min(0),
@@ -375,6 +430,7 @@ export const Graph = z.object({
     fps: z.number().positive().default(30),
   }),
   tokens: z.record(z.string(), z.string()),
+  style: Style.default({}),
   timing: Timing.default({}),
   dials: z.object({
     luminance: z.number().min(0).max(1), glow: z.number().min(0).max(1), dimensionality: z.number().min(0).max(1),

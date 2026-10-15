@@ -4,7 +4,7 @@
 // centred on the moment the scroll brings the section to the viewport centre, then fade as it scrolls on. Text snaps
 // to the left edge of a grid column. Not modelled yet: multi-line body copy (text nodes are single-line).
 import { group } from "./assemble";
-import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, type TweenTrackIn } from "./macro";
+import { result, sec, type AnchorIn, type MacroResult, type NodeIn, type TextStyleIn, type TweenTrackIn , sizeOf } from "./macro";
 
 export interface ScrollSectionsParams {
   id: string;                     // page <id>; sections <id>-s<n> with <id>-s<n>-head / <id>-s<n>-body
@@ -38,8 +38,8 @@ export function scrollSections(p: ScrollSectionsParams): MacroResult {
       return { id, type: "text", text, style: { ...style, align: "left" }, x, y, tracks };
     };
     return group({ id: `${p.id}-s${i + 1}`, y: i * hgt }, [
-      piece(`${p.id}-s${i + 1}-head`, s.headline, p.headStyle, -Math.round(p.headStyle.size * 0.45), 0),
-      piece(`${p.id}-s${i + 1}-body`, s.body, p.bodyStyle, Math.round(p.headStyle.size * 0.55), 0.07),
+      piece(`${p.id}-s${i + 1}-head`, s.headline, p.headStyle, -Math.round(sizeOf(p.headStyle) * 0.45), 0),
+      piece(`${p.id}-s${i + 1}-body`, s.body, p.bodyStyle, Math.round(sizeOf(p.headStyle) * 0.55), 0.07),
     ]);
   });
   const scroll: TweenTrackIn = { mode: "tween", prop: "y", at: p.at, ms: Math.round((n - 1) * per * 1000), from: 0, to: -(n - 1) * hgt, ease: "linear" };

@@ -3,7 +3,7 @@
 // Emits the card (a rect with a title and row texts as children) and the cursor's moveTo onto it, so the rows' wipe
 // starts exactly when the cursor arrives. The fill is an onHover track (it reverts when the cursor moves on); the rows
 // stay revealed. Uses the cursor system: moveTo, onHover, clip.
-import { result, sec, type MacroResult, type NodeIn, type TextStyleIn } from "./macro";
+import { result, sec, type MacroResult, type NodeIn, type TextStyleIn, sizeOf } from "./macro";
 
 export interface HoverFillCardParams {
   id: string;                     // card rect; children <id>-title, <id>-row-<n>
@@ -30,13 +30,13 @@ export function hoverFillCard(p: HoverFillCardParams): MacroResult {
   const rowStyle = p.rowStyle ?? { size: 30, weight: 500, align: "left" as const };
   const stagger = p.rowStaggerMs ?? 40, rowsMs = p.rowsMs ?? 300;
   const wipeMs = Math.max(1, rowsMs - stagger * (p.rows.length - 1));        // each row's wipe, so the set ends in rowsMs
-  const pad = Math.round(p.w * 0.1), left = -p.w / 2 + pad, rowGap = Math.round(rowStyle.size * 1.5);
-  const top = -p.h / 2 + pad + titleStyle.size / 2;
+  const pad = Math.round(p.w * 0.1), left = -p.w / 2 + pad, rowGap = Math.round(sizeOf(rowStyle) * 1.5);
+  const top = -p.h / 2 + pad + sizeOf(titleStyle) / 2;
   const rows: NodeIn[] = p.rows.map((text, i) => ({
     id: `${p.id}-row-${i + 1}`, type: "text", text, style: rowStyle,
-    x: left, y: top + titleStyle.size * 0.9 + rowGap * (i + 1),
+    x: left, y: top + sizeOf(titleStyle) * 0.9 + rowGap * (i + 1),
     // clip in the row's local space: the run starts at x 0 (left aligned); caps are centred on y 0
-    clip: { x: 0, y: -rowStyle.size, w: 0, h: rowStyle.size * 2 },
+    clip: { x: 0, y: -sizeOf(rowStyle), w: 0, h: sizeOf(rowStyle) * 2 },
     tracks: [{ mode: "tween", prop: "clip.w", at: sec(arrive + (i * stagger) / 1000), ms: wipeMs, from: 0, to: p.w - 2 * pad, ease: "settle" }],
   }));
   const card: NodeIn = {

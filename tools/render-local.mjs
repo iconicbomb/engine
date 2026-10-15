@@ -2,6 +2,7 @@
 // usage: node tools/render-local.mjs fixtures/r3-hook.graph.json out/r3-local.mp4 [--fps 30] [--height 1080] [--chrome PATH]
 //        [--aspect 16:9|9:16]  render at this aspect whatever the graph says
 //        [--no-frames]         pipe PNGs straight into ffmpeg (no out/frames-local; for long graphs like the showcase)
+//        [--times 1.2,3.4]     render only these seconds as PNGs (<outPath> is then a directory) — the look-layer loop
 import { chromium } from "playwright";
 import { existsSync, readFileSync, readdirSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { execSync, spawn } from "node:child_process";
@@ -25,7 +26,8 @@ const bundle = readFileSync("out/engine.browser.js", "utf8");
 const graph = JSON.parse(readFileSync(graphPath, "utf8"));
 const aspect = arg("--aspect", undefined);
 if (aspect) { if (aspect !== "16:9" && aspect !== "9:16") throw new Error(`--aspect must be 16:9 or 9:16, got ${aspect}`); graph.canvas = { ...graph.canvas, aspect }; }
-const keepFrames = !process.argv.includes("--no-frames");
+const times = arg("--times", undefined)?.split(",").map(Number);
+const keepFrames = !process.argv.includes("--no-frames") && !times;
 const fps = graph.canvas?.fps ?? 30;
 const last = graph.beats[graph.beats.length - 1];
 const frames = Math.ceil((last.start + last.duration) * fps);
@@ -47,7 +49,7 @@ if (keepFrames) {
   mkdirSync(dir, { recursive: true });
 }
 const ffmpegArgs = ["-v", "error", "-y", "-framerate", String(fps)];
-const pipe = keepFrames ? null : spawn("ffmpeg", [...ffmpegArgs, "-f", "image2pipe", "-i", "-", "-c:v", "libx264", "-crf", "16", "-pix_fmt", "yuv420p", outPath], { stdio: ["pipe", "inherit", "inherit"] });
+const pipe = keepFrames || times ? null : spawn("ffmpeg", [...ffmpegArgs, "-f", "image2pipe", "-i", "-", "-c:v", "libx264", "-crf", "16", "-pix_fmt", "yuv420p", outPath], { stdio: ["pipe", "inherit", "inherit"] });
 const piped = pipe ? new Promise((res, rej) => { pipe.on("close", (c) => (c === 0 ? res() : rej(new Error(`ffmpeg exited ${c}`)))); }) : null;
 
 const browser = await chromium.launch({ executablePath: chromePath || undefined, args: ["--no-sandbox"] });
@@ -67,6 +69,21 @@ await page.evaluate(async ({ assets, graph, images }) => {
 }, { assets, graph, images });
 
 const t0 = Date.now();
+if (times) {
+  mkdirSync(outPath, { recursive: true });
+  const stem = path.basename(graphPath).replace(/\.graph\.json$/, "");
+  for (const tSec of times) {
+    const dataUrl = await page.evaluate(({ tSec, width, height }) => {
+      const c = document.getElementById("c");
+      window.__rt.renderFrame(window.__graph, tSec, { width, height, ctx: window.__ctx });
+      return c.toDataURL("image/png");
+    }, { tSec, width, height });
+    writeFileSync(path.join(outPath, `${stem}-${graph.canvas.aspect.replace(":", "x")}-${tSec.toFixed(2)}.png`), Buffer.from(dataUrl.split(",")[1], "base64"));
+  }
+  await browser.close();
+  console.log(`rendered ${times.length} frames to ${outPath}`);
+  process.exit(0);
+}
 for (let f = 0; f < frames; f++) {
   const dataUrl = await page.evaluate(({ f, fps, width, height }) => {
     const c = document.getElementById("c");
