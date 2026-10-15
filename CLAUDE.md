@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 in progress: T1–T6, T12, T13, S1, S2, S15 done (see below); `pnpm test` 54 ok, `pnpm typecheck` clean,
+Phase 1 in progress: T1–T6, T10, T12, T13, S1, S2, S15 done (see below); `pnpm test` 58 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -65,9 +65,10 @@ T12 (reveal), S15 (ambient glows with fade-in), T2 (tail typewriter; "last N cha
 T4 (word append, eased recentre settling within the 230 ms word cadence), T6 (colour sweep / keyword hold),
 T13 (logo-anchored typewriter, emits a lockup group), S1 (card/panel rise + child population),
 S2 (ripple pill: sized to its tnum counter, nested bands with alpha fills, spring slide-in, linear counter,
-completion pulse; `color` must be hex because nested opacity multiplies).
+completion pulse; `color` must be hex because nested opacity multiplies), T10 (echo trail: copies at 60/40/25/15 %
+fan out over 400 ms as the word shrinks and recedes; primitives only).
 The R3 fixture is generated from five calls (T1, T3, T5, T12, S15) and is byte-identical to the old hand-written
-JSON; each other macro has a demo fixture (`fixtures/{s1,s2,s15,t2,t4,t6,t13}-*.graph.json`). test-patterns.ts fails if
+JSON; each other macro has a demo fixture (`fixtures/{s1,s2,s15,t2,t4,t6,t10,t13}-*.graph.json`). test-patterns.ts fails if
 any committed fixture drifts from its scene builder.
 Runtime/schema additions made for these devices (all optional or defaulting to the old behaviour):
 typewriter `tail.strength` (T2; was a hard-coded 0.35), `unit: "word"` (T4), `out` un-type (T13);
@@ -85,7 +86,7 @@ Not modelled yet: T13's mark split/widen and R7's wordmark wipe; S15's god-rays,
 fit (text + mark) — T13 and S1/S2 demos scale down at 9:16 via anchor overrides instead; S1's 3D perspective
 (phase-6 plane layer); S2's pill *width* spring (it slides instead). S2's pulse ring wraps an invisible copy of the
 counter, since a rect can only size to its own children.
-NEXT: T10, T11 per the spec's build order.
+NEXT: T11 per the spec's build order.
 Open: the spec's timing table lists `bounce` as spring(170, 14, 1); this file and the schema use the measured
 spring(700, 18, 1), which T5 follows. Fix the spec table.
 

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, colourSweep, echoTrail, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -88,6 +88,16 @@ assert(pill.sizeToContent && pill.children[0].id === "b1-p-value" && byId("b1-p-
 assert(byId("b1-p-value").style.features.includes("tnum") && byId("b1-p-pulse").sizeToContent && byId("b1-p-pulse-measure").opacity === 0,
   "S2: tabular digits; pulse ring sized to an invisible copy of the counter");
 assert(throws(() => ripplePill({ id: "b1-p", at: 0, to: 1, style: { size: 10 }, color: "tokens.accent" })), "S2: token colour rejected (bands need hex + alpha)");
+
+// T10: 4 copies at 60/40/25/15 %, fanning out over 400 ms behind a word that shrinks; faintest drawn first
+const t10: any = echoTrail({ id: "b1-e", text: "Scale", style: { size: 200 }, at: 0.4, travel: 100, fadeAt: 1.2 }).nodes[0];
+const ech = t10.children.slice(0, -1);
+assert(ech.map((c: any) => c.id).join() === "b1-e-echo-4,b1-e-echo-3,b1-e-echo-2,b1-e-echo-1" && t10.children.at(-1).id === "b1-e-word",
+  "T10: copies drawn faintest-first beneath the word");
+assert(ech.map((c: any) => c.tracks[1].to).join() === "0.15,0.25,0.4,0.6" && ech[3].tracks[0].to === 80 && ech[0].tracks[0].to === 320 && ech[0].tracks[0].ms === 400,
+  "T10: opacities 60/40/25/15 %, copies spaced 0.4 em (80 px) along y over 400 ms");
+assert(t10.tracks[0].to === 0.6 && t10.tracks[1].to === -100 && ech[0].tracks[2].at === 1.2,
+  "T10: word shrinks to 0.6 and recedes opposite the trail; trail fades at fadeAt");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

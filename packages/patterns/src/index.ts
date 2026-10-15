@@ -11,3 +11,4 @@ export { colourSweep, type ColourSweepParams } from "./t6-colour-sweep";
 export { logoTypewriter, type LogoTypewriterParams } from "./t13-logo-typewriter";
 export { cardRise, type CardRiseParams, type CardSpec } from "./s1-card-rise";
 export { ripplePill, type RipplePillParams } from "./s2-ripple-pill";
+export { echoTrail, type EchoTrailParams } from "./t10-echo-trail";

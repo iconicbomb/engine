@@ -1,0 +1,224 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 2,
+      "script": "Scale",
+      "nodes": [
+        {
+          "id": "b1-scale",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.8
+              }
+            }
+          },
+          "tracks": [
+            {
+              "mode": "tween",
+              "prop": "scale",
+              "at": 0.4,
+              "ms": 400,
+              "from": 1,
+              "to": 0.55,
+              "ease": "emphasis"
+            },
+            {
+              "mode": "tween",
+              "prop": "y",
+              "at": 0.4,
+              "ms": 400,
+              "from": 0,
+              "to": -140,
+              "ease": "emphasis"
+            }
+          ],
+          "children": [
+            {
+              "id": "b1-scale-echo-4",
+              "type": "text",
+              "text": "Scale",
+              "style": {
+                "size": 200,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 320,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.15,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.3,
+                  "ms": 200,
+                  "from": 0.15,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b1-scale-echo-3",
+              "type": "text",
+              "text": "Scale",
+              "style": {
+                "size": 200,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 240,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.25,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.3,
+                  "ms": 200,
+                  "from": 0.25,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b1-scale-echo-2",
+              "type": "text",
+              "text": "Scale",
+              "style": {
+                "size": 200,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 160,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.4,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.3,
+                  "ms": 200,
+                  "from": 0.4,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b1-scale-echo-1",
+              "type": "text",
+              "text": "Scale",
+              "style": {
+                "size": 200,
+                "weight": 700
+              },
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 80,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.4,
+                  "ms": 400,
+                  "from": 0,
+                  "to": 0.6,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 1.3,
+                  "ms": 200,
+                  "from": 0.6,
+                  "to": 0,
+                  "ease": "settle"
+                }
+              ]
+            },
+            {
+              "id": "b1-scale-word",
+              "type": "text",
+              "text": "Scale",
+              "style": {
+                "size": 200,
+                "weight": 700
+              }
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

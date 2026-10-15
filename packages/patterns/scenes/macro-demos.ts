@@ -1,6 +1,6 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
-import { ambientGlow, applyEdits, cardRise, colourSweep, logoTypewriter, ripplePill, tailTypewriter, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, colourSweep, echoTrail, logoTypewriter, ripplePill, tailTypewriter, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -65,4 +65,12 @@ export function buildS2Demo() {
     anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
   });
   return demo("17,000+ models", 2.4, pill.nodes, [pill]);
+}
+
+export function buildT10Demo() {
+  const echo = echoTrail({
+    id: "b1-scale", text: "Scale", style: { size: 200, weight: 700 }, at: 0.4, toScale: 0.55, travel: 140, fadeAt: 1.3,
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
+  });
+  return demo("Scale", 2.0, echo.nodes, [echo]);
 }
