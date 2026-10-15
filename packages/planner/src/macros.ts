@@ -33,34 +33,63 @@ export interface Built {
 const r3 = (v: number) => Math.round(v * 1000) / 1000;
 const per = (c: Ctx, ms: number) => Math.round(ms * c.sel.perturb);   // referenceInfluence perturbation of a measured default
 const hex = (a: string, b: string, t: number) => "#" + [1, 3, 5].map((i) => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, "0")).join("");
-const titleStyle = (c: Ctx, scale = 1): TextStyleIn => ({ size: Math.round(c.titleSize * scale), weight: 700, color: c.brief.tokens.fg });
+const titleStyle = (c: Ctx, scale = 1): TextStyleIn => ({ size: Math.round(c.titleSize * scale * 10) / 10, weight: 700, color: c.brief.tokens.fg });
 
 // ---------------- text macros: the beat's title device ----------------
-type TextOut = { nodes: NodeIn[]; results: MacroResult[]; typedAt: number; width?: number };
-// devices that work line by line: a long title (multi-line text isn't modelled in the runtime) becomes two balanced
-// lines, each its own macro run, stacked in a column; the second starts when the first has landed
+type TextOut = { nodes: NodeIn[]; results: MacroResult[]; typedAt: number; width?: { "16:9": number; "9:16": number } };
+// devices that work chunk by chunk: a long title (multi-line text isn't modelled in the runtime) becomes word chunks
+// of <= 18 chars, each its own macro run (each starts when the one before has landed), in a wrapping row whose
+// maxWidth differs per aspect — ~36 chars a line at 16:9, one chunk a line at 9:16 — so the title reflows instead of
+// shrinking the portrait stage.
 const SPLITTABLE = new Set<TextMacro>(["T2", "T4", "T6", "T7", "T8", "T11"]);
-export const LINE_CHARS = 42;
-export function splitLines(text: string, max = LINE_CHARS): string[] {
-  const w = text.split(/\s+/).filter(Boolean);
-  if (text.length <= max || w.length < 4) return [text];
-  let best = 1, bestDiff = Infinity;
-  for (let i = 1; i < w.length; i++) {
-    const diff = Math.abs(w.slice(0, i).join(" ").length - w.slice(i).join(" ").length);
-    if (diff < bestDiff) { bestDiff = diff; best = i; }
+export const LINE_CHARS = 22, CHUNK_CHARS = 18, LANDSCAPE_LINE = 36;
+export const EM = 0.62;      // average advance of Inter bold, em per char, with margin (an estimate; the runtime measures)
+export function chunks(text: string, max = CHUNK_CHARS): string[] {
+  const out: string[] = [];
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const last = out.at(-1);
+    if (last !== undefined && (last + " " + word).length <= max) out[out.length - 1] = last + " " + word; else out.push(word);
   }
-  return [w.slice(0, best).join(" "), w.slice(best).join(" ")];
+  return out;
 }
-// T13: the wordmark (1.3x, plus its mark) over the beat's line at 0.45x
-const logoWidth = (c: Ctx, size: number) => Math.round(Math.max([...c.brief.product.name].length * 0.55 * size * 1.3 + size * 1.5, [...c.beat.text].length * 0.55 * size * 0.45));
+// the lines a chunked title wraps into at a given line length (for estimates and tests; the runtime does the real wrap)
+export function wrapChunks(cs: string[], lineChars: number): string[] {
+  const lines: string[] = [];
+  for (const c of cs) { const l = lines.at(-1); if (l !== undefined && (l + " " + c).length <= lineChars) lines[lines.length - 1] = l + " " + c; else lines.push(c); }
+  return lines;
+}
+// T13: the wordmark (1.3x, plus its mark); the 0.45x line under it is left to the runtime's fit
+const logoWidth = (c: Ctx, size: number) => Math.round([...c.brief.product.name].length * EM * size * 1.3 + size * 1.5);
+// the runtime caps every text node's *local* width at 90 % of the canvas (547 px at 9:16), whatever its ancestors'
+// scale — so a title the portrait stage will scale down anyway would also be shrunk node by node. Titles wider than
+// that are set at size / k inside a group with static scale k: same look at both aspects, no per-node shrink.
+export const LOCAL_SAFE = 480;
 export function textMacro(m: TextMacro, c: Ctx): TextOut {
-  const id = `${c.beat.id}-title`, lines = splitLines(c.beat.text);
+  const plain = textBlock(m, c), k = m === "T3" ? 1 : Math.max(1, (plain.width?.["9:16"] ?? 0) / LOCAL_SAFE);   // T3 fits its own box
+  if (k === 1) return plain;
+  const scaled = textBlock(m, { ...c, titleSize: c.titleSize / k });
+  return { ...scaled, nodes: [{ ...group({ id: `${c.beat.id}-titlebox`, layout: { type: "column", gap: Math.round(c.titleSize * 0.45 / k) } }, scaled.nodes), scale: Math.round(k * 1000) / 1000 } as NodeIn], width: plain.width };
+}
+function textBlock(m: TextMacro, c: Ctx): TextOut {
+  const id = `${c.beat.id}-title`;
   const size = titleStyle(c, c.beat.type === "hook" ? 1.25 : c.beat.type === "tag" ? 1.15 : 1).size ?? c.titleSize;
-  const est = (ls: string[]) => Math.round(Math.max(...ls.map((l) => [...l].length)) * 0.55 * size * (m === "T3" ? 1.5 : 1));
-  if (lines.length < 2 || !SPLITTABLE.has(m)) return { ...textLine(m, c, id, c.beat.text, c.at, true), width: m === "T3" ? 1500 : m === "T13" ? logoWidth(c, size) : est([c.beat.text]) };
-  const a = textLine(m, c, `${id}-l1`, lines[0], c.at, false);
-  const b = textLine(m, c, `${id}-l2`, lines[1], m === "T2" ? a.typedAt : r3(c.at + 0.15), true);
-  return { nodes: [group({ id, layout: { type: "column", gap: Math.round(c.titleSize * 0.12) } }, [...a.nodes, ...b.nodes])], results: [...a.results, ...b.results], typedAt: Math.max(a.typedAt, b.typedAt), width: est(lines) };
+  const px = (t: string) => Math.round([...t].length * EM * size * (m === "T3" ? 1.5 : 1));
+  if (c.beat.text.length <= LINE_CHARS || !SPLITTABLE.has(m) || chunks(c.beat.text).length < 2) {
+    const w = m === "T3" ? 1500 : m === "T13" ? logoWidth(c, size) : px(c.beat.text);
+    return { ...textLine(m, c, id, c.beat.text, c.at, true), width: { "16:9": w, "9:16": w } };
+  }
+  const cs = chunks(c.beat.text), gap = Math.round(size * 0.28);
+  const landscapeLines = wrapChunks(cs, Math.max(LANDSCAPE_LINE, Math.ceil(c.beat.text.length / Math.ceil(c.beat.text.length / LANDSCAPE_LINE))));
+  const wide = Math.max(...landscapeLines.map(px)) + gap, narrow = Math.max(...cs.map(px)) + gap;
+  const outs: TextOut[] = [];
+  cs.forEach((chunk, k) => {
+    const at = k === 0 ? c.at : m === "T2" ? outs[k - 1].typedAt : r3(c.at + 0.12 * k);
+    outs.push(textLine(m, c, `${id}-l${k + 1}`, chunk, at, k === cs.length - 1));
+  });
+  return {
+    nodes: [group({ id, layout: { type: "row", wrap: true, gap, maxWidth: wide, overrides: { "9:16": { maxWidth: narrow } } } }, outs.flatMap((o) => o.nodes))],
+    results: outs.flatMap((o) => o.results), typedAt: Math.max(...outs.map((o) => o.typedAt)), width: { "16:9": wide, "9:16": narrow },
+  };
 }
 function textLine(m: TextMacro, c: Ctx, id: string, text: string, at: number, last: boolean): TextOut {
   const style = titleStyle(c, c.beat.type === "hook" ? 1.25 : c.beat.type === "tag" ? 1.15 : 1);

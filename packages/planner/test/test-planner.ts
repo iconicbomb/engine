@@ -7,7 +7,7 @@ import {
   recordedSegmenter, rowFor, ruleSegment, selectPatterns, sizeFactor, staggerFor, wpm, type PlanBeat,
 } from "../src/index";
 import { loadEnv } from "../src/env";
-import { splitLines } from "../src/macros";
+import { chunks, wrapChunks } from "../src/macros";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
 
@@ -102,8 +102,10 @@ void (async () => {
     "compose: two radial accent glows at R3's 0.39 / 0.2 (glow dial 0.5)");
   assert(glowsFor(parseBrief({ ...briefJson, dials: { glow: 1 } }), false)[0].intensity === 0.78 && glowsFor(parseBrief({ ...briefJson, dials: { glow: 0 } }), false).length === 0,
     "compose: the glow dial scales them (1 -> double, 0 -> none)");
-  assert(isDeepStrictEqual(splitLines("Short line"), ["Short line"]) && splitLines("Teams on Relay ship 40% faster and spend 6 fewer hours a week in meetings.").length === 2,
-    "compose: titles over 42 characters split into two balanced lines");
+  const proofChunks = chunks("Teams on Relay ship 40% faster and spend 6 fewer hours a week in meetings.");
+  assert(proofChunks.every((c) => c.length <= 18) && proofChunks.join(" ") === "Teams on Relay ship 40% faster and spend 6 fewer hours a week in meetings."
+    && wrapChunks(proofChunks, 36).length === 3 && isDeepStrictEqual(chunks("Short line"), ["Short line"]),
+    `compose: long titles become <= 18-char chunks that wrap ~36 chars a line at 16:9, one chunk a line at 9:16 (${proofChunks.length} chunks)`);
 
   // ---------------- stage 5: assemble + plan ----------------
   const d = assemble(brief, beats, 7);

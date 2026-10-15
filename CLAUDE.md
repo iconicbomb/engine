@@ -297,8 +297,12 @@ Motion laws (timing.ts; applied as macro params or in assemble's post-pass):
   (assemble.freezeFinal). The schema allows an id to continue into the immediately following beat only.
 Transitions: cut by default; curtain (accent) at problem -> reveal and last feature -> proof; smear when energy > 0.7;
 crossfade into the tag. Layout: each beat is one `<beat>-stage` column (title + `<beat>-visuals` row that wraps at
-9:16) with 16:9 / 9:16 anchor overrides scaling it to 90 % of the width (title width estimated at 0.55 em/char);
-titles over 42 chars split into two balanced lines (T2 T4 T6 T7 T8 T11), the second after the first lands.
+9:16) with 16:9 / 9:16 anchor overrides scaling it to 90 % of the width (title width estimated at 0.62 em/char).
+Titles over 22 chars (T2 T4 T6 T7 T8 T11) become <= 18-char word chunks, each its own macro run starting when the
+previous lands, in a wrapping row: maxWidth ~36 chars a line at 16:9, one chunk a line at 9:16 (layout override) —
+the title reflows per aspect instead of shrinking. The runtime caps each text node's *local* width at 90 % of the
+canvas regardless of ancestor scale (changing that alters R3 at 9:16, so it stays), so a title wider than 480 px
+at 9:16 is set at size / k inside `<beat>-titlebox` (static scale k, column layout) — same look, no per-node shrink.
 Assets: image nodes `<beat>-asset`, src null, placeholder label from the brief.
 Graph schema additions: Beat.type "tag"; moveTo.arc; hand-off ids. Runtime addition: visible(graph, t).
 
@@ -310,8 +314,9 @@ anthropic-workspace-id header (required for keys not scoped to a workspace). Nev
 Golden: demo.plan.json is currently rule-segmented (the key in .env needs a workspace id); after adding
 ANTHROPIC_WORKSPACE_ID, `pnpm plan fixtures/briefs/demo.brief.json out/demo.graph.json --refresh` records Claude's
 plan, then `UPDATE_GOLDEN=1 pnpm test` rewrites fixtures/demo.graph.json and `pnpm make` re-renders.
-Not modelled yet: wide visuals (S8 fan, S10 panel) shrink their whole stage at 9:16, titles included; true
-multi-line titles (split into two nodes); per-beat camera moves; video assets (placeholder only).
+Not modelled yet: wide visuals (S8 fan, S10 panel) shrink their whole stage at 9:16, titles included; T5 / T3 / T1 /
+T12 / T13 titles don't reflow (brackets follow a single text node; T3 fits its own box), so a long CTA is small at
+9:16; true multi-line text (titles are chunk nodes); per-beat camera moves; video assets (placeholder only).
 
 ## Cursor system (designed with Niloy, 2026-10-15)
 - `cursor` node: style arrow | hand | avatar (circle placeholder until image nodes), `size` multiplier (R5 ~2), base

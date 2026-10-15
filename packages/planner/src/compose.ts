@@ -40,9 +40,9 @@ const LANDSCAPE_SAFE = 0.9 * Math.round(1080 * 16 / 9);
 // at 9:16 (local px, so the wrap width is the portrait safe width divided by the stage's portrait scale).
 // titleW (an estimate of the title's width) takes part so a long title scales with its stage instead of each line being
 // shrunk to fit on its own
-export function stage(beatId: string, title: NodeIn[], visuals: NodeIn[], visualWidths: number[], titleH: number, titleW = 0): NodeIn {
-  const rowW = Math.max(titleW, visualWidths.reduce((s, w) => s + w, 0) + 40 * Math.max(0, visualWidths.length - 1));
-  const widest = Math.max(titleW, ...visualWidths);
+export function stage(beatId: string, title: NodeIn[], visuals: NodeIn[], visualWidths: number[], titleH: number, titleW = { "16:9": 0, "9:16": 0 }): NodeIn {
+  const rowW = Math.max(titleW["16:9"], visualWidths.reduce((s, w) => s + w, 0) + 40 * Math.max(0, visualWidths.length - 1));
+  const widest = Math.max(titleW["9:16"], ...visualWidths);
   const landscape = Math.min(1, LANDSCAPE_SAFE / Math.max(1, rowW));
   const portrait = Math.min(1, PORTRAIT_SAFE / Math.max(1, widest));
   const children: NodeIn[] = [...title];

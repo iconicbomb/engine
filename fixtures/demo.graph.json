@@ -98,12 +98,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.793
+                "scale": 0.637
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.251
+                "scale": 0.399
               }
             }
           },
@@ -119,13 +119,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b1-title",
+              "id": "b1-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.86,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -136,7 +136,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b1-title-l1",
+                  "id": "b1-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -149,118 +149,271 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1202,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b1-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 773,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "How many hours did",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 1200,
-                        "preScale": 1
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b1-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.873,
+                          "ms": 730,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "your team lose to",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b1-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 1.603,
+                          "ms": 601,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "status updates",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b1-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 2.204,
+                          "ms": 429,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "bar",
+                            "blinkMs": 500,
+                            "holdAfterMs": 600,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "this week?",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
                     }
                   ],
-                  "type": "text",
-                  "text": "How many hours did your team",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 120,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
-                },
-                {
-                  "id": "b1-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 1.302,
-                      "ms": 1416,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
-                      },
-                      "caret": {
-                        "style": "bar",
-                        "blinkMs": 500,
-                        "holdAfterMs": 600,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 949,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 481
                       }
                     }
-                  ],
-                  "type": "text",
-                  "text": "lose to status updates this week?",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 120,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 15,
                 "align": "center",
                 "wrap": false
               }
@@ -1857,12 +2010,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.727
+                "scale": 0.868
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.23
+                "scale": 0.498
               }
             }
           },
@@ -1878,13 +2031,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b2-title",
+              "id": "b2-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.288,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -1895,7 +2048,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b2-title-l1",
+                  "id": "b2-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -1908,166 +2061,537 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 2043,
-                      "mode": "typewriter",
-                      "cps": 4.405286343612334,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b2-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 908,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Specs live in one",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b2-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.22,
+                          "ms": 681,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "tool, tasks in",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b2-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.34,
+                          "ms": 454,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "another, and",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b2-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.46,
+                          "ms": 454,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "feedback is",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b2-title-l5",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.58,
+                          "ms": 681,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "scattered across a",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b2-title-l6",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.7,
+                          "ms": 454,
+                          "mode": "typewriter",
+                          "cps": 4.405286343612334,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "dozen threads.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     }
                   ],
-                  "type": "text",
-                  "text": "Specs live in one tool, tasks in another, and",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
-                },
-                {
-                  "id": "b2-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 0.25,
-                      "ms": 1589,
-                      "mode": "typewriter",
-                      "cps": 4.405286343612334,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
-                      },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 871,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 481
                       }
-                    },
-                    {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
-                    },
-                    {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
                     }
-                  ],
-                  "type": "text",
-                  "text": "feedback is scattered across a dozen threads.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 19,
                 "align": "center",
                 "wrap": false
               }
@@ -2128,12 +2652,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.818
+                "scale": 0.986
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.259
+                "scale": 0.559
               }
             }
           },
@@ -2149,65 +2673,243 @@
           "type": "group",
           "children": [
             {
-              "id": "b3-title",
+              "id": "b3-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.04,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
               "rotY": 0,
               "x": 0,
               "y": 0,
-              "tracks": [
+              "tracks": [],
+              "type": "group",
+              "children": [
                 {
-                  "prop": "glyph.opacity",
-                  "at": 0.1,
-                  "ms": 1717,
-                  "mode": "typewriter",
-                  "cps": 23.3,
-                  "ramp": 1,
-                  "wordPauseMs": 0,
-                  "unit": "char",
-                  "scramble": {
-                    "frames": 0,
-                    "symbols": "#%*@!<>&"
+                  "id": "b3-title",
+                  "anchor": {
+                    "x": 0.5,
+                    "y": 0.5
                   },
-                  "tail": {
-                    "len": 6,
-                    "color": "#6C5CE7",
-                    "decayMs": 258,
-                    "strength": 1
-                  },
-                  "caret": {
-                    "style": "bar",
-                    "blinkMs": 500,
-                    "holdAfterMs": 600,
-                    "preScale": 1
-                  },
-                  "bloom": {
-                    "radius": 0,
-                    "intensity": 0
+                  "opacity": 1,
+                  "scale": 1,
+                  "rotation": 0,
+                  "blur": 0,
+                  "rotX": 0,
+                  "rotY": 0,
+                  "x": 0,
+                  "y": 0,
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
+                    {
+                      "id": "b3-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 515,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Every Monday",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 47.1,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b3-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.615,
+                          "ms": 687,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "starts with copy",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 47.1,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b3-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 1.302,
+                          "ms": 429,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "bar",
+                            "blinkMs": 500,
+                            "holdAfterMs": 600,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "and paste.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 47.1,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    }
+                  ],
+                  "layout": {
+                    "type": "row",
+                    "gap": 13,
+                    "align": "center",
+                    "wrap": true,
+                    "maxWidth": 860,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 480
+                      }
+                    }
                   }
                 }
               ],
-              "type": "text",
-              "text": "Every Monday starts with copy and paste.",
-              "style": {
-                "font": "tokens.font",
-                "size": 96,
-                "weight": 700,
-                "tracking": 0,
-                "color": "#F4F4F8",
+              "layout": {
+                "type": "column",
+                "gap": 21,
                 "align": "center",
-                "axes": {},
-                "features": []
-              },
-              "shaping": "harfbuzz",
-              "recenterEaseMs": 0
+                "wrap": false
+              }
             }
           ],
           "layout": {
@@ -2270,7 +2972,7 @@
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.378
+                "scale": 1
               }
             }
           },
@@ -2286,20 +2988,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b4-logo",
+              "id": "b4-titlebox",
               "anchor": {
                 "x": 0.5,
-                "y": 0.5,
-                "overrides": {
-                  "9:16": {
-                    "x": 0.5,
-                    "y": 0.5,
-                    "scale": 0.8
-                  }
-                }
+                "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 1.106,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -2310,10 +3005,17 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b4-logo-wordmark",
+                  "id": "b4-logo",
                   "anchor": {
                     "x": 0.5,
-                    "y": 0.5
+                    "y": 0.5,
+                    "overrides": {
+                      "9:16": {
+                        "x": 0.5,
+                        "y": 0.5,
+                        "scale": 0.8
+                      }
+                    }
                   },
                   "opacity": 1,
                   "scale": 1,
@@ -2321,57 +3023,116 @@
                   "blur": 0,
                   "rotX": 0,
                   "rotY": 0,
-                  "x": 62.5,
+                  "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.365,
-                      "ms": 400,
-                      "mode": "typewriter",
-                      "cps": 12.5,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b4-logo-wordmark",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 56.5,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.365,
+                          "ms": 400,
+                          "mode": "typewriter",
+                          "cps": 12.5,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Relay",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 113,
+                        "weight": 800,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b4-logo-mark",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "scale",
+                          "at": 0.165,
+                          "ms": 400,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "bounce",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "rect",
+                      "w": 90,
+                      "h": 90,
+                      "radius": 25,
+                      "fill": "#6C5CE7",
+                      "follows": {
+                        "node": "b4-logo-wordmark",
+                        "edge": "left",
+                        "gap": 23
+                      },
+                      "children": []
                     }
-                  ],
-                  "type": "text",
-                  "text": "Relay",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 125,
-                    "weight": 800,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
+                  ]
                 },
                 {
-                  "id": "b4-logo-mark",
+                  "id": "b4-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -2386,74 +3147,40 @@
                   "y": 0,
                   "tracks": [
                     {
-                      "prop": "scale",
-                      "at": 0.165,
-                      "ms": 400,
+                      "prop": "opacity",
+                      "at": 0.865,
+                      "ms": 300,
                       "mode": "tween",
                       "from": 0,
                       "to": 1,
-                      "ease": "bounce",
+                      "ease": "settle",
                       "staggerMs": 0,
                       "relativeTo": "beat",
                       "carryVelocity": true
                     }
                   ],
-                  "type": "rect",
-                  "w": 100,
-                  "h": 100,
-                  "radius": 28,
-                  "fill": "#6C5CE7",
-                  "follows": {
-                    "node": "b4-logo-wordmark",
-                    "edge": "left",
-                    "gap": 25
+                  "type": "text",
+                  "text": "Meet Relay, the workspace that keeps your whole team in sync.",
+                  "style": {
+                    "font": "tokens.font",
+                    "size": 39,
+                    "weight": 500,
+                    "tracking": 0,
+                    "color": "#9A9AB0",
+                    "align": "center",
+                    "axes": {},
+                    "features": []
                   },
-                  "children": []
-                }
-              ]
-            },
-            {
-              "id": "b4-title",
-              "anchor": {
-                "x": 0.5,
-                "y": 0.5
-              },
-              "opacity": 1,
-              "scale": 1,
-              "rotation": 0,
-              "blur": 0,
-              "rotX": 0,
-              "rotY": 0,
-              "x": 0,
-              "y": 0,
-              "tracks": [
-                {
-                  "prop": "opacity",
-                  "at": 0.865,
-                  "ms": 300,
-                  "mode": "tween",
-                  "from": 0,
-                  "to": 1,
-                  "ease": "settle",
-                  "staggerMs": 0,
-                  "relativeTo": "beat",
-                  "carryVelocity": true
+                  "shaping": "harfbuzz",
+                  "recenterEaseMs": 0
                 }
               ],
-              "type": "text",
-              "text": "Meet Relay, the workspace that keeps your whole team in sync.",
-              "style": {
-                "font": "tokens.font",
-                "size": 43,
-                "weight": 500,
-                "tracking": 0,
-                "color": "#9A9AB0",
+              "layout": {
+                "type": "column",
+                "gap": 39,
                 "align": "center",
-                "axes": {},
-                "features": []
-              },
-              "shaping": "harfbuzz",
-              "recenterEaseMs": 0
+                "wrap": false
+              }
             }
           ],
           "layout": {
@@ -2514,12 +3241,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 1
+                "scale": 0.843
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.324
+                "scale": 0.498
               }
             }
           },
@@ -2535,13 +3262,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b5-title",
+              "id": "b5-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.288,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -2552,7 +3279,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b5-title-l1",
+                  "id": "b5-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -2565,166 +3292,367 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1120,
-                      "mode": "typewriter",
-                      "cps": 4.464285714285714,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b5-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 672,
+                          "mode": "typewriter",
+                          "cps": 4.464285714285714,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Your Inbox gathers",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b5-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.22,
+                          "ms": 672,
+                          "mode": "typewriter",
+                          "cps": 4.464285714285714,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "every request into",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b5-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.34,
+                          "ms": 448,
+                          "mode": "typewriter",
+                          "cps": 4.464285714285714,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "one prioritised",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b5-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.46,
+                          "ms": 224,
+                          "mode": "typewriter",
+                          "cps": 4.464285714285714,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "list.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     }
                   ],
-                  "type": "text",
-                  "text": "Your Inbox gathers every request",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
-                },
-                {
-                  "id": "b5-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 0.25,
-                      "ms": 896,
-                      "mode": "typewriter",
-                      "cps": 4.464285714285714,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
-                      },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 897,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 481
                       }
-                    },
-                    {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
-                    },
-                    {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
                     }
-                  ],
-                  "type": "text",
-                  "text": "into one prioritised list.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 19,
                 "align": "center",
                 "wrap": false
               }
@@ -3659,11 +4587,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 1728,
+                "maxWidth": 2051,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 1690
+                    "maxWidth": 1098
                   }
                 }
               }
@@ -3765,12 +4693,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 1
+                "scale": 0.868
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.334
+                "scale": 0.527
               }
             }
           },
@@ -3786,13 +4714,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b6-title",
+              "id": "b6-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.165,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -3803,7 +4731,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b6-title-l1",
+                  "id": "b6-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -3816,93 +4744,210 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "opacity",
-                      "at": 0.1,
-                      "ms": 250,
-                      "mode": "tween",
-                      "from": 0,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "beat",
-                      "carryVelocity": true
-                    }
-                  ],
-                  "type": "text",
-                  "text": "Board turns specs into cards",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
-                },
-                {
-                  "id": "b6-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "opacity",
-                      "at": 0.25,
-                      "ms": 250,
-                      "mode": "tween",
-                      "from": 0,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "beat",
-                      "carryVelocity": true
+                      "id": "b6-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "opacity",
+                          "at": 0.1,
+                          "ms": 250,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Board turns specs",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
                     },
                     {
-                      "prop": "glyph.color",
-                      "at": 0.6,
-                      "ms": 467,
-                      "mode": "sweep",
-                      "from": -2,
-                      "to": 33,
-                      "window": 4,
-                      "color": "#6C5CE7",
-                      "ease": "settle"
+                      "id": "b6-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "opacity",
+                          "at": 0.22,
+                          "ms": 250,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "into cards your",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b6-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "opacity",
+                          "at": 0.34,
+                          "ms": 250,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "team can pick up",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b6-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "opacity",
+                          "at": 0.46,
+                          "ms": 250,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "glyph.color",
+                          "at": 0.81,
+                          "ms": 467,
+                          "mode": "sweep",
+                          "from": -2,
+                          "to": 11,
+                          "window": 4,
+                          "color": "#6C5CE7",
+                          "ease": "settle"
+                        }
+                      ],
+                      "type": "text",
+                      "text": "and ship.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
                     }
                   ],
-                  "type": "text",
-                  "text": "your team can pick up and ship.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
+                    "wrap": true,
+                    "maxWidth": 920,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 480
+                      }
+                    }
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 20,
                 "align": "center",
                 "wrap": false
               }
@@ -4008,7 +5053,7 @@
                       "tracks": [
                         {
                           "prop": "clip.w",
-                          "at": 1.53,
+                          "at": 1.74,
                           "ms": 220,
                           "mode": "tween",
                           "from": 0,
@@ -4057,7 +5102,7 @@
                       "tracks": [
                         {
                           "prop": "clip.w",
-                          "at": 1.57,
+                          "at": 1.78,
                           "ms": 220,
                           "mode": "tween",
                           "from": 0,
@@ -4106,7 +5151,7 @@
                       "tracks": [
                         {
                           "prop": "clip.w",
-                          "at": 1.61,
+                          "at": 1.82,
                           "ms": 220,
                           "mode": "tween",
                           "from": 0,
@@ -4160,7 +5205,7 @@
                     },
                     {
                       "prop": "scale",
-                      "at": 2.08,
+                      "at": 2.29,
                       "ms": 40,
                       "mode": "tween",
                       "from": 1,
@@ -4172,7 +5217,7 @@
                     },
                     {
                       "prop": "scale",
-                      "at": 2.12,
+                      "at": 2.33,
                       "ms": 40,
                       "mode": "tween",
                       "from": 0.96,
@@ -4261,11 +5306,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 1728,
+                "maxWidth": 1991,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 1637
+                    "maxWidth": 1039
                   }
                 }
               }
@@ -4302,7 +5347,7 @@
           "tracks": [
             {
               "prop": "position",
-              "at": 0.7,
+              "at": 0.91,
               "ms": 830,
               "mode": "moveTo",
               "target": "b6-card",
@@ -4316,7 +5361,7 @@
             },
             {
               "prop": "position",
-              "at": 1.1,
+              "at": 1.31,
               "ms": 830,
               "mode": "moveTo",
               "target": "b6-button",
@@ -4330,7 +5375,7 @@
             },
             {
               "prop": "scale",
-              "at": 2.08,
+              "at": 2.29,
               "ms": 80,
               "mode": "press"
             }
@@ -4387,12 +5432,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.727
+                "scale": 0.796
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.23
+                "scale": 0.498
               }
             }
           },
@@ -4408,13 +5453,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b7-title",
+              "id": "b7-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.288,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -4425,7 +5470,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b7-title-l1",
+                  "id": "b7-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -4438,166 +5483,452 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1728,
-                      "mode": "typewriter",
-                      "cps": 4.62962962962963,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b7-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 432,
+                          "mode": "typewriter",
+                          "cps": 4.62962962962963,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Insights charts",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b7-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.22,
+                          "ms": 648,
+                          "mode": "typewriter",
+                          "cps": 4.62962962962963,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "your velocity, so",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b7-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.34,
+                          "ms": 864,
+                          "mode": "typewriter",
+                          "cps": 4.62962962962963,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "you see a slowdown",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b7-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.46,
+                          "ms": 648,
+                          "mode": "typewriter",
+                          "cps": 4.62962962962963,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "before it becomes",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b7-title-l5",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.58,
+                          "ms": 648,
+                          "mode": "typewriter",
+                          "cps": 4.62962962962963,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "a missed deadline.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     }
                   ],
-                  "type": "text",
-                  "text": "Insights charts your velocity, so you see a",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
-                },
-                {
-                  "id": "b7-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 0.25,
-                      "ms": 1512,
-                      "mode": "typewriter",
-                      "cps": 4.62962962962963,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
-                      },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 949,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 481
                       }
-                    },
-                    {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
-                    },
-                    {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
                     }
-                  ],
-                  "type": "text",
-                  "text": "slowdown before it becomes a missed deadline.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 19,
                 "align": "center",
                 "wrap": false
               }
@@ -4863,11 +6194,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 2376,
+                "maxWidth": 2170,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 2376
+                    "maxWidth": 1098
                   }
                 }
               }
@@ -8285,12 +9616,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.963
+                "scale": 0.843
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.305
+                "scale": 0.391
               }
             }
           },
@@ -8306,13 +9637,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b8-title",
+              "id": "b8-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.288,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -8323,7 +9654,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b8-title-l1",
+                  "id": "b8-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -8336,118 +9667,271 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1459,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b8-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 773,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Ask Relay anything",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 1200,
-                        "preScale": 1
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b8-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.873,
+                          "ms": 644,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "in chat and get",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b8-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 1.517,
+                          "ms": 773,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "answers drawn from",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b8-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 2.29,
+                          "ms": 601,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "bar",
+                            "blinkMs": 500,
+                            "holdAfterMs": 600,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "your own docs.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 42,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
                     }
                   ],
-                  "type": "text",
-                  "text": "Ask Relay anything in chat and get",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
-                },
-                {
-                  "id": "b8-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 1.559,
-                      "ms": 1416,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
-                      },
-                      "caret": {
-                        "style": "bar",
-                        "blinkMs": 500,
-                        "holdAfterMs": 600,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 897,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 481
                       }
                     }
-                  ],
-                  "type": "text",
-                  "text": "answers drawn from your own docs.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 19,
                 "align": "center",
                 "wrap": false
               }
@@ -8963,11 +10447,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 1795,
+                "maxWidth": 2051,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 1795
+                    "maxWidth": 1400
                   }
                 }
               }
@@ -9028,12 +10512,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 1
+                "scale": 0.894
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.37
+                "scale": 0.526
               }
             }
           },
@@ -9049,13 +10533,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b9-title",
+              "id": "b9-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.165,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -9066,7 +10550,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b9-title-l1",
+                  "id": "b9-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -9079,166 +10563,367 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1284,
-                      "mode": "typewriter",
-                      "cps": 4.672897196261682,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b9-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 856,
+                          "mode": "typewriter",
+                          "cps": 4.672897196261682,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "And Docs lets you",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b9-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.22,
+                          "ms": 642,
+                          "mode": "typewriter",
+                          "cps": 4.672897196261682,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "write the spec",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     },
                     {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
+                      "id": "b9-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.34,
+                          "ms": 856,
+                          "mode": "typewriter",
+                          "cps": 4.672897196261682,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "right next to the",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
+                    },
+                    {
+                      "id": "b9-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.46,
+                          "ms": 214,
+                          "mode": "typewriter",
+                          "cps": 4.672897196261682,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "word",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 0,
+                            "color": "tokens.accent",
+                            "decayMs": 300,
+                            "strength": 0.35
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 0,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        },
+                        {
+                          "prop": "opacity",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 0.3,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        },
+                        {
+                          "prop": "x",
+                          "at": 0,
+                          "ms": 200,
+                          "mode": "tween",
+                          "from": 20,
+                          "to": 0,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "reveal",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "text",
+                      "text": "work.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 76
                     }
                   ],
-                  "type": "text",
-                  "text": "And Docs lets you write the",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
-                },
-                {
-                  "id": "b9-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 0.25,
-                      "ms": 1284,
-                      "mode": "typewriter",
-                      "cps": 4.672897196261682,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "word",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 0,
-                        "color": "tokens.accent",
-                        "decayMs": 300,
-                        "strength": 0.35
-                      },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 0,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 893,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 480
                       }
-                    },
-                    {
-                      "prop": "opacity",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 0.3,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
-                    },
-                    {
-                      "prop": "x",
-                      "at": 0,
-                      "ms": 200,
-                      "mode": "tween",
-                      "from": 20,
-                      "to": 0,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "reveal",
-                      "carryVelocity": true
                     }
-                  ],
-                  "type": "text",
-                  "text": "spec right next to the work.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 76
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 20,
                 "align": "center",
                 "wrap": false
               }
@@ -9719,11 +11404,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 1728,
+                "maxWidth": 1932,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 1478
+                    "maxWidth": 1040
                   }
                 }
               }
@@ -9831,12 +11516,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.839
+                "scale": 0.868
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.266
+                "scale": 0.527
               }
             }
           },
@@ -9852,13 +11537,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b10-title",
+              "id": "b10-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.165,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -9869,7 +11554,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b10-title-l1",
+                  "id": "b10-title",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -9882,118 +11567,332 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.165,
-                      "ms": 1459,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b10-title-l1",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.165,
+                          "ms": 601,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Teams on Relay",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 1200,
-                        "preScale": 1
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b10-title-l2",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
-                      }
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.766,
+                          "ms": 644,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "ship 40% faster",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b10-title-l3",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 1.41,
+                          "ms": 730,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "and spend 6 fewer",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b10-title-l4",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 2.14,
+                          "ms": 644,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "hours a week in",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b10-title-l5",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                      },
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 2.784,
+                          "ms": 386,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "bar",
+                            "blinkMs": 500,
+                            "holdAfterMs": 600,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "meetings.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 44.4,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
                     }
                   ],
-                  "type": "text",
-                  "text": "Teams on Relay ship 40% faster and",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
+                  "layout": {
+                    "type": "row",
+                    "gap": 12,
                     "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
-                },
-                {
-                  "id": "b10-title-l2",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 1,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "glyph.opacity",
-                      "at": 1.624,
-                      "ms": 1674,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
-                      },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
-                      },
-                      "caret": {
-                        "style": "bar",
-                        "blinkMs": 500,
-                        "holdAfterMs": 600,
-                        "preScale": 1
-                      },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                    "wrap": true,
+                    "maxWidth": 920,
+                    "overrides": {
+                      "9:16": {
+                        "maxWidth": 480
                       }
                     }
-                  ],
-                  "type": "text",
-                  "text": "spend 6 fewer hours a week in meetings.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
+                  }
                 }
               ],
               "layout": {
                 "type": "column",
-                "gap": 12,
+                "gap": 20,
                 "align": "center",
                 "wrap": false
               }
@@ -10386,11 +12285,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 2059,
+                "maxWidth": 1991,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 2059
+                    "maxWidth": 1039
                   }
                 }
               }
@@ -10454,12 +12353,12 @@
               "16:9": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.935
+                "scale": 0.83
               },
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.296
+                "scale": 0.263
               }
             }
           },
@@ -10475,13 +12374,13 @@
           "type": "group",
           "children": [
             {
-              "id": "b11-framed",
+              "id": "b11-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 4.34,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
@@ -10492,7 +12391,7 @@
               "type": "group",
               "children": [
                 {
-                  "id": "b11-title",
+                  "id": "b11-framed",
                   "anchor": {
                     "x": 0.5,
                     "y": 0.5
@@ -10505,105 +12404,130 @@
                   "rotY": 0,
                   "x": 0,
                   "y": 0,
-                  "tracks": [
+                  "tracks": [],
+                  "type": "group",
+                  "children": [
                     {
-                      "prop": "glyph.opacity",
-                      "at": 0.1,
-                      "ms": 1502,
-                      "mode": "typewriter",
-                      "cps": 23.3,
-                      "ramp": 1,
-                      "wordPauseMs": 0,
-                      "unit": "char",
-                      "scramble": {
-                        "frames": 0,
-                        "symbols": "#%*@!<>&"
+                      "id": "b11-title",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "tail": {
-                        "len": 6,
-                        "color": "#6C5CE7",
-                        "decayMs": 258,
-                        "strength": 1
+                      "opacity": 1,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "glyph.opacity",
+                          "at": 0.1,
+                          "ms": 1502,
+                          "mode": "typewriter",
+                          "cps": 23.3,
+                          "ramp": 1,
+                          "wordPauseMs": 0,
+                          "unit": "char",
+                          "scramble": {
+                            "frames": 0,
+                            "symbols": "#%*@!<>&"
+                          },
+                          "tail": {
+                            "len": 6,
+                            "color": "#6C5CE7",
+                            "decayMs": 258,
+                            "strength": 1
+                          },
+                          "caret": {
+                            "style": "none",
+                            "blinkMs": 500,
+                            "holdAfterMs": 1200,
+                            "preScale": 1
+                          },
+                          "bloom": {
+                            "radius": 0,
+                            "intensity": 0
+                          }
+                        }
+                      ],
+                      "type": "text",
+                      "text": "Start your free trial at relay.app.",
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 22.1,
+                        "weight": 700,
+                        "tracking": 0,
+                        "color": "#F4F4F8",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
                       },
-                      "caret": {
-                        "style": "none",
-                        "blinkMs": 500,
-                        "holdAfterMs": 1200,
-                        "preScale": 1
+                      "shaping": "harfbuzz",
+                      "recenterEaseMs": 0
+                    },
+                    {
+                      "id": "b11-brackets",
+                      "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
                       },
-                      "bloom": {
-                        "radius": 0,
-                        "intensity": 0
+                      "opacity": 0,
+                      "scale": 1,
+                      "rotation": 0,
+                      "blur": 0,
+                      "rotX": 0,
+                      "rotY": 0,
+                      "x": 0,
+                      "y": 0,
+                      "tracks": [
+                        {
+                          "prop": "opacity",
+                          "at": 1.602,
+                          "ms": 150,
+                          "mode": "tween",
+                          "from": 0,
+                          "to": 1,
+                          "ease": "settle",
+                          "staggerMs": 0,
+                          "relativeTo": "beat",
+                          "carryVelocity": true
+                        }
+                      ],
+                      "type": "bracket",
+                      "follows": "b11-title",
+                      "glyphs": [
+                        "[",
+                        "]"
+                      ],
+                      "padding": 11,
+                      "style": {
+                        "font": "tokens.font",
+                        "size": 49,
+                        "weight": 200,
+                        "tracking": 0,
+                        "color": "#9A9AB0",
+                        "align": "center",
+                        "axes": {},
+                        "features": []
+                      },
+                      "spring": {
+                        "stiffness": 700,
+                        "damping": 18,
+                        "mass": 1
                       }
                     }
-                  ],
-                  "type": "text",
-                  "text": "Start your free trial at relay.app.",
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 96,
-                    "weight": 700,
-                    "tracking": 0,
-                    "color": "#F4F4F8",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "shaping": "harfbuzz",
-                  "recenterEaseMs": 0
-                },
-                {
-                  "id": "b11-brackets",
-                  "anchor": {
-                    "x": 0.5,
-                    "y": 0.5
-                  },
-                  "opacity": 0,
-                  "scale": 1,
-                  "rotation": 0,
-                  "blur": 0,
-                  "rotX": 0,
-                  "rotY": 0,
-                  "x": 0,
-                  "y": 0,
-                  "tracks": [
-                    {
-                      "prop": "opacity",
-                      "at": 1.602,
-                      "ms": 150,
-                      "mode": "tween",
-                      "from": 0,
-                      "to": 1,
-                      "ease": "settle",
-                      "staggerMs": 0,
-                      "relativeTo": "beat",
-                      "carryVelocity": true
-                    }
-                  ],
-                  "type": "bracket",
-                  "follows": "b11-title",
-                  "glyphs": [
-                    "[",
-                    "]"
-                  ],
-                  "padding": 48,
-                  "style": {
-                    "font": "tokens.font",
-                    "size": 211,
-                    "weight": 200,
-                    "tracking": 0,
-                    "color": "#9A9AB0",
-                    "align": "center",
-                    "axes": {},
-                    "features": []
-                  },
-                  "spring": {
-                    "stiffness": 700,
-                    "damping": 18,
-                    "mass": 1
-                  }
+                  ]
                 }
-              ]
+              ],
+              "layout": {
+                "type": "column",
+                "gap": 10,
+                "align": "center",
+                "wrap": false
+              }
             },
             {
               "id": "b11-visuals",
@@ -10723,11 +12647,11 @@
                 "gap": 40,
                 "align": "center",
                 "wrap": true,
-                "maxWidth": 1848,
+                "maxWidth": 2083,
                 "overrides": {
                   "9:16": {
                     "gap": 28,
-                    "maxWidth": 1848
+                    "maxWidth": 2083
                   }
                 }
               }
@@ -10840,7 +12764,7 @@
               "9:16": {
                 "x": 0.5,
                 "y": 0.5,
-                "scale": 0.431
+                "scale": 0.381
               }
             }
           },
@@ -10856,76 +12780,101 @@
           "type": "group",
           "children": [
             {
-              "id": "b12-title",
+              "id": "b12-titlebox",
               "anchor": {
                 "x": 0.5,
                 "y": 0.5
               },
               "opacity": 1,
-              "scale": 1,
+              "scale": 2.994,
               "rotation": 0,
               "blur": 0,
               "rotX": 0,
               "rotY": 0,
               "x": 0,
               "y": 0,
-              "tracks": [
+              "tracks": [],
+              "type": "group",
+              "children": [
                 {
-                  "prop": "opacity",
-                  "at": 0.1,
-                  "ms": 270,
-                  "mode": "tween",
-                  "from": 0,
-                  "to": 1,
-                  "ease": "settle",
-                  "staggerMs": 30,
-                  "relativeTo": "beat",
-                  "carryVelocity": true
-                },
-                {
-                  "prop": "y",
-                  "at": 0.1,
-                  "ms": 270,
-                  "mode": "tween",
-                  "from": 30,
-                  "to": 0,
-                  "ease": "settle",
-                  "staggerMs": 30,
-                  "relativeTo": "beat",
-                  "carryVelocity": true
-                },
-                {
-                  "prop": "gradient.amount",
-                  "at": 0.97,
-                  "ms": 500,
-                  "mode": "tween",
-                  "from": 1,
-                  "to": 0,
-                  "ease": "settle",
-                  "staggerMs": 0,
-                  "relativeTo": "beat",
-                  "carryVelocity": true
+                  "id": "b12-title",
+                  "anchor": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "opacity": 1,
+                  "scale": 1,
+                  "rotation": 0,
+                  "blur": 0,
+                  "rotX": 0,
+                  "rotY": 0,
+                  "x": 0,
+                  "y": 0,
+                  "tracks": [
+                    {
+                      "prop": "opacity",
+                      "at": 0.1,
+                      "ms": 270,
+                      "mode": "tween",
+                      "from": 0,
+                      "to": 1,
+                      "ease": "settle",
+                      "staggerMs": 30,
+                      "relativeTo": "beat",
+                      "carryVelocity": true
+                    },
+                    {
+                      "prop": "y",
+                      "at": 0.1,
+                      "ms": 270,
+                      "mode": "tween",
+                      "from": 30,
+                      "to": 0,
+                      "ease": "settle",
+                      "staggerMs": 30,
+                      "relativeTo": "beat",
+                      "carryVelocity": true
+                    },
+                    {
+                      "prop": "gradient.amount",
+                      "at": 0.97,
+                      "ms": 500,
+                      "mode": "tween",
+                      "from": 1,
+                      "to": 0,
+                      "ease": "settle",
+                      "staggerMs": 0,
+                      "relativeTo": "beat",
+                      "carryVelocity": true
+                    }
+                  ],
+                  "type": "text",
+                  "text": "Relay. Work, in sync.",
+                  "style": {
+                    "font": "tokens.font",
+                    "size": 36.9,
+                    "weight": 700,
+                    "tracking": 0,
+                    "color": "#F4F4F8",
+                    "align": "center",
+                    "axes": {},
+                    "features": [],
+                    "gradient": {
+                      "from": "#6C5CE7",
+                      "to": "#b7b0f0",
+                      "amount": 1
+                    }
+                  },
+                  "shaping": "harfbuzz",
+                  "recenterEaseMs": 0
                 }
               ],
-              "type": "text",
-              "text": "Relay. Work, in sync.",
-              "style": {
-                "font": "tokens.font",
-                "size": 110,
-                "weight": 700,
-                "tracking": 0,
-                "color": "#F4F4F8",
+              "layout": {
+                "type": "column",
+                "gap": 14,
                 "align": "center",
-                "axes": {},
-                "features": [],
-                "gradient": {
-                  "from": "#6C5CE7",
-                  "to": "#b7b0f0",
-                  "amount": 1
-                }
-              },
-              "shaping": "harfbuzz",
-              "recenterEaseMs": 0
+                "wrap": false
+              }
             }
           ],
           "layout": {
