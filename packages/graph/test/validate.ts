@@ -37,3 +37,11 @@ console.log("ok: wires validated — unknown end and nested wire rejected");
   }
   console.log("ok: transitions validated (first beat / too long rejected); defaults curtain 600 right, smear 160 left, crossfade 100 linear; enter delays ms/2, ms");
 }
+// image nodes: named asset or null slot (with placeholder kind / label)
+{
+  const ig = (n: object) => Graph.safeParse({ version: 1, canvas: {}, tokens: {}, beats: [{ id: "b1", type: "hook", start: 0, duration: 1, nodes: [n] }] });
+  const a = ig({ id: "b1-i", type: "image", src: "a.png", w: 10, h: 10 }), b = ig({ id: "b1-j", type: "image", src: null, placeholder: { kind: "video", label: "Demo" }, w: 10, h: 10 });
+  const bad = ig({ id: "b1-k", type: "image", src: "", w: 10, h: 10 });
+  if (!a.success || !b.success || bad.success || (a.data.beats[0].nodes[0] as any).fit !== "cover") { console.error("FAIL: image nodes"); process.exit(1); }
+  console.log("ok: image nodes — named asset (fit cover default), null slot with placeholder, empty src rejected");
+}

@@ -1,0 +1,222 @@
+{
+  "version": 1,
+  "canvas": {
+    "aspect": "16:9",
+    "refHeight": 1080,
+    "fps": 30
+  },
+  "tokens": {
+    "bg": "#0B0D12",
+    "text": "#FFFFFF",
+    "accent": "#FF8A3D",
+    "font": "Inter"
+  },
+  "beats": [
+    {
+      "id": "b1",
+      "type": "feature",
+      "start": 0,
+      "duration": 1.6,
+      "script": "Your media here",
+      "nodes": [
+        {
+          "id": "b1-tiles",
+          "type": "group",
+          "anchor": {
+            "x": 0.5,
+            "y": 0.5,
+            "overrides": {
+              "9:16": {
+                "x": 0.5,
+                "y": 0.5,
+                "scale": 0.72
+              }
+            }
+          },
+          "layout": {
+            "type": "row",
+            "gap": 28,
+            "wrap": true,
+            "maxWidth": 1700,
+            "overrides": {
+              "9:16": {
+                "maxWidth": 800,
+                "gap": 16
+              }
+            }
+          },
+          "tracks": [],
+          "children": [
+            {
+              "id": "b1-tiles-1",
+              "type": "rect",
+              "w": 380,
+              "h": 260,
+              "radius": 28,
+              "fill": "#1A1D26",
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.27,
+                  "ms": 600,
+                  "from": 60,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.27,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-tiles-1-media",
+                  "type": "image",
+                  "src": "sample-landscape.png",
+                  "w": 360,
+                  "h": 240,
+                  "radius": 20,
+                  "fit": "cover"
+                }
+              ]
+            },
+            {
+              "id": "b1-tiles-2",
+              "type": "rect",
+              "w": 380,
+              "h": 260,
+              "radius": 28,
+              "fill": "#1A1D26",
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.34,
+                  "ms": 600,
+                  "from": 60,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.34,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-tiles-2-media",
+                  "type": "image",
+                  "src": "sample-landscape.png",
+                  "w": 360,
+                  "h": 240,
+                  "radius": 20,
+                  "fit": "contain"
+                }
+              ]
+            },
+            {
+              "id": "b1-tiles-3",
+              "type": "rect",
+              "w": 380,
+              "h": 260,
+              "radius": 28,
+              "fill": "#1A1D26",
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.41000000000000003,
+                  "ms": 600,
+                  "from": 60,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.41000000000000003,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-tiles-3-media",
+                  "type": "image",
+                  "src": null,
+                  "placeholder": {
+                    "kind": "image",
+                    "label": "Product screenshot"
+                  },
+                  "w": 360,
+                  "h": 240,
+                  "radius": 20
+                }
+              ]
+            },
+            {
+              "id": "b1-tiles-4",
+              "type": "rect",
+              "w": 380,
+              "h": 260,
+              "radius": 28,
+              "fill": "#1A1D26",
+              "opacity": 0,
+              "tracks": [
+                {
+                  "mode": "tween",
+                  "prop": "y",
+                  "at": 0.48000000000000004,
+                  "ms": 600,
+                  "from": 60,
+                  "to": 0,
+                  "ease": "settle"
+                },
+                {
+                  "mode": "tween",
+                  "prop": "opacity",
+                  "at": 0.48000000000000004,
+                  "ms": 200,
+                  "from": 0,
+                  "to": 1,
+                  "ease": "settle"
+                }
+              ],
+              "children": [
+                {
+                  "id": "b1-tiles-4-media",
+                  "type": "image",
+                  "src": null,
+                  "placeholder": {
+                    "kind": "video",
+                    "label": "Demo video"
+                  },
+                  "w": 360,
+                  "h": 240,
+                  "radius": 20
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "glows": []
+    }
+  ]
+}

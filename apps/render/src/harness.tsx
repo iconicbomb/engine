@@ -15,7 +15,7 @@ const Frame: React.FC<Props> = ({ graph }) => {
   const [rt, setRt] = useState<Runtime | null>(null);
   const [handle] = useState(() => delayRender("loading HarfBuzz + fonts"));
   useEffect(() => {
-    loadRuntime().then((r) => { setRt(r); continueRender(handle); }, (e) => cancelRender(e));
+    loadRuntime(graph).then((r) => { setRt(r); continueRender(handle); }, (e) => cancelRender(e));
   }, [handle]);
   useEffect(() => {
     const canvas = ref.current; if (!canvas || !rt) return;

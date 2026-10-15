@@ -214,3 +214,19 @@ function twoBeat(a: [string, string], b: [string, string], tr: MacroResult) {
 }
 export function buildS13Demo() { return twoBeat(["Before", "#0B0D12"], ["After", "#10213A"], curtainWipe()); }
 export function buildS14Demo() { return twoBeat(["Before", "#0B0D12"], ["After", "#0F2E24"], smearCut()); }
+
+// Image nodes (D): an asset fitted cover / contain, and two editable client-asset slots (image, video), laid out in a
+// wrapped row (2 x 2 at 9:16); each tile rises in.
+export function buildImageSlotsDemo() {
+  const tile = (n: number, node: object): NodeIn => ({ id: `b1-tiles-${n}`, type: "rect", w: 380, h: 260, radius: 28, fill: "#1A1D26", opacity: 0,
+    tracks: [{ mode: "tween", prop: "y", at: 0.2 + n * 0.07, ms: 600, from: 60, to: 0, ease: "settle" }, { mode: "tween", prop: "opacity", at: 0.2 + n * 0.07, ms: 200, from: 0, to: 1, ease: "settle" }],
+    children: [{ id: `b1-tiles-${n}-media`, type: "image", w: 360, h: 240, radius: 20, ...node } as NodeIn] });
+  const row = group({ id: "b1-tiles", layout: { type: "row", gap: 28, wrap: true, maxWidth: 1700, overrides: { "9:16": { maxWidth: 800, gap: 16 } } },   // local px: the group scales after layout
+    anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.72 } } } }, [
+    tile(1, { src: "sample-landscape.png", fit: "cover" }),
+    tile(2, { src: "sample-landscape.png", fit: "contain" }),
+    tile(3, { src: null, placeholder: { kind: "image", label: "Product screenshot" } }),
+    tile(4, { src: null, placeholder: { kind: "video", label: "Demo video" } }),
+  ]);
+  return demo("Your media here", 1.6, [row], []);
+}

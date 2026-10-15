@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, S3–S6, S8, S9, S13, S14 in (phase 2); `pnpm test` 117 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S6, S8, S9, S13, S14 in (phase 2); `pnpm test` 119 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -99,7 +99,7 @@ to cover canvas + travel — repeat count and cascade timing use an estimated la
 
 ## Standing order (Niloy, 2026-10-15) — run unattended, one commit per item
 A row/column layout (done) -> velocity-preserving retargeting (done) -> B path + wire nodes (done) -> S8 (done) -> C beat transitions (done) ->
-S13 (done), S14 (done) -> D image nodes -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
+S13 (done), S14 (done) -> D image nodes (done) -> S16 -> every remaining S and T row in order -> fixtures/showcase.graph.json at both
 aspects, rendered to out/showcase-16x9.mp4 and out/showcase-9x16.mp4.
 Per item: pnpm test, typecheck, R3 checksum unchanged at both aspects, render + compare numbers in the commit, a
 fixture at both aspects, CLAUDE.md updated. Decide alone on plain schema extensions, missing measurements (timing
@@ -172,6 +172,18 @@ byte-identical") — review this reading:
   Fixture s13-curtain-wipe. Not modelled yet: the curved edge and 1–2 frames of edge blur (straight panel edge).
 - S14 smearCut: a smear transition with the measured 1 frame + 100 ms (133 ms), direction up (R8's vertical blur);
   the bare smear type keeps the runtime default of 160 ms (open question, as for S13). Fixture s14-smear-cut.
+
+## Image nodes (D)
+- `image { src: <asset name> | null, placeholder { kind image | video, label }, w, h, fit contain | cover, radius }`.
+  Decoded images are passed to `createRuntime({ shaper, images })` and loaded before the first frame by every
+  renderer (render-check / render-local: `<graph dir>/assets/<src>` decoded with createImageBitmap; Remotion:
+  `public/assets/<src>` via staticFile), so renderFrame stays synchronous and pure.
+- `src: null` draws the editable client-asset slot: a dashed rounded rect in tokens.accent at 40 % (8 % fill) with
+  an image or video glyph and the label. A named src that wasn't supplied draws the same slot labelled "(missing)".
+  Video placeholders render as the slot; real video frames are a later harness concern.
+- Fixture image-slots (cover, contain, image slot, video slot); fixture assets live in fixtures/assets/.
+- Layout note: a laid-out group's own scale (e.g. a 9:16 anchor override) applies after layout, so `maxWidth` is in
+  the group's local px.
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 

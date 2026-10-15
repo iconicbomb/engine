@@ -19,6 +19,7 @@ type CountTrack = Extract<Track, { mode: "count" }>;
 type CursorNode = Extract<Node, { type: "cursor" }>;
 type PathNode = Extract<Node, { type: "path" }>;
 type WireNode = Extract<Node, { type: "wire" }>;
+type ImageNode = Extract<Node, { type: "image" }>;
 type GroupNode = { id: string; type: "group"; children: Node[]; scale: number; x: number; y: number; layout?: {
   type: "row" | "column"; gap: number; align: "start" | "center" | "end"; wrap: boolean; maxWidth?: number;
   overrides?: Partial<Record<Aspect, { gap?: number; maxWidth?: number }>> } };
@@ -42,8 +43,10 @@ type Extents = { left: number; right: number; top: number; bottom: number; scale
 type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number };
 const NUMERIC = new Set(["opacity", "scale", "rotation", "x", "y"]);
 
-export function createRuntime(opts: { shaper: Shaper }): Runtime {
+// images: decoded assets by name (ImageBitmap / HTMLImageElement / canvas), supplied before the first frame
+export function createRuntime(opts: { shaper: Shaper; images?: Record<string, CanvasImageSource> }): Runtime {
   const { shaper } = opts;
+  const images = opts.images ?? {};
   const pathCache = new Map<string, Path2D>();
   const path2d = (d: string) => { let p = pathCache.get(d); if (!p) { p = new Path2D(d); pathCache.set(d, p); } return p; };
 
@@ -209,6 +212,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         } else if (n.type === "group") box = unionBox(children.map((c) => out.get(c.id) ?? null));
         else if (n.type === "bracket") box = out.get((n as BracketNode).follows) ?? null;
         else if (n.type === "path") { const pb = pathBounds((n as PathNode).d); box = pb ? worldBox(m, pb) : null; }
+        else if (n.type === "image") box = worldBox(m, { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 });
         if (box) out.set(n.id, box);
       }
     };
@@ -301,6 +305,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       }
       case "bracket": drawBracket(node as BracketNode, env, cx, cy, nodeScale); break;
       case "path": drawPath(node as PathNode, env); break;
+      case "image": drawImageNode(node as ImageNode, env); break;
     }
     ctx.restore();
   }
@@ -604,6 +609,51 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.restore();
   }
 
+  // ---------- images + client-asset placeholders ----------
+  function drawImageNode(node: ImageNode, env: Env) {
+    const { ctx } = env;
+    const img = node.src ? images[node.src] : undefined;
+    if (!img) return drawPlaceholder(node, env, node.src ? `${node.src} (missing)` : node.placeholder?.label ?? "");
+    const iw = (img as { width: number }).width, ih = (img as { height: number }).height;
+    const s = node.fit === "contain" ? Math.min(node.w / iw, node.h / ih) : Math.max(node.w / iw, node.h / ih);
+    ctx.save();
+    roundRectPath(ctx, -node.w / 2, -node.h / 2, node.w, node.h, node.radius);
+    ctx.clip();
+    ctx.drawImage(img, -iw * s / 2, -ih * s / 2, iw * s, ih * s);
+    ctx.restore();
+  }
+  // dashed accent slot at 40 % with a glyph (image: framed mountain + sun; video: play button) and the label
+  function drawPlaceholder(node: ImageNode, env: Env, label: string) {
+    const { ctx, tokens } = env;
+    const accent = color("tokens.accent", tokens), m = Math.min(node.w, node.h);
+    ctx.save();
+    roundRectPath(ctx, -node.w / 2, -node.h / 2, node.w, node.h, node.radius);
+    ctx.globalAlpha *= 0.08; ctx.fillStyle = accent; ctx.fill();
+    ctx.globalAlpha /= 0.08; ctx.globalAlpha *= 0.4;
+    ctx.setLineDash([14, 10]); ctx.lineWidth = 3; ctx.strokeStyle = accent; ctx.stroke(); ctx.setLineDash([]);
+    ctx.globalAlpha /= 0.4; ctx.globalAlpha *= 0.6;
+    const g = Math.max(24, Math.min(72, m * 0.18)), gy = label ? -g * 0.45 : 0;
+    ctx.fillStyle = accent; ctx.strokeStyle = accent; ctx.lineWidth = Math.max(2, g * 0.07); ctx.lineJoin = "round";
+    if (node.placeholder?.kind === "video") {
+      roundRectPath(ctx, -g * 0.6, gy - g * 0.42, g * 1.2, g * 0.84, g * 0.16); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-g * 0.14, gy - g * 0.2); ctx.lineTo(g * 0.22, gy); ctx.lineTo(-g * 0.14, gy + g * 0.2); ctx.closePath(); ctx.fill();
+    } else {
+      roundRectPath(ctx, -g * 0.6, gy - g * 0.45, g * 1.2, g * 0.9, g * 0.12); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(-g * 0.48, gy + g * 0.3); ctx.lineTo(-g * 0.12, gy - g * 0.08); ctx.lineTo(g * 0.1, gy + g * 0.14);
+      ctx.lineTo(g * 0.26, gy); ctx.lineTo(g * 0.48, gy + g * 0.3); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.arc(g * 0.28, gy - g * 0.22, g * 0.09, 0, Math.PI * 2); ctx.fill();
+    }
+    if (label) {
+      const font = resolveToken("tokens.font", tokens), size = Math.max(16, Math.min(40, m * 0.07));
+      const glyphs = shaper.shape(label, font, size, { wght: 500 });
+      const width = glyphs.reduce((a, q) => a + q.xAdvance, 0), mt = shaper.metrics(font);
+      let pen = -width / 2;
+      const base = gy + g * 0.75 + mt.capHeight * size;
+      for (const q of glyphs) { ctx.save(); ctx.translate(pen + q.xOffset, base + q.yOffset); ctx.fill(path2d(q.d)); ctx.restore(); pen += q.xAdvance; }
+    }
+    ctx.restore();
+  }
+
   // ---------- clip ----------
   function clipRect(node: Node, tl: number): { x: number; y: number; w: number; h: number } | null {
     if (!node.clip) return null;
@@ -699,6 +749,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     let box: Box | null = null;
     if (n.type === "text") box = textBox(layoutText(n as TextNode, env));
     else if (n.type === "path") box = pathBounds((n as PathNode).d);
+    else if (n.type === "image") box = { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "rect") box = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "group") {
       const inner = { ...env, slots: layoutSlots(n as GroupNode, env) };
@@ -723,6 +774,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     let b: Box | null = null;
     if (n.type === "text") b = fullTextBox(layoutText(n as TextNode, env));
     else if (n.type === "path") b = pathBounds((n as PathNode).d);
+    else if (n.type === "image") b = { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "rect") b = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, { ...env, slots: undefined }) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
     else if (n.type === "group") {
       const g = n as GroupNode, slots = layoutSlots(g, env);

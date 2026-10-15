@@ -282,6 +282,20 @@ export const WireNode = NodeBase.extend({
   glow: z.object({ radius: z.number().min(0), intensity: z.number().min(0).max(1) }).optional(),
 });
 
+// Image: a decoded asset by name (supplied to createRuntime as `images`, loaded by the harness / local renderers
+// before the first frame, so renderFrame stays synchronous), fitted into w x h (contain | cover) with rounded corners.
+// src null = an editable client-asset slot: a dashed accent placeholder with a glyph and its label (kind video renders
+// the same slot for now; video frames are a later harness concern).
+export const ImageNode = NodeBase.extend({
+  type: z.literal("image"),
+  src: z.string().min(1).nullable(),
+  placeholder: z.object({ kind: z.enum(["image", "video"]).default("image"), label: z.string().default("") }).optional(),
+  w: z.number().positive(),
+  h: z.number().positive(),
+  fit: z.enum(["contain", "cover"]).default("cover"),
+  radius: z.number().min(0).default(0),
+});
+
 // Cursor: drawn last, on top; top-level only. x/y are its start position; moveTo / press tracks drive it.
 // avatar renders a circle placeholder until image nodes exist.
 export const CursorNode = NodeBase.extend({
@@ -290,7 +304,7 @@ export const CursorNode = NodeBase.extend({
   size: z.number().positive().default(1),            // multiplier; R5's giant cursor is ~2
 });
 
-export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode, CursorNode, PathNode, WireNode]).or(GroupNode);
+export const Node = z.discriminatedUnion("type", [TextNode, RectNode, BracketNode, CursorNode, PathNode, WireNode, ImageNode]).or(GroupNode);
 export type Node = z.infer<typeof Node>;
 
 // ---------- beats + document ----------
