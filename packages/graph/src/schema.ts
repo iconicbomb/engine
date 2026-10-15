@@ -129,6 +129,8 @@ export const TextStyle = z.object({
   align: z.enum(["left", "center", "right"]).default("center"),
   // variable-font axes, animatable as "axis.slnt" etc.
   axes: z.record(z.string(), z.number()).default({}),
+  // OpenType features passed to HarfBuzz, e.g. ["tnum"] for tabular digits (counters), ["-liga"], ["ss01"]
+  features: z.array(z.string().regex(/^[+-]?[A-Za-z0-9]{4}(=\d+)?$/, "OpenType feature tag, e.g. tnum, -liga, ss01=1")).default([]),
 });
 
 export const TextNode = NodeBase.extend({
@@ -150,6 +152,11 @@ export const RectNode = NodeBase.extend({
   stroke: z.object({ color: Color, width: z.number().positive() }).optional(),
   // sit beside an earlier sibling text node's edge, scaled with its fit (T13 logo mark); anchor is ignored
   follows: z.object({ node: z.string(), edge: z.enum(["left", "right"]), gap: z.number().default(0) }).optional(),
+  // children draw on top of the rect, positioned relative to its centre (like a group's)
+  children: z.array(z.lazy((): z.ZodTypeAny => Node)).default([]),
+  // wrap the children's measured extents (at time t, ignoring their opacity) plus padding; w/h become the minimum
+  // size, grown symmetrically (S2 pill around its counter)
+  sizeToContent: z.object({ padX: z.number().min(0).default(0), padY: z.number().min(0).default(0) }).optional(),
 });
 
 // Bracket pair that tracks another node's extents (R3's [ ] and { }).

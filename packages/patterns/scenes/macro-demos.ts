@@ -61,7 +61,7 @@ export function buildS1Demo() {
 
 export function buildS2Demo() {
   const pill = ripplePill({
-    id: "b1-models", at: 0.2, to: 17000, suffix: "+", style: { size: 90, weight: 700 },
+    id: "b1-models", at: 0.2, to: 17000, suffix: "+", style: { size: 90, weight: 700 }, color: DEMO_TOKENS.accent,
     anchor: { x: 0.5, y: 0.5, overrides: { "9:16": { x: 0.5, y: 0.5, scale: 0.8 } } },
   });
   return demo("17,000+ models", 2.4, pill.nodes, [pill]);

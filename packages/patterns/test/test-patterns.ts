@@ -71,16 +71,23 @@ assert(child.tracks[0].at === 0.65 && child.tracks[1].from === 17 && child.track
   "S1: panel first; content fades in at land (300 ms) + 150 ms, drifting up 12 px to its base y");
 
 // S2: counter 1.07 s linear after the 330 ms spring settle; pulse fires on the final value; bands fade outward
-const s2: any = ripplePill({ id: "b1-p", at: 0.2, to: 17000, suffix: "+", style: { size: 90 } }).nodes[0];
-const byId = (id: string) => s2.children.find((c: any) => c.id === id);
+const s2: any = ripplePill({ id: "b1-p", at: 0.2, to: 17000, suffix: "+", style: { size: 90 }, color: "#FF8A3D" }).nodes[0];
+const all: any[] = []; const walk = (n: any) => { all.push(n); (n.children ?? []).forEach(walk); }; walk(s2);
+const byId = (id: string) => all.find((c: any) => c.id === id);
 const count = byId("b1-p-value").tracks[0], pulse = byId("b1-p-pulse");
 assert(byId("b1-p-value").text === "17,000+" && count.mode === "count" && count.at === 0.53 && count.ms === 1070 && count.ease === "linear",
   "S2: value node holds the final string; counts 0 -> 17,000 over 1.07 s linear from 0.53 s");
 assert(pulse.tracks[1].at === 1.6 && pulse.tracks[1].ms === 400 && pulse.tracks[0].at === 0 && pulse.tracks[0].to === 0,
   "S2: pulse ring held hidden, then fires at count end (1.6 s) for 400 ms");
-const bandOps = [5, 4, 3, 2, 1].map((i) => byId(`b1-p-band-${i}`).opacity);
-assert(bandOps.every((o: number, i: number) => i === 0 || o > bandOps[i - 1]) && s2.tracks[0].ease === "bounce",
-  `S2: 5 bands, opacity rising inward (${bandOps.join(", ")}); spring slide-in`);
+const bandAlpha = [5, 4, 3, 2, 1].map((i) => parseInt(byId(`b1-p-band-${i}`).fill.slice(7), 16));
+assert(bandAlpha.every((o: number, i: number) => i === 0 || o > bandAlpha[i - 1]) && s2.tracks[0].ease === "bounce",
+  `S2: 5 bands, fill alpha rising inward (${bandAlpha.join(", ")}/255); spring slide-in`);
+const pill = byId("b1-p-pill");
+assert(pill.sizeToContent && pill.children[0].id === "b1-p-value" && byId("b1-p-band-1").children[0] === pill && s2.children[0].id === "b1-p-band-5",
+  "S2: pill sizes to its counter; each band wraps the next one in (band-5 outermost)");
+assert(byId("b1-p-value").style.features.includes("tnum") && byId("b1-p-pulse").sizeToContent && byId("b1-p-pulse-measure").opacity === 0,
+  "S2: tabular digits; pulse ring sized to an invisible copy of the counter");
+assert(throws(() => ripplePill({ id: "b1-p", at: 0, to: 1, style: { size: 10 }, color: "tokens.accent" })), "S2: token colour rejected (bands need hex + alpha)");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

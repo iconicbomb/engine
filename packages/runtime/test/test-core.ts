@@ -50,3 +50,11 @@ assert(trackProgress(sw, 0.9) === null && trackProgress(sw, 1.4) === 1 && trackP
 const ct = (o: object) => CountTrack.parse({ mode: "count", prop: "text", from: 0, to: 1, ...o });
 assert(formatCount(ct({ suffix: "+" }), 17000) === "17,000+" && formatCount(ct({ decimals: 1, prefix: "$" }), 1234567.25) === "$1,234,567.3"
   && formatCount(ct({ separator: " " }), -4200) === "-4 200" && formatCount(ct({}), 999.4) === "999", "formatCount: 17,000+ / $1,234,567.3 / -4 200 / 999");
+// OpenType features reach HarfBuzz: Inter's proportional "1" is narrower than "0"; with tnum every digit is equal
+void (async () => {
+  const { createShaper } = await import("../src/shaper");
+  const sh = await createShaper({ wasm: new Uint8Array(readFileSync("packages/runtime/wasm/hb.wasm")), fonts: { Inter: new Uint8Array(readFileSync("packages/runtime/fonts/Inter-Variable.ttf")) } });
+  const width = (s: string, f?: string[]) => sh.shape(s, "Inter", 100, { wght: 500 }, f).reduce((a, g) => a + g.xAdvance, 0);
+  const p1 = width("1111"), p0 = width("0000"), t1 = width("1111", ["tnum"]), t0 = width("0000", ["tnum"]);
+  assert(p1 < p0 && Math.abs(t1 - t0) < 1e-6, `features: proportional 1111=${p1.toFixed(1)} < 0000=${p0.toFixed(1)}; tnum 1111=${t1.toFixed(1)} == 0000=${t0.toFixed(1)}`);
+})();

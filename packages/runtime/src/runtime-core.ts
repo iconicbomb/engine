@@ -87,7 +87,8 @@ export interface ShapedGlyph {
 export interface FontMetrics { ascender: number; descender: number; capHeight: number; xHeight: number } // em units
 export interface Shaper {
   // harfbuzzjs behind this; `axes` are variable-font axis values ("wght", "slnt", ...)
-  shape(text: string, font: string, sizePx: number, axes: Record<string, number>): ShapedGlyph[];
+  // features: OpenType feature strings as HarfBuzz parses them ("tnum", "-liga", "ss01=1")
+  shape(text: string, font: string, sizePx: number, axes: Record<string, number>, features?: string[]): ShapedGlyph[];
   metrics(font: string): FontMetrics;
 }
 

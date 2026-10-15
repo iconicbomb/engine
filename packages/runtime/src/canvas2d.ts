@@ -18,6 +18,7 @@ type SweepTrack = Extract<Track, { mode: "sweep" }>;
 type CountTrack = Extract<Track, { mode: "count" }>;
 
 // What a drawn text node leaves behind for siblings (brackets) in the parent's coordinate space.
+type Box = { left: number; right: number; top: number; bottom: number };
 type Extents = { left: number; right: number; top: number; bottom: number; scale: number; steps: { t: number; right: number }[] };
 
 type NumericProps = { opacity: number; scale: number; rotation: number; x: number; y: number };
@@ -97,7 +98,13 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
         drawNodes((node as { children: Node[] }).children, inner, false);
         break;
       }
-      case "rect": drawRect(node as RectNode, env, cx, cy, nodeScale); break;
+      case "rect": {
+        const r = node as RectNode;
+        const inner: Env = { ...env, extents: new Map() };
+        drawRect(r, env, cx, cy, nodeScale, r.sizeToContent ? sizedBox(r, inner) : undefined);
+        if (r.children.length) drawNodes(r.children, inner, false);
+        break;
+      }
       case "text": {
         const ext = drawText(node as TextNode, env);
         // extents are reported in the parent's space (undo this node's transform)
@@ -161,14 +168,16 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   }
 
   // ---------- text ----------
-  function drawText(node: TextNode, env: Env): Extents & { scale: number } {
-    const { ctx, tokens, tl, fps } = env;
+  // Text layout as a pure function of (node, t): shaping, typewriter state, fit scale and run origin.
+  // drawText paints from it; sizeToContent measures with it without painting.
+  function layoutText(node: TextNode, env: Env) {
+    const { tokens, tl, fps } = env;
     const style = node.style;
     const fontName = resolveToken(style.font, tokens);
     const size = style.size;
     const axes = { wght: style.weight, ...style.axes };
     const text = countText(node, tl) ?? node.text;
-    const glyphs = shaper.shape(text, fontName, size, axes);
+    const glyphs = shaper.shape(text, fontName, size, axes, style.features);
     const metrics = shaper.metrics(fontName);
     const chars = [...text];
     const tw = node.tracks.find((t: Track): t is TypewriterTrack => t.mode === "typewriter");
@@ -211,6 +220,18 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       for (let i = 0; i < chars.length; i++) steps.push({ t: glyphTime(tw, chars, i + 1), right: 0 }); // filled below
     }
 
+    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline };
+  }
+  // the text's box in its own space (after its fit scale), as drawText reports it
+  function textBox(L: ReturnType<typeof layoutText>): Box {
+    const { metrics, size, baseline, scale, x0, visibleWidth } = L;
+    return { left: x0 * scale, right: (x0 + visibleWidth) * scale, top: (baseline - metrics.ascender * size) * scale, bottom: (baseline - metrics.descender * size) * scale };
+  }
+
+  function drawText(node: TextNode, env: Env): Extents & { scale: number } {
+    const { ctx, tokens, tl } = env;
+    const L = layoutText(node, env);
+    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline } = L;
     ctx.save();
     ctx.scale(scale, scale);
     const baseColor = color(style.color, tokens);
@@ -227,7 +248,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       if (st?.visible) {
         const gp = glyphProps(node, tl, g.cluster, tw ? glyphTime(tw, chars, g.cluster) : 0);
         if (gp.opacity > 0) {
-          const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes) : g.d;
+          const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes, style.features) : g.d;
           ctx.save();
           ctx.translate(pen + g.xOffset + gp.x, baseline + g.yOffset + gp.y);
           if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
@@ -246,7 +267,7 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       glyphs.forEach((g, gi) => {
         const st = states[g.cluster];
         if (!st?.visible || st.freshness <= 0) return;
-        const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes) : g.d;
+        const d = st.scrambled ? scrambleGlyph(st.scrambled, fontName, size, axes, style.features) : g.d;
         for (const [r, wgt] of [[tw.bloom.radius, 0.7], [tw.bloom.radius * 2.5, 0.45]] as const) {   // tight + wide layers
           ctx.save();
           ctx.globalCompositeOperation = "lighter";
@@ -314,10 +335,10 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
   }
 
   const scrambleCache = new Map<string, string>();
-  function scrambleGlyph(ch: string, fontName: string, size: number, axes: Record<string, number>): string {
-    const key = `${ch}|${fontName}|${size}|${JSON.stringify(axes)}`;
+  function scrambleGlyph(ch: string, fontName: string, size: number, axes: Record<string, number>, features: string[]): string {
+    const key = `${ch}|${fontName}|${size}|${JSON.stringify(axes)}|${features.join(",")}`;
     let d = scrambleCache.get(key);
-    if (d === undefined) { d = shaper.shape(ch, fontName, size, axes)[0]?.d ?? ""; scrambleCache.set(key, d); }
+    if (d === undefined) { d = shaper.shape(ch, fontName, size, axes, features)[0]?.d ?? ""; scrambleCache.set(key, d); }
     return d;
   }
 
@@ -329,8 +350,8 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     const fontName = resolveToken(node.style.font, tokens);
     const size = node.style.size * ext.scale;          // brackets follow the text's fit scale
     const axes = { wght: node.style.weight, ...node.style.axes };
-    const [lg] = shaper.shape(node.glyphs[0], fontName, size, axes);
-    const [rg] = shaper.shape(node.glyphs[1], fontName, size, axes);
+    const [lg] = shaper.shape(node.glyphs[0], fontName, size, axes, node.style.features);
+    const [rg] = shaper.shape(node.glyphs[1], fontName, size, axes, node.style.features);
     const m = shaper.metrics(fontName);
     const midY = (ext.top + ext.bottom) / 2;
     // right edge springs toward each new target as the text grows
@@ -355,8 +376,31 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
     ctx.restore();
   }
 
+  // ---------- layout pass (sizeToContent) ----------
+  // A child's box in its parent's space: its anchor/x/y/scale applied to its own box. Opacity is ignored (layout).
+  function measureNode(n: Node, env: Env): Box | null {
+    const a = resolveAnchor(n, env.aspect, env.w, env.h);
+    const props = numericProps(n, env.tl);
+    const s = props.scale * a.scale;
+    let box: Box | null = null;
+    if (n.type === "text") box = textBox(layoutText(n as TextNode, env));
+    else if (n.type === "rect") box = (n as RectNode).sizeToContent ? sizedBox(n as RectNode, env) : { left: -n.w / 2, right: n.w / 2, top: -n.h / 2, bottom: n.h / 2 };
+    else if (n.type === "group") box = unionBox(((n as { children: Node[] }).children).map((c) => measureNode(c, env)));
+    if (!box) return null;
+    const cx = a.x - env.w / 2 + props.x, cy = a.y - env.h / 2 + props.y;
+    return { left: cx + box.left * s, right: cx + box.right * s, top: cy + box.top * s, bottom: cy + box.bottom * s };
+  }
+  // the rect's own box: children's union + padding, at least w x h (grown symmetrically about the content centre)
+  function sizedBox(r: RectNode, env: Env): Box {
+    const pad = r.sizeToContent!;
+    const c = unionBox(r.children.map((n: Node) => measureNode(n, env))) ?? { left: 0, right: 0, top: 0, bottom: 0 };
+    const mx = (c.left + c.right) / 2, my = (c.top + c.bottom) / 2;
+    const hw = Math.max(r.w / 2, (c.right - c.left) / 2 + pad.padX), hh = Math.max(r.h / 2, (c.bottom - c.top) / 2 + pad.padY);
+    return { left: mx - hw, right: mx + hw, top: my - hh, bottom: my + hh };
+  }
+
   // ---------- rect ----------
-  function drawRect(node: RectNode, env: Env, cx: number, cy: number, nodeScale: number) {
+  function drawRect(node: RectNode, env: Env, cx: number, cy: number, nodeScale: number, box?: Box) {
     const { ctx, tokens } = env;
     if (node.follows) {
       // like a bracket: place in the parent's space at the followed text's edge, sized by its fit scale
@@ -368,11 +412,12 @@ export function createRuntime(opts: { shaper: Shaper }): Runtime {
       ctx.translate(f.edge === "left" ? ext.left - half : ext.right + half, (ext.top + ext.bottom) / 2);
       ctx.scale(nodeScale * ext.scale, nodeScale * ext.scale);   // keep the node's own scale (e.g. a pop) about its centre
     }
-    const x = -node.w / 2, y = -node.h / 2, r = Math.min(node.radius, node.w / 2, node.h / 2);
+    const w = box ? box.right - box.left : node.w, h = box ? box.bottom - box.top : node.h;
+    const x = box ? box.left : -node.w / 2, y = box ? box.top : -node.h / 2, r = Math.min(node.radius, w / 2, h / 2);
     ctx.beginPath();
-    ctx.moveTo(x + r, y); ctx.lineTo(x + node.w - r, y); ctx.arcTo(x + node.w, y, x + node.w, y + r, r);
-    ctx.lineTo(x + node.w, y + node.h - r); ctx.arcTo(x + node.w, y + node.h, x + node.w - r, y + node.h, r);
-    ctx.lineTo(x + r, y + node.h); ctx.arcTo(x, y + node.h, x, y + node.h - r, r);
+    ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r);
     ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath();
     if (node.fill) { ctx.fillStyle = color(node.fill, tokens); ctx.fill(); }
     if (node.stroke) { ctx.strokeStyle = color(node.stroke.color, tokens); ctx.lineWidth = node.stroke.width; ctx.stroke(); }
@@ -398,6 +443,11 @@ function resolveToken(v: string, tokens: Record<string, string>): string {
   return v.startsWith("tokens.") ? (tokens[v.slice(7)] ?? v) : v;
 }
 function color(v: string, tokens: Record<string, string>): string { return resolveToken(v, tokens); }
+function unionBox(boxes: (Box | null)[]): Box | null {
+  const bs = boxes.filter((b): b is Box => b !== null);
+  if (!bs.length) return null;
+  return { left: Math.min(...bs.map((b) => b.left)), right: Math.max(...bs.map((b) => b.right)), top: Math.min(...bs.map((b) => b.top)), bottom: Math.max(...bs.map((b) => b.bottom)) };
+}
 function clamp01(x: number) { return x < 0 ? 0 : x > 1 ? 1 : x; }
 function hexToRgb(hex: string): [number, number, number] {
   const h = hex.replace("#", "");

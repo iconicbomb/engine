@@ -15,7 +15,7 @@ type HB = {
   createFace(blob: unknown, index: number): { upem: number; reference_table(tag: string): Uint8Array; getAxisInfos(): Record<string, { min: number; default: number; max: number }>; destroy(): void };
   createFont(face: unknown): { setScale(x: number, y: number): void; setVariations(v: Record<string, number>): void; glyphToPath(gid: number): string; destroy(): void };
   createBuffer(): { addText(s: string): void; guessSegmentProperties(): void; json(): HBGlyph[]; destroy(): void };
-  shape(font: unknown, buffer: unknown): void;
+  shape(font: unknown, buffer: unknown, features?: string): void;
 };
 
 export interface ShaperAssets {
@@ -54,13 +54,13 @@ export async function createShaper(assets: ShaperAssets): Promise<Shaper> {
 
   return {
     metrics(fontName) { return pick(fontName).metrics; },
-    shape(text, fontName, sizePx, axes) {
+    shape(text, fontName, sizePx, axes, features = []) {
       const L = pick(fontName);
       const axesKey = applyAxes(L, axes);
       const buf = hb.createBuffer();
       buf.addText(text);
       buf.guessSegmentProperties();
-      hb.shape(L.font, buf);
+      hb.shape(L.font, buf, features.length ? features.join(",") : undefined);   // e.g. "tnum", "-liga", "ss01"
       const raw = buf.json();
       buf.destroy();
       const k = sizePx / L.upem;
