@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S10, S13, S14, S16 in (phase 2); `pnpm test` 125 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T6, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S11, S13, S14, S16 in (phase 2); `pnpm test` 127 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -198,6 +198,11 @@ byte-identical") — review this reading:
   the tilted geometry). Eases in from a steeper Y angle, dolly 2 %/s (linear scale), linear pan. Defaults 14 / 6 deg
   (the spec's example plane). Fixture s10-tilted-plane (dashboard + cursor click on the plane). Not modelled yet:
   perspective foreshortening (the main 3D cue — orthographic tilt reads subtle) and depth of field.
+- S11 slabNumeral: digits as seven-segment slabs (face rect over a darker offset side = extrusion) turning in about Y
+  (rotY 90 -> 0, 400 ms settle, 70 ms stagger) while the numeral scales up 800 ms emphasis; optional fly-through =
+  camera frame track (zoom 12, 400 ms) into the first digit's middle slab, paired with a transition to the next beat.
+  Fixture s11-slab-numeral ("3" -> fly-through -> crossfade -> "4"). Not modelled yet: per-slab gradients, true 3D
+  extrusion, the camera path between slabs; only digits.
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 

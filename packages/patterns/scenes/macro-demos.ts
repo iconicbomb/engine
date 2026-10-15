@@ -1,7 +1,7 @@
 // One small scene per phase-1 macro, each isolating its device. `pnpm gen:fixtures` writes them to fixtures/;
 // tools/render-check.mjs renders them at 16:9 and 9:16.
 import { enterDelay } from "@engine/graph";
-import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
+import { ambientGlow, applyEdits, cardRise, collapseToOrbs, curtainWipe, group, mascot, slabNumeral, smearCut, wireFan, colourSweep, echoTrail, pillMarquee, tickerList, logoTypewriter, ripplePill, tailTypewriter, trackingContraction, wordAppend, type GlowIn, type MacroResult, type NodeIn } from "../src/index";
 
 const DEMO_TOKENS = { bg: "#0B0D12", text: "#FFFFFF", accent: "#FF8A3D", font: "Inter" };
 
@@ -246,4 +246,14 @@ export function buildS7Demo() {
     rows: [{ label: "Slack", color: "#4A154B" }, { label: "Notion", color: "#E6E6E6" }, { label: "GitHub", color: "#6E40C9" },
       { label: "Stripe", color: "#635BFF" }, { label: "Figma", color: "#F24E1E" }] });
   return demo("Everything, connected", 2.4, orbs.nodes, [orbs]);
+}
+
+// S11 demo: "3" assembles from slabs and scales up, the camera flies into a slab, a crossfade lands on "4"
+export function buildS11Demo() {
+  const three = slabNumeral({ id: "b1-num", value: "3", size: 520, at: 0.2, flyThrough: { at: 2.0 } });
+  const four = slabNumeral({ id: "b2-num", value: "4", size: 520, at: 0.15, face: "#3D5AFE", side: "#1C2A80" });
+  return { version: 1, canvas: { aspect: "16:9", refHeight: 1080, fps: 30 }, tokens: DEMO_TOKENS, beats: [
+    { id: "b1", type: "feature", start: 0, duration: 2.4, script: "Three", nodes: applyEdits(three.nodes, [three]), glows: [], camera: { tracks: three.camera } },
+    { id: "b2", type: "feature", start: 2.4, duration: 1.4, script: "Four", background: "#10213A", transition: { type: "crossfade" }, nodes: applyEdits(four.nodes, [four]), glows: [] },
+  ] };
 }

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -187,6 +187,14 @@ const s10: any = tiltedPlane({ id: "b1-p", children: [], at: 0.5, until: 3.5, pa
 assert(s10.rotY === 14 && s10.rotX === 6 && s10.tracks[0].prop === "rotY" && s10.tracks[0].from === 34 && s10.tracks[2].prop === "scale"
   && s10.tracks[2].to === 1.06 && s10.tracks[2].ease === "linear" && s10.tracks[2].ms === 3000 && s10.tracks[3].to === -60,
   "S10: plane tilted 14 / 6 deg, enters from 34 deg, dolly 2 %/s (1 -> 1.06 over 3 s), linear pan");
+
+// S11: seven-segment slabs turn in about Y (400 ms, 70 ms stagger), numeral scales up 800 ms emphasis, fly-through frame
+const s11 = slabNumeral({ id: "b1-n", value: "17", size: 400, at: 0.2, flyThrough: { at: 2 } });
+const s11n: any = s11.nodes[0], slabs = s11n.children.flatMap((d: any) => d.children);
+assert(slabs.length === 2 + 3 && slabs.every((sl: any) => sl.rotY === 90 && sl.tracks[0].prop === "rotY" && sl.tracks[0].ms === 400)
+  && slabs.map((sl: any) => sl.tracks[0].at).join() === "0.2,0.27,0.34,0.41,0.48" && s11n.tracks[0].ms === 800 && s11n.tracks[0].ease === "emphasis"
+  && s11.camera[0].mode === "frame" && s11.camera[0].ms === 400 && throws(() => slabNumeral({ id: "b1-n", value: "x", size: 10, at: 0 })),
+  "S11: '17' = 2 + 3 slabs turning in (400 ms, 70 ms apart), 800 ms emphasis scale-up, 400 ms fly-through frame");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {
