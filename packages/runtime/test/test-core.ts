@@ -188,3 +188,11 @@ void (async () => {
   const arc = flattenPath(wirePath({ x: 0, y: 0 }, { x: 200, y: 0 }, "arc", 0.25))[0];
   assert(near(Math.max(...arc.map((p) => Math.abs(p.y))), 50, 0.5), "wirePath arc: bows perpendicular by bend * |d| (0.25 * 200 = 50)");
 }
+// font axes: the vendored Inter exposes only wght (slnt is synthesized as an oblique by the runtime)
+void (async () => {
+  const { createShaper } = await import("../src/shaper");
+  const sh = await createShaper({ wasm: new Uint8Array(readFileSync("packages/runtime/wasm/hb.wasm")), fonts: { Inter: new Uint8Array(readFileSync("packages/runtime/fonts/Inter-Variable.ttf")) } });
+  const ax = sh.axes!("Inter");
+  const w = (wght: number) => sh.shape("H", "Inter", 100, { wght })[0].d;
+  assert(Object.keys(ax).join() === "wght" && ax.wght.min === 100 && ax.wght.max === 900 && w(300) !== w(800), "axes: Inter has wght 100-900 (real axis changes outlines); no slnt -> synthesized");
+})();

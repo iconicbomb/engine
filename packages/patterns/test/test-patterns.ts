@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { isDeepStrictEqual } from "node:util";
 import { parseGraph, glyphTime, TypewriterTrack } from "@engine/graph";
-import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
+import { ambientGlow, applyEdits, bracketFrame, cardRise, cursorClick, hoverFillCard, jumpCuts, pillMarquee, pressTimes, tickerList, wireFan, curtainWipe, smearCut, enterDelay, mascot, collapseToOrbs, tiltedPlane, slabNumeral, strokeMorph, gradientSettle, slantSettle, colourSweep, echoTrail, trackingContraction, fitToWidth, logoTypewriter, reveal, ripplePill, scrambleTypewriter, tailTypewriter, wordAppend } from "../src/index";
 import { SCENES } from "../scenes/index";
 const assert = (c: boolean, m: string) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else console.log("ok:", m); };
 const throws = (f: () => unknown) => { try { f(); return false; } catch { return true; } };
@@ -209,6 +209,13 @@ const t7t = Object.fromEntries(t7.tracks.map((t: any, i: number) => [`${t.prop}$
 assert(t7.style.gradient.from === "#FF5FA2" && t7t.opacity0.staggerMs === 30 && t7t.opacity0.ms === 270 && t7t["gradient.amount2"].at === 0.53
   && t7t["gradient.amount2"].ms === 500 && t7t.opacity3.at === 1.13 && t7t.opacity3.ms === 200 && t7t.y4.to === 40,
   "T7: enter 270 ms / 30 ms stagger; gradient -> white 500 ms from 0.53 s; exit at 1.13 s (600 ms hold), 200 ms, drop 40 px");
+
+// T8: axis.slnt -12 -> 0 in 270 ms; swap re-shears and fades over 200 ms while the next word shears in
+const [t8a, t8b]: any[] = slantSettle({ id: "b1-s", text: "A", style: { size: 100 }, at: 0.2, weight: { from: 300, to: 700 }, swap: { at: 1.4, text: "B" } }).nodes;
+const sl = t8a.tracks.filter((t: any) => t.prop === "axis.slnt");
+assert(sl[0].from === -12 && sl[0].to === 0 && sl[0].ms === 270 && sl[1].at === 1.4 && sl[1].ms === 200 && sl[1].to === -12
+  && t8a.tracks.some((t: any) => t.prop === "axis.wght" && t.to === 700) && t8b.tracks.find((t: any) => t.prop === "axis.slnt").at === 1.5,
+  "T8: slnt -12 -> 0 (270 ms) with a wght move; swap re-shears in 200 ms; next word shears in at 1.5 s");
 
 // every fixture validates and is exactly what its scene builder produces (after schema defaults)
 for (const [name, build] of Object.entries(SCENES)) {

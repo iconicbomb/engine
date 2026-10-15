@@ -342,6 +342,8 @@ export interface Shaper {
   // features: OpenType feature strings as HarfBuzz parses them ("tnum", "-liga", "ss01=1")
   shape(text: string, font: string, sizePx: number, axes: Record<string, number>, features?: string[]): ShapedGlyph[];
   metrics(font: string): FontMetrics;
+  // the font's variable axes (tag -> range); absent axes can be synthesized (slnt -> oblique shear)
+  axes?(font: string): Record<string, { min: number; default: number; max: number }>;
 }
 
 export interface RenderTarget { width: number; height: number; ctx: CanvasRenderingContext2D }

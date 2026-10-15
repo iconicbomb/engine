@@ -54,6 +54,7 @@ export async function createShaper(assets: ShaperAssets): Promise<Shaper> {
 
   return {
     metrics(fontName) { return pick(fontName).metrics; },
+    axes(fontName) { return pick(fontName).axes; },
     shape(text, fontName, sizePx, axes, features = []) {
       const L = pick(fontName);
       const axesKey = applyAxes(L, axes);

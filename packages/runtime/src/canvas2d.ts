@@ -362,7 +362,12 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
     const style = node.style;
     const fontName = resolveToken(style.font, tokens);
     const size = style.size;
-    const axes = { wght: style.weight, ...style.axes };
+    const axes: Record<string, number> = { wght: style.weight, ...style.axes };
+    // animated axes: "axis.<tag>" tweens (T8); a slnt the font doesn't have is synthesized as an oblique shear
+    const axisCands = (node.tracks as Track[]).filter((tr): tr is TweenTrack => tr.mode === "tween" && tr.prop.startsWith("axis.")).map((tr) => ({ tr, start: tr.at }));
+    for (const tag of new Set(axisCands.map((c) => c.tr.prop.slice(5)))) axes[tag] = resolve(`axis.${tag}`, axes[tag] ?? 0, tl, axisCands);
+    let oblique = 0;
+    if (axes.slnt !== undefined && !(shaper.axes?.(fontName) ?? {}).slnt) { oblique = axes.slnt; delete axes.slnt; }
     const text = countText(node, tl) ?? node.text;
     const glyphs = shaper.shape(text, fontName, size, axes, style.features);
     const metrics = shaper.metrics(fontName);
@@ -412,7 +417,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
       for (let i = 0; i < chars.length; i++) steps.push({ t: glyphTime(tw, chars, i + 1), right: 0 }); // filled below
     }
 
-    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, fullScale };
+    return { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, fullScale, oblique };
   }
   // the text's box in its own space (after its fit scale), as drawText reports it
   function textBox(L: ReturnType<typeof layoutText>): Box {
@@ -423,7 +428,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
   function drawText(node: TextNode, env: Env): Extents & { scale: number } {
     const { ctx, tokens, tl } = env;
     const L = layoutText(node, env);
-    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth } = L;
+    const { style, fontName, size, axes, glyphs, metrics, chars, tw, states, advance, widthUpTo, visibleWidth, scale, steps, x0, baseline, fullWidth, oblique } = L;
     ctx.save();
     ctx.scale(scale, scale);
     const baseColor = color(style.color, tokens);
@@ -445,6 +450,7 @@ export function createRuntime(opts: { shaper: Shaper; images?: Record<string, Ca
           ctx.save();
           ctx.translate(pen + g.xOffset + gp.x, baseline + g.yOffset + gp.y);
           if (gp.scale !== 1) ctx.scale(gp.scale, gp.scale);
+          if (oblique) ctx.transform(1, 0, Math.tan((oblique * Math.PI) / 180), 1, 0, 0);   // synthetic slnt (negative = lean right)
           ctx.globalAlpha *= clamp01(gp.opacity);
           if (grad) {
             // one gradient across the whole laid-out run, expressed in this glyph's local space

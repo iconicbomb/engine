@@ -42,7 +42,7 @@ Phase 0 DONE and verified on Niloy's machine: shaper.ts (harfbuzzjs, Inter varia
 packages/runtime/fonts), layout.ts, canvas2d.ts, background glows, glass caret, typing ramp. `pnpm render` +
 `pnpm compare` against R3: mean SSIM 0.883, min 0.758 = PASS. 9:16 renders from the same graph. Frames are
 byte-identical across renders.
-Phase 1 macros complete: T1–T7, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 131 ok, `pnpm typecheck` clean,
+Phase 1 macros complete: T1–T8, T10–T13, plus S1, S2, S15 (see below); cursor system, camera, row/column layout, velocity retargeting, paths + wires, beat transitions, image nodes, S3–S14, S16 in (phase 2); `pnpm test` 134 ok, `pnpm typecheck` clean,
 `pnpm test:render` green (R3 frame hashes unchanged at both aspects).
 Known gap (from the strip, pre-existing in phase 0): R3 opens zoomed in (large, soft text shrinking as it types);
 our render starts at final size and types ~1 char behind. Worst frames are t = 0.4–0.75 s. Tune via the T1/T3
@@ -212,6 +212,12 @@ byte-identical") — review this reading:
   gradient shows, sweep / tail tints don't apply). Enter 270 ms with a 30 ms per-glyph stagger (opacity + rise),
   settle to the body colour 500 ms after the last glyph lands, 600 ms hold, exit 200 ms (opacity + 40 px drop,
   staggered). Fixture t7-gradient-settle.
+- T8 slantSettle: animated font axes — "axis.<tag>" tweens on text nodes (added for T8) feed the shaper's variations;
+  the Shaper exposes `axes(font)`. The vendored Inter has only wght (100–900), so a slnt the font lacks is
+  synthesized as an oblique shear per glyph (negative = lean right), like a browser's synthetic italic; a font with a
+  real slnt axis would use it with no graph change. Enter: slnt -12 -> 0 over 270 ms (+ optional real wght move);
+  swap: re-slant + fade 200 ms while the next word slants in. Fixture t8-slant-settle. Open question: vendor a font
+  with a slnt / ital axis (or Inter Italic) for the true axis look.
 - render-check: frame directories are cleared file-by-file when the folder itself is locked (Windows: a shell's
   cwd inside it aborted a run).
 
